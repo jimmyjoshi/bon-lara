@@ -71,7 +71,10 @@ class Kernel extends HttpKernel
         /*
          * Access Middleware
          */
-        'access.routeNeedsRole'       => \App\Http\Middleware\RouteNeedsRole::class,
-        'access.routeNeedsPermission' => \App\Http\Middleware\RouteNeedsPermission::class,
+        'access.routeNeedsRole'         => \App\Http\Middleware\RouteNeedsRole::class,
+        'access.routeNeedsPermission'   => \App\Http\Middleware\RouteNeedsPermission::class,
+        'jwt.customauth'                =>   \App\Http\Middleware\CustomJWTMiddleware::class,
+        //'jwt.auth'                      =>   \Tymon\JWTAuth\Middleware\GetUserFromToken::class,
+        'jwt.refresh'                   => \TymonJWTAuth\Middleware\RefreshToken::class  
     ];
 }

@@ -12,7 +12,7 @@ return [
     | any other location as required by the application or its packages.
     */
 
-    'name' => env('APP_NAME', 'Laravel 5 Boilerplate'),
+    'name' => env('APP_NAME', 'Base Project'),
 
     /*
     |--------------------------------------------------------------------------
@@ -201,6 +201,7 @@ return [
         App\Providers\MacroServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class
     ],
 
     /*
@@ -261,6 +262,8 @@ return [
         'Html'        => Collective\Html\HtmlFacade::class,
         'Socialite'   => Laravel\Socialite\Facades\Socialite::class,
 
+        'JWTAuth'   => Tymon\JWTAuthFacades\JWTAuth::class,
+        'JWTFactory' => Tymon\JWTAuthFacades\JWTFactory::class
     ],
 
 ];
