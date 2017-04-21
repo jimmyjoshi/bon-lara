@@ -7,7 +7,7 @@
  * @package FTX\Repositories
  */
 
-use FTX\Exceptions\GeneralException;
+use App\Exceptions\GeneralException;
 
 Abstract class DbRepository
 {

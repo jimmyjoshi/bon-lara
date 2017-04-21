@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Backend\Event;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Repositories\Event\EloquentEventRepository;
 use Yajra\Datatables\Facades\Datatables;
+use App\Repositories\Event\EloquentEventRepository;
 
 /**
  * Class AdminEventController
@@ -18,12 +19,19 @@ class AdminEventController extends Controller
 	 */
 	public $repository;
 
+	/**
+	 * __construct
+	 * 
+	 * @param EloquentEventRepository $eventRepository
+	 */
 	public function __construct(EloquentEventRepository $eventRepository)
 	{
 		$this->repository = $eventRepository;
 	}
 
     /**
+     * Event Listing 
+     * 
      * @return \Illuminate\View\View
      */
     public function index()
@@ -31,6 +39,26 @@ class AdminEventController extends Controller
     	return view('backend.event.index');
     }
 
+    /**
+     * Event View
+     * 
+     * @return \Illuminate\View\View
+     */
+    public function edit($id, Request $request)
+    {
+    	echo hasher()->encode('1');
+    	die;
+    	$event = $this->repository->findOrThrowException($id);
+
+    	dd($event);
+    	return view('backend.event.index');
+    }
+
+  	/**
+     * Get Table Data
+     *
+     * @return json|mixed
+     */
     public function getTableData()
     {
     	return Datatables::of($this->repository->getForDataTable())

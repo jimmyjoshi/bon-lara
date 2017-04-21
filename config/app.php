@@ -118,6 +118,7 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
+    "hashKey"   => '5NnrMI7YxnXx5l62ZW2fcMn789bsnrIsPxz52fhuw0ugLviN3u',
     /*
     |--------------------------------------------------------------------------
     | Logging Configuration
@@ -201,7 +202,8 @@ return [
         App\Providers\MacroServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class
+        Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
+        App\Providers\HasherServiceProvider::class,
     ],
 
     /*
@@ -262,6 +264,10 @@ return [
         'Html'        => Collective\Html\HtmlFacade::class,
         'Socialite'   => Laravel\Socialite\Facades\Socialite::class,
 
+        // Hasher
+        'Hasher'        => App\Library\Hash\Hashids::class,
+
+        // JWT Auth
         'JWTAuth'   => Tymon\JWTAuthFacades\JWTAuth::class,
         'JWTFactory' => Tymon\JWTAuthFacades\JWTFactory::class
     ],

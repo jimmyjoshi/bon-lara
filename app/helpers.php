@@ -25,6 +25,17 @@ if (! function_exists('access')) {
     }
 }
 
+if (! function_exists('hasher')) {
+    /**
+     * Hasher Function
+     */
+    function hasher()
+    {
+        return app('hasher');
+    }
+}
+
+
 if (! function_exists('history')) {
     /**
      * Access the history facade anywhere.

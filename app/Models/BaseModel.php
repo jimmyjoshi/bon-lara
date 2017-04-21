@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\RelationNotFoundException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Input, Schema, ReflectionClass;
 use Illuminate\Database\Eloquent\Model;
-use FTX\Exceptions\GeneralException;
+use App\Exceptions\GeneralException;
 
 class BaseModel extends Model
 {
