@@ -44,14 +44,57 @@ class AdminEventController extends Controller
      * 
      * @return \Illuminate\View\View
      */
+    public function create(Request $request)
+    {
+    	return view('backend.event.create');
+    }
+
+    /**
+     * Store View
+     * 
+     * @return \Illuminate\View\View
+     */
+    public function store(Request $request)
+    {
+        $this->repository->create($request->all());
+
+        return redirect()->route('admin.event.index');
+    }
+
+    /**
+     * Event View
+     * 
+     * @return \Illuminate\View\View
+     */
     public function edit($id, Request $request)
     {
-    	echo hasher()->encode('1');
-    	die;
-    	$event = $this->repository->findOrThrowException($id);
+        $event = $this->repository->findOrThrowException($id);
 
-    	dd($event);
-    	return view('backend.event.index');
+        return view('backend.event.edit')->with(['item' => $event]);
+    }
+
+    /**
+     * Event Update
+     * 
+     * @return \Illuminate\View\View
+     */
+    public function update($id, Request $request)
+    {
+        $status = $this->repository->update($id, $request->all());
+        
+        return view('backend.event.index');
+    }
+
+    /**
+     * Event Update
+     * 
+     * @return \Illuminate\View\View
+     */
+    public function destroy($id)
+    {
+        $status = $this->repository->destroy($id);
+        
+        return view('backend.event.index');
     }
 
   	/**

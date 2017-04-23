@@ -16,38 +16,38 @@
             <h3 class="box-title">Events Listing</h3>
 
             <div class="box-tools pull-right">
-                @include('backend.access.includes.partials.role-header-buttons')
+                @include('common.event.index-header-buttons', ['createRoute' => 'admin.event.create'])
             </div>
-        </div><!-- /.box-header -->
+        </div>
 
         <div class="box-body">
             <div class="table-responsive">
-                <table id="events-table" class="table table-condensed table-hover">
+                <table id="items-table" class="table table-condensed table-hover">
                     <thead>
                         <tr>
                             <th>Name</th>
                             <th>Title</th>
  							<th>Start Date</th>
                             <th>End Date</th>
-                            <th>{{ trans('labels.general.actions') }}</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                 </table>
-            </div><!--table-responsive-->
-        </div><!-- /.box-body -->
-    </div><!--box-->
+            </div>
+        </div>
+    </div>
 
     <div class="box box-info">
         <div class="box-header with-border">
-            <h3 class="box-title">{{ trans('history.backend.recent_history') }}</h3>
+            <h3 class="box-title">History</h3>
             <div class="box-tools pull-right">
                 <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-            </div><!-- /.box tools -->
-        </div><!-- /.box-header -->
+            </div>
+        </div>
         <div class="box-body">
-            {!! history()->renderType('Role') !!}
-        </div><!-- /.box-body -->
-    </div><!--box box-success-->
+            {!! history()->renderType('Event') !!}
+        </div>
+    </div>
 @endsection
 
 @section('after-scripts')
@@ -55,13 +55,16 @@
     {{ Html::script("js/backend/plugin/datatables/dataTables.bootstrap.min.js") }}
 
     <script>
-    	$(document).ready(function()
+        var moduleConfig = {
+                getTableDataUrl: '{!! route("admin.event.get-event-data") !!}'
+            };
+    	jQuery(document).ready(function()
     	{
-    		$('#events-table').DataTable({
+    		jQuery('#items-table').DataTable({
     		    processing: true,
     		    serverSide: true,
     		    ajax: {
-    		        url: '{{ route("admin.event.get-event-data") }}',
+    		        url: moduleConfig.getTableDataUrl,
     		        type: 'get'
     		    },
     		    columns: [
@@ -71,11 +74,9 @@
     		        {data: 'end_date', name: 'end_date', searchable: false, sortable: false},
     		        {data: 'actions', name: 'actions', searchable: false, sortable: false}
     		    ],
-    		    order: [[3, "asc"]],
+    		    order: [[0, "asc"]],
     		    searchDelay: 500
     		});
     	});
-
-    
     </script>
 @endsection

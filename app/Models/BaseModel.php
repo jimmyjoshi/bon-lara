@@ -3,7 +3,7 @@
 /**
  * Class BaseModel
  *
- * @author Justin Bevan justin@smokerschoiceusa.com
+ * @author Anuj Jaha er.anujjaha@gm
  */
 
 use Illuminate\Database\Eloquent\RelationNotFoundException;

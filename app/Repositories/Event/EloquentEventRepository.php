@@ -30,6 +30,8 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 	 */
 	public function create($input)
 	{
+		$input = $this->prepareInputData($input);
+
 		return $this->model->create($input);
 	}	
 
@@ -43,6 +45,7 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 	public function update($id, $input)
 	{
 		$model = $this->findOrThrowException($id);
+		$input = $this->prepareInputData($input);		
 		
 		return $model->update($input);
 	}
@@ -101,5 +104,24 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
     public function getForDataTable()
     {
         return $this->model->select(['id', 'name', 'start_date', 'title', 'end_date']);
+    }
+
+    /**
+     * Prepare Input Data
+     * 
+     * @param array $input
+     * @return array
+     */
+    public function prepareInputData($input = array())
+    {
+    	if(isset($input['start_date']) && isset($input['end_date']))
+    	{
+    		$input['start_date'] = date('Y-m-d', strtotime($input['start_date']));
+    		$input['end_date'] = date('Y-m-d', strtotime($input['end_date']));
+
+    		return $input;
+    	}
+
+    	return $input;
     }
 }
