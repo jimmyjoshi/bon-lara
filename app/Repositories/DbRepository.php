@@ -37,23 +37,7 @@ Abstract class DbRepository
 
         if($model)
         {
-            if(access()->isSuperAdmin() || access()->canOwnAccounts())
-            {
-                return $model;
-            }
-            else if(isset($model->is_locked) && $model->is_locked)
-            {
-                if(access()->hasPermission('view-lock-content'))
-                {
-                    return $model;
-                }
-
-                throw new GeneralException("Content is locked from viewing");
-            }
-            else
-            {
-                return $model;
-            }
+           return $model;
         }
 
         throw new GeneralException(trans('exceptions.backend.not_found'));
