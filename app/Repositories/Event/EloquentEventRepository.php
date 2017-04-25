@@ -98,8 +98,8 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 	 */
 	public function create($input)
 	{
-		$input = $this->prepareInputData($input);
-
+		$input = $this->prepareInputData($input, true);
+		
 		return $this->model->create($input);
 	}	
 
@@ -197,10 +197,16 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
      * Prepare Input Data
      * 
      * @param array $input
+     * @param bool $isCreate
      * @return array
      */
-    public function prepareInputData($input = array())
+    public function prepareInputData($input = array(), $isCreate = false)
     {
+    	if($isCreate)
+    	{
+    		$input = array_merge($input, ['user_id' => access()->user()->id]);
+    	}
+
     	if(isset($input['start_date']) && isset($input['end_date']))
     	{
     		$input['start_date'] 	= date('Y-m-d', strtotime($input['start_date']));

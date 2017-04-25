@@ -36,7 +36,7 @@ class AdminEventController extends Controller
      */
     public function index()
     {
-    	return view('backend.event.index')->with(['repository' => $this->repository]);
+        return view('backend.event.index')->with(['repository' => $this->repository]);
     }
 
     /**
@@ -82,7 +82,7 @@ class AdminEventController extends Controller
     {
         $status = $this->repository->update($id, $request->all());
         
-        return view('backend.event.index');
+        return redirect()->route('admin.event.index');
     }
 
     /**
@@ -94,7 +94,7 @@ class AdminEventController extends Controller
     {
         $status = $this->repository->destroy($id);
         
-        return view('backend.event.index');
+        return redirect()->route('admin.event.index');
     }
 
   	/**
