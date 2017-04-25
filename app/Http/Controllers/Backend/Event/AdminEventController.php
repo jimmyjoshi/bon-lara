@@ -36,7 +36,7 @@ class AdminEventController extends Controller
      */
     public function index()
     {
-    	return view('backend.event.index');
+    	return view('backend.event.index')->with(['repository' => $this->repository]);
     }
 
     /**
@@ -106,8 +106,9 @@ class AdminEventController extends Controller
     {
     	return Datatables::of($this->repository->getForDataTable())
 		    ->escapeColumns(['name', 'sort'])
-		    ->escapeColumns(['title', 'sort'])
-		     ->addColumn('start_date', function ($event) {
+            ->escapeColumns(['username', 'sort'])
+            ->escapeColumns(['title', 'sort'])
+            ->addColumn('start_date', function ($event) {
                 return date('m-d-Y', strtotime($event->start_date));
             })
 		    ->escapeColumns(['start_date', 'sort'])

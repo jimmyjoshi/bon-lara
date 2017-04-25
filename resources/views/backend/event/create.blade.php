@@ -21,10 +21,8 @@
                 </div>
             </div>
 
-           
             {{-- Event Form --}}
             @include('common.event.form')
-            
             
         </div>
 
@@ -32,19 +30,15 @@
             <div class="box-body">
                 <div class="pull-left">
                     {{ link_to_route('admin.event.index', 'Cancel', [], ['class' => 'btn btn-danger btn-xs']) }}
-                </div><!--pull-left-->
+                </div>
 
                 <div class="pull-right">
                     {{ Form::submit('Create', ['class' => 'btn btn-success btn-xs']) }}
-                </div><!--pull-right-->
+                </div>
 
                 <div class="clearfix"></div>
-            </div><!-- /.box-body -->
-        </div><!--box-->
+            </div>
+        </div>
 
     {{ Form::close() }}
-@endsection
-
-@section('after-scripts')
-    {{ Html::script('js/backend/access/users/script.js') }}
 @endsection

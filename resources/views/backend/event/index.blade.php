@@ -24,13 +24,7 @@
             <div class="table-responsive">
                 <table id="items-table" class="table table-condensed table-hover">
                     <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Title</th>
- 							<th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Action</th>
-                        </tr>
+                        <tr id="tableHeadersContainer"></tr>
                     </thead>
                 </table>
             </div>
@@ -55,28 +49,19 @@
     {{ Html::script("js/backend/plugin/datatables/dataTables.bootstrap.min.js") }}
 
     <script>
-        var moduleConfig = {
+
+        var headers      = JSON.parse('{!! $repository->getTableHeaders() !!}'),
+            columns      = JSON.parse('{!! $repository->getTableColumns() !!}');
+            moduleConfig = {
                 getTableDataUrl: '{!! route("admin.event.get-event-data") !!}'
             };
-    	jQuery(document).ready(function()
+
+        BaseCommon.Utils.setTableHeaders(document.getElementById("tableHeadersContainer"), headers);
+
+        jQuery(document).ready(function()
     	{
-    		jQuery('#items-table').DataTable({
-    		    processing: true,
-    		    serverSide: true,
-    		    ajax: {
-    		        url: moduleConfig.getTableDataUrl,
-    		        type: 'get'
-    		    },
-    		    columns: [
-    		        {data: 'name', name: 'name'},
-    		        {data: 'title', name: 'title'},
-    		        {data: 'start_date', name: 'start_date', searchable: false, sortable: false},
-    		        {data: 'end_date', name: 'end_date', searchable: false, sortable: false},
-    		        {data: 'actions', name: 'actions', searchable: false, sortable: false}
-    		    ],
-    		    order: [[0, "asc"]],
-    		    searchDelay: 500
-    		});
+            BaseCommon.Utils.setTableColumns(document.getElementById("items-table"), moduleConfig.getTableDataUrl, 'GET', columns);
+    		
     	});
     </script>
 @endsection

@@ -2,6 +2,7 @@
 
 namespace App\Models\Access\User\Traits\Relationship;
 
+use App\Models\Event\Event;
 use App\Models\System\Session;
 use App\Models\Access\User\SocialLogin;
 
@@ -35,4 +36,12 @@ trait UserRelationship
     {
         return $this->hasMany(Session::class);
     }
+
+    /**
+     * @return mixed
+     */
+    public function events()
+    {
+        return $this->hasMany(Event::class);
+    }    
 }
