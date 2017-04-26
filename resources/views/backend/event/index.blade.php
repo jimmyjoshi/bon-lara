@@ -56,10 +56,9 @@
                 getTableDataUrl: '{!! route("admin.event.get-event-data") !!}'
             };
 
-        BaseCommon.Utils.setTableHeaders(document.getElementById("tableHeadersContainer"), headers);
-
         jQuery(document).ready(function()
-    	{
+        {
+            BaseCommon.Utils.setTableHeaders(document.getElementById("tableHeadersContainer"), headers);
             BaseCommon.Utils.setTableColumns(document.getElementById("items-table"), moduleConfig.getTableDataUrl, 'GET', columns);
     		
     	});
