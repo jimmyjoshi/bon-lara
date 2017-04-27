@@ -10,14 +10,14 @@
 @endsection
 
 @section('content')
-    {{ Form::open(['route' => 'admin.event.store', 'class' => 'form-horizontal', 'role' => 'form', 'method' => 'post']) }}
+    {{ Form::open(['route' => $repository->getActionRoute('storeRoute'), 'class' => 'form-horizontal', 'role' => 'form', 'method' => 'post']) }}
 
         <div class="box box-success">
             <div class="box-header with-border">
                 <h3 class="box-title">Create Event</h3>
 
                 <div class="box-tools pull-right">
-                      @include('common.event.event-header-buttons', ['listRoute' => 'admin.event.index', 'createRoute' => 'admin.event.create'])
+                      @include('common.event.event-header-buttons', ['listRoute' => $repository->getActionRoute('listRoute'), 'createRoute' => $repository->getActionRoute('createRoute')])
                 </div>
             </div>
 
@@ -29,7 +29,7 @@
         <div class="box box-info">
             <div class="box-body">
                 <div class="pull-left">
-                    {{ link_to_route('admin.event.index', 'Cancel', [], ['class' => 'btn btn-danger btn-xs']) }}
+                    {{ link_to_route($repository->getActionRoute('listRoute'), 'Cancel', [], ['class' => 'btn btn-danger btn-xs']) }}
                 </div>
 
                 <div class="pull-right">

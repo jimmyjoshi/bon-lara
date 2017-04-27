@@ -81,6 +81,19 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 	];
 
 	/**
+	 * Module Routes
+	 * 
+	 * @var array
+	 */
+	public $moduleRoutes = [
+		'listRoute' 	=> 'admin.event.index',
+		'createRoute' 	=> 'admin.event.create',
+		'editRoute' 	=> 'admin.event.edit',
+		'updateRoute' 	=> 'admin.event.update',
+		'deleteRoute' 	=> 'admin.event.destroy'
+	];
+
+	/**
 	 * Construct
 	 *
 	 */
@@ -236,5 +249,25 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
     public function getTableColumns()
     {
     	return json_encode($this->tableColumns);
+    }
+
+    /**
+     * Get Module Routes
+     * 
+     * @return object
+     */
+    public function getModuleRoutes()
+    {
+    	return (object) $this->moduleRoutes;
+    }
+
+    /**
+     * Get Route
+     * 
+     * @return object
+     */
+    public function getActionRoute($action = 'createRoute')
+    {
+    	return $this->moduleRoutes[$action];
     }
 }

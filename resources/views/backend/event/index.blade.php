@@ -16,7 +16,7 @@
             <h3 class="box-title">Events Listing</h3>
 
             <div class="box-tools pull-right">
-                @include('common.event.index-header-buttons', ['createRoute' => 'admin.event.create'])
+                @include('common.event.index-header-buttons', ['createRoute' => $repository->getActionRoute('createRoute')])
             </div>
         </div>
 
