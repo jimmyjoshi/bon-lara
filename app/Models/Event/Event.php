@@ -1,7 +1,7 @@
 <?php namespace App\Models\Event;
 
 /**
- * Class Video
+ * Class Event
  *
  * @author Justin Bevan justin@smokerschoiceusa.com
  */
@@ -37,26 +37,4 @@ class Event extends BaseModel
      *
      */
     protected $guarded = ["id"];
-
-    /**
-     * Set Images (JSON)
-     *
-     * @param  string  $value
-     * @return string
-     * /
-    public function setImagesAttribute($value)
-    {
-        $this->attributes['images'] = json_encode($value);
-    }
-
-    /**
-     * Get Images (JSON)
-     *
-     * @param  string  $value
-     * @return string
-     * /
-    public function getImagesAttribute($value)
-    {
-        return json_decode($value);
-    }*/
 }

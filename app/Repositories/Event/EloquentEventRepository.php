@@ -15,6 +15,13 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 	public $model;
 
 	/**
+	 * Module Title
+	 * 
+	 * @var string
+	 */
+	public $moduleTitle = 'Event';
+
+	/**
 	 * Table Headers
 	 *
 	 * @var array
@@ -73,6 +80,13 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 	];
 
 	/**
+	 * Is Admin
+	 * 
+	 * @var boolean
+	 */
+	public $isAdmin = false;
+
+	/**
 	 * Table Fields
 	 * 
 	 * @var array
@@ -81,16 +95,58 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 	];
 
 	/**
+	 * Admin Route Prefix
+	 * 
+	 * @var string
+	 */
+	public $adminRoutePrefix = 'admin';
+
+	/**
+	 * Client Route Prefix
+	 * 
+	 * @var string
+	 */
+	public $clientRoutePrefix = 'client';
+
+	/**
+	 * Admin View Prefix
+	 * 
+	 * @var string
+	 */
+	public $adminViewPrefix = 'backend';
+
+	/**
+	 * Client View Prefix
+	 * 
+	 * @var string
+	 */
+	public $clientViewPrefix = 'frontend';
+
+	/**
 	 * Module Routes
 	 * 
 	 * @var array
 	 */
 	public $moduleRoutes = [
-		'listRoute' 	=> 'admin.event.index',
-		'createRoute' 	=> 'admin.event.create',
-		'editRoute' 	=> 'admin.event.edit',
-		'updateRoute' 	=> 'admin.event.update',
-		'deleteRoute' 	=> 'admin.event.destroy'
+		'listRoute' 	=> 'event.index',
+		'createRoute' 	=> 'event.create',
+		'storeRoute' 	=> 'event.store',
+		'editRoute' 	=> 'event.edit',
+		'updateRoute' 	=> 'event.update',
+		'deleteRoute' 	=> 'event.destroy',
+		'dataRoute' 	=> 'event.get-list-data'
+	];
+
+	/**
+	 * Module Views
+	 * 
+	 * @var array
+	 */
+	public $moduleViews = [
+		'listView' 		=> 'event.index',
+		'createView' 	=> 'event.create',
+		'editView' 		=> 'event.edit',
+		'deleteView' 	=> 'event.destroy',
 	];
 
 	/**
@@ -147,7 +203,7 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 			return $model->delete();
 		}
 
-		throw new GeneralException(trans('exceptions.backend.access.roles.delete_error'));
+		throw new GeneralException("Unable to Delete Record !");
 	}
 
 	/**
@@ -266,8 +322,40 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
      * 
      * @return object
      */
-    public function getActionRoute($action = 'createRoute')
+    public function getActionRoute($action = 'createRoute', $isAdmin = true)
     {
-    	return $this->moduleRoutes[$action];
+    	if($isAdmin )
+    	{
+    		return $this->adminRoutePrefix. '.' .$this->moduleRoutes[$action];
+    	}
+
+    	return $this->clientRoutePrefix. '.' .$this->moduleRoutes[$action];
+    }
+
+    /**
+     * Set Admin
+     *
+     * @param boolean $isAdmin [description]
+     */
+    public function setAdmin($isAdmin = false)
+    {
+    	$this->isAdmin = $isAdmin;
+
+    	return $this;
+    }
+
+    /**
+     * Get Route
+     * 
+     * @return object
+     */
+    public function getModuleView($view = 'createView')
+    {
+    	if($this->isAdmin)
+    	{
+    		return $this->adminViewPrefix . '.' .$this->moduleViews[$view];
+    	}
+
+    	return $this->clientViewPrefix. '.' .$this->moduleViews[$view];
     }
 }

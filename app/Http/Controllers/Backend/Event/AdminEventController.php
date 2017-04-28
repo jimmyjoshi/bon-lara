@@ -36,7 +36,7 @@ class AdminEventController extends Controller
      */
     public function index()
     {
-        return view('backend.event.index')->with(['repository' => $this->repository]);
+        return view($this->repository->setAdmin(true)->getModuleView('listView'))->with(['repository' => $this->repository]);
     }
 
     /**
@@ -46,7 +46,10 @@ class AdminEventController extends Controller
      */
     public function create(Request $request)
     {
-    	return view('backend.event.create');
+
+    	return view($this->repository->setAdmin(true)->getModuleView('createView'))->with([
+            'repository' => $this->repository
+        ]);
     }
 
     /**
@@ -58,7 +61,7 @@ class AdminEventController extends Controller
     {
         $this->repository->create($request->all());
 
-        return redirect()->route('admin.event.index');
+        return redirect()->route($this->repository->getActionRoute('listRoute'));
     }
 
     /**
@@ -70,7 +73,10 @@ class AdminEventController extends Controller
     {
         $event = $this->repository->findOrThrowException($id);
 
-        return view('backend.event.edit')->with(['item' => $event]);
+        return view($this->repository->setAdmin(true)->getModuleView('editView'))->with([
+            'item'          => $event,
+            'repository'    => $this->repository
+        ]);
     }
 
     /**
@@ -82,7 +88,7 @@ class AdminEventController extends Controller
     {
         $status = $this->repository->update($id, $request->all());
         
-        return redirect()->route('admin.event.index');
+        return redirect()->route($this->repository->getActionRoute('listRoute'));
     }
 
     /**
@@ -94,7 +100,7 @@ class AdminEventController extends Controller
     {
         $status = $this->repository->destroy($id);
         
-        return redirect()->route('admin.event.index');
+        return redirect()->route($this->repository->getActionRoute('listRoute'));
     }
 
   	/**
@@ -104,7 +110,7 @@ class AdminEventController extends Controller
      */
     public function getTableData()
     {
-    	return Datatables::of($this->repository->getForDataTable())
+     	return Datatables::of($this->repository->getForDataTable())
 		    ->escapeColumns(['name', 'sort'])
             ->escapeColumns(['username', 'sort'])
             ->escapeColumns(['title', 'sort'])
@@ -114,7 +120,7 @@ class AdminEventController extends Controller
 		    ->escapeColumns(['start_date', 'sort'])
 		    ->escapeColumns(['end_date', 'sort'])
 		    ->addColumn('actions', function ($event) {
-                return $event->action_buttons;
+                return $event->admin_action_buttons;
             })
 		    ->make(true);
     }

@@ -1,19 +1,19 @@
 @extends ('backend.layouts.app')
 
-@section ('title', 'Event Management')
+@section ('title',  isset($repository->moduleTitle) ? $repository->moduleTitle. ' Management' : 'Management')
 
 @section('after-styles')
     {{ Html::style("css/backend/plugin/datatables/dataTables.bootstrap.min.css") }}
 @endsection
 
 @section('page-header')
-    <h1>Event Management</h1>
+    <h1>{{ isset($repository->moduleTitle) ? $repository->moduleTitle : '' }} Management</h1>
 @endsection
 
 @section('content')
     <div class="box box-success">
         <div class="box-header with-border">
-            <h3 class="box-title">Events Listing</h3>
+            <h3 class="box-title">{{ isset($repository->moduleTitle) ? str_plural($repository->moduleTitle) : '' }} Listing</h3>
 
             <div class="box-tools pull-right">
                 @include('common.event.index-header-buttons', ['createRoute' => $repository->getActionRoute('createRoute')])
@@ -49,18 +49,16 @@
     {{ Html::script("js/backend/plugin/datatables/dataTables.bootstrap.min.js") }}
 
     <script>
-
         var headers      = JSON.parse('{!! $repository->getTableHeaders() !!}'),
             columns      = JSON.parse('{!! $repository->getTableColumns() !!}');
             moduleConfig = {
-                getTableDataUrl: '{!! route("admin.event.get-event-data") !!}'
+                getTableDataUrl: '{!! route($repository->getActionRoute("dataRoute")) !!}'
             };
 
         jQuery(document).ready(function()
         {
             BaseCommon.Utils.setTableHeaders(document.getElementById("tableHeadersContainer"), headers);
             BaseCommon.Utils.setTableColumns(document.getElementById("items-table"), moduleConfig.getTableDataUrl, 'GET', columns);
-    		
     	});
     </script>
 @endsection

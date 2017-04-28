@@ -1,23 +1,31 @@
 @extends ('backend.layouts.app')
 
-@section ('title', isset($title) ? $title : 'Create Event')
+@section ('title', isset($repository->moduleTitle) ? 'Create - '. $repository->moduleTitle : 'Create')
 
 @section('page-header')
     <h1>
-        Event
+        {{ isset($repository->moduleTitle) ? $repository->moduleTitle : '' }}
         <small>Create</small>
     </h1>
 @endsection
 
 @section('content')
-    {{ Form::open(['route' => $repository->getActionRoute('storeRoute'), 'class' => 'form-horizontal', 'role' => 'form', 'method' => 'post']) }}
+    {{ Form::open([
+        'route'     => $repository->getActionRoute('storeRoute'),
+        'class'     => 'form-horizontal',
+        'role'      => 'form',
+        'method'    => 'post'
+    ])}}
 
         <div class="box box-success">
             <div class="box-header with-border">
-                <h3 class="box-title">Create Event</h3>
+                <h3 class="box-title">Create {{ isset($repository->moduleTitle) ? $repository->moduleTitle : '' }}</h3>
 
                 <div class="box-tools pull-right">
-                      @include('common.event.event-header-buttons', ['listRoute' => $repository->getActionRoute('listRoute'), 'createRoute' => $repository->getActionRoute('createRoute')])
+                    @include('common.event.event-header-buttons', [
+                        'listRoute'     => $repository->getActionRoute('listRoute'),
+                        'createRoute'   => $repository->getActionRoute('createRoute')
+                    ])
                 </div>
             </div>
 
@@ -39,6 +47,5 @@
                 <div class="clearfix"></div>
             </div>
         </div>
-
     {{ Form::close() }}
 @endsection
