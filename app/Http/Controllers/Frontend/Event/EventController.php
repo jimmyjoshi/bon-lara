@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Backend\Event;
+namespace App\Http\Controllers\Frontend\Event;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -8,9 +8,9 @@ use Yajra\Datatables\Facades\Datatables;
 use App\Repositories\Event\EloquentEventRepository;
 
 /**
- * Class AdminEventController
+ * Class EventController
  */
-class AdminEventController extends Controller
+class EventController extends Controller
 {
 	/**
 	 * Event Repository
@@ -36,9 +36,7 @@ class AdminEventController extends Controller
      */
     public function index()
     {
-        return view($this->repository->setAdmin(true)->getModuleView('listView'))->with([
-            'repository' => $this->repository
-        ]);
+        return view($this->repository->setAdmin(false)->getModuleView('listView'))->with(['repository' => $this->repository]);
     }
 
     /**
@@ -48,7 +46,8 @@ class AdminEventController extends Controller
      */
     public function create(Request $request)
     {
-        return view($this->repository->setAdmin(true)->getModuleView('createView'))->with([
+
+    	return view($this->repository->setAdmin(false)->getModuleView('createView'))->with([
             'repository' => $this->repository
         ]);
     }
@@ -62,7 +61,7 @@ class AdminEventController extends Controller
     {
         $this->repository->create($request->all());
 
-        return redirect()->route($this->repository->setAdmin(true)->getActionRoute('listRoute'));
+        return redirect()->route($this->repository->getActionRoute('listRoute'));
     }
 
     /**
@@ -74,7 +73,7 @@ class AdminEventController extends Controller
     {
         $event = $this->repository->findOrThrowException($id);
 
-        return view($this->repository->setAdmin(true)->getModuleView('editView'))->with([
+        return view($this->repository->setAdmin(false)->getModuleView('editView'))->with([
             'item'          => $event,
             'repository'    => $this->repository
         ]);
@@ -89,7 +88,7 @@ class AdminEventController extends Controller
     {
         $status = $this->repository->update($id, $request->all());
         
-        return redirect()->route($this->repository->setAdmin(true)->getActionRoute('listRoute'));
+        return redirect()->route($this->repository->getActionRoute('listRoute'));
     }
 
     /**
@@ -101,7 +100,7 @@ class AdminEventController extends Controller
     {
         $status = $this->repository->destroy($id);
         
-        return redirect()->route($this->repository->setAdmin(true)->getActionRoute('listRoute'));
+        return redirect()->route($this->repository->getActionRoute('listRoute'));
     }
 
   	/**
@@ -111,7 +110,7 @@ class AdminEventController extends Controller
      */
     public function getTableData()
     {
-     	return Datatables::of($this->repository->getForDataTable())
+        return Datatables::of($this->repository->getForDataTable())
 		    ->escapeColumns(['name', 'sort'])
             ->escapeColumns(['username', 'sort'])
             ->escapeColumns(['title', 'sort'])
@@ -121,7 +120,7 @@ class AdminEventController extends Controller
 		    ->escapeColumns(['start_date', 'sort'])
 		    ->escapeColumns(['end_date', 'sort'])
 		    ->addColumn('actions', function ($event) {
-                return $event->admin_action_buttons;
+                return $event->action_buttons;
             })
 		    ->make(true);
     }

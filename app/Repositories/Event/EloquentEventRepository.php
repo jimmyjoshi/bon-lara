@@ -27,12 +27,12 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 	 * @var array
 	 */
 	public $tableHeaders = [
-		'Event Name',
-		'User Name',
-		'Title',
-		'Start Date',
-		'End Date',
-		'Actions'
+		'name' 			=> 'Event Name',
+		'username' 		=> 'User Name',
+		'title' 		=> 'Title',
+		'start_date' 	=> 'Start Date',
+		'end_date' 		=> 'End Date',
+		'actions' 		=> 'Actions'
 	];
 
 	/**
@@ -41,37 +41,37 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 	 * @var array
 	 */
 	public $tableColumns = [
-		[
+		'name' =>	[
 			'data' 			=> 'name',
 			'name' 			=> 'name',
 			'searchable' 	=> true, 
 			'sortable'		=> true
 		],
-		[
+		'username' => [
 			'data' 			=> 'username',
 			'name' 			=> 'username',
 			'searchable' 	=> true, 
 			'sortable'		=> true
 		],
-		[
+		'title' => [
 			'data' 			=> 'title',
 			'name' 			=> 'title',
 			'searchable' 	=> true, 
 			'sortable'		=> true
 		],
-		[
+		'start_date' => [
 			'data' 			=> 'start_date',
 			'name' 			=> 'start_date',
 			'searchable' 	=> false, 
 			'sortable'		=> false
 		],
-		[
+		'end_date' => [
 			'data' 			=> 'end_date',
 			'name' 			=> 'end_date',
 			'searchable' 	=> false, 
 			'sortable'		=> false
 		],
-		[
+		'actions' => [
 			'data' 			=> 'actions',
 			'name' 			=> 'actions',
 			'searchable' 	=> false, 
@@ -84,7 +84,7 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 	 * 
 	 * @var boolean
 	 */
-	public $isAdmin = false;
+	protected $isAdmin = false;
 
 	/**
 	 * Table Fields
@@ -106,7 +106,7 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 	 * 
 	 * @var string
 	 */
-	public $clientRoutePrefix = 'client';
+	public $clientRoutePrefix = 'frontend';
 
 	/**
 	 * Admin View Prefix
@@ -160,7 +160,7 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 	}
 
 	/**
-	 * Create Video
+	 * Create Event
 	 *
 	 * @param array $input
 	 * @return mixed
@@ -173,7 +173,7 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 	}	
 
 	/**
-	 * Update Video
+	 * Update Event
 	 *
 	 * @param int $id
 	 * @param array $input
@@ -188,7 +188,7 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 	}
 
 	/**
-	 * Destroy Video
+	 * Destroy Event
 	 *
 	 * @param int $id
 	 * @return mixed
@@ -263,6 +263,18 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
     }
 
     /**
+     * Set Admin
+     *
+     * @param boolean $isAdmin [description]
+     */
+    public function setAdmin($isAdmin = false)
+    {
+    	$this->isAdmin = $isAdmin;
+
+        return $this;
+    }
+
+    /**
      * Prepare Input Data
      * 
      * @param array $input
@@ -289,73 +301,41 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 
     /**
      * Get Table Headers
-     *
+     * 
      * @return string
      */
     public function getTableHeaders()
     {
-    	return json_encode($this->tableHeaders);
+    	if($this->isAdmin)
+    	{
+    		return json_encode($this->setTableStructure($this->tableHeaders));
+    	}
+
+    	$clientHeaders = $this->tableHeaders;
+
+    	unset($clientHeaders['username']);
+
+    	return json_encode($this->setTableStructure($clientHeaders));
     }
 
-    /**
+	/**
      * Get Table Columns
      *
      * @return string
      */
     public function getTableColumns()
     {
-    	return json_encode($this->tableColumns);
-    }
-
-    /**
-     * Get Module Routes
-     * 
-     * @return object
-     */
-    public function getModuleRoutes()
-    {
-    	return (object) $this->moduleRoutes;
-    }
-
-    /**
-     * Get Route
-     * 
-     * @return object
-     */
-    public function getActionRoute($action = 'createRoute', $isAdmin = true)
-    {
-    	if($isAdmin )
-    	{
-    		return $this->adminRoutePrefix. '.' .$this->moduleRoutes[$action];
-    	}
-
-    	return $this->clientRoutePrefix. '.' .$this->moduleRoutes[$action];
-    }
-
-    /**
-     * Set Admin
-     *
-     * @param boolean $isAdmin [description]
-     */
-    public function setAdmin($isAdmin = false)
-    {
-    	$this->isAdmin = $isAdmin;
-
-    	return $this;
-    }
-
-    /**
-     * Get Route
-     * 
-     * @return object
-     */
-    public function getModuleView($view = 'createView')
-    {
     	if($this->isAdmin)
     	{
-    		return $this->adminViewPrefix . '.' .$this->moduleViews[$view];
+    		return json_encode($this->setTableStructure($this->tableColumns));
     	}
 
-    	return $this->clientViewPrefix. '.' .$this->moduleViews[$view];
+    	$clientColumns = $this->tableColumns;
+
+    	unset($clientColumns['username']);
+
+    	$clientColumns = array_values($clientColumns);
+
+    	return json_encode($this->setTableStructure($clientColumns));
     }
 }
