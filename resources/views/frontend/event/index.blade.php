@@ -11,7 +11,6 @@
 @endsection
 
 @section('content')
-
     <div class="box box-success">
         <div class="box-header with-border">
             <h3 class="box-title">{{ isset($repository->moduleTitle) ? str_plural($repository->moduleTitle) : '' }} Listing</h3>
@@ -46,7 +45,6 @@
 @endsection
 
 @section('after-scripts')
-
     {{ Html::script("js/backend/plugin/datatables/jquery.dataTables.min.js") }}
     {{ Html::script("js/backend/plugin/datatables/dataTables.bootstrap.min.js") }}
 
@@ -56,7 +54,7 @@
             moduleConfig = {
                 getTableDataUrl: '{!! route($repository->getActionRoute("dataRoute")) !!}'
             };
-
+        
         jQuery(document).ready(function()
         {
             BaseCommon.Utils.setTableHeaders(document.getElementById("tableHeadersContainer"), headers);

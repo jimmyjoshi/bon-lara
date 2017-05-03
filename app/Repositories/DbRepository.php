@@ -126,4 +126,49 @@ Abstract class DbRepository
 
         return false;
     }
+
+    /**
+     * Get Module Routes
+     * 
+     * @return object
+     */
+    public function getModuleRoutes()
+    {
+        return (object) $this->moduleRoutes;
+    }
+
+    /**
+     * Get Route
+     * 
+     * @return object
+     */
+    public function getActionRoute($action = 'createRoute')
+    {
+        if($this->isAdmin)
+        {
+            return $this->adminRoutePrefix. '.' .$this->moduleRoutes[$action];
+        }
+
+        return $this->clientRoutePrefix. '.' .$this->moduleRoutes[$action];
+    }
+    
+    /**
+     * Get Route
+     * 
+     * @return object
+     */
+    public function getModuleView($view = 'createView')
+    {
+        if($this->isAdmin)
+        {
+            return $this->adminViewPrefix . '.' .$this->moduleViews[$view];
+        }
+
+        return $this->clientViewPrefix. '.' .$this->moduleViews[$view];
+    }
+
+    public function setTableStructure($array = array())
+    {
+        return array_values($array);
+    }
 }

@@ -223,11 +223,12 @@ var BaseCommon =
 			    serverSide: true,
 			    ajax: {
 			        url: fetchurl,
+			    	async: true,
 			        type: method
 			    },
 			    columns: columns,
 			    order: [[0, "asc"]],
-			    searchDelay: 500
+			    searchDelay: 1200
 			});
 		}
 	}
