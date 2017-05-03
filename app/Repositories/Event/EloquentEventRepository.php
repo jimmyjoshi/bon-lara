@@ -333,9 +333,7 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
     	$clientColumns = $this->tableColumns;
 
     	unset($clientColumns['username']);
-
-    	$clientColumns = array_values($clientColumns);
-
+    	
     	return json_encode($this->setTableStructure($clientColumns));
     }
 }

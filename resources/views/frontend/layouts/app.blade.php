@@ -48,7 +48,7 @@
         @yield('before-scripts')
         {!! Html::script(mix('js/frontend.js')) !!}
         @yield('after-scripts')
-
+        <script type="text/javascript" src="{!! asset('js/custom/custom.js') !!}"></script>
         @include('includes.partials.ga')
     </body>
 </html>

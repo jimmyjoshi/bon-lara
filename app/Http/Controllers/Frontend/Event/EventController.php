@@ -9,6 +9,8 @@ use App\Repositories\Event\EloquentEventRepository;
 
 /**
  * Class EventController
+ *
+ * @author Anuj Jaha
  */
 class EventController extends Controller
 {
@@ -36,7 +38,7 @@ class EventController extends Controller
      */
     public function index()
     {
-        return view($this->repository->setAdmin(false)->getModuleView('listView'))->with(['repository' => $this->repository]);
+        return view($this->repository->getModuleView('listView'))->with(['repository' => $this->repository]);
     }
 
     /**
@@ -46,10 +48,7 @@ class EventController extends Controller
      */
     public function create(Request $request)
     {
-
-    	return view($this->repository->setAdmin(false)->getModuleView('createView'))->with([
-            'repository' => $this->repository
-        ]);
+        return view($this->repository->getModuleView('createView'))->with(['repository' => $this->repository]);
     }
 
     /**
@@ -61,7 +60,7 @@ class EventController extends Controller
     {
         $this->repository->create($request->all());
 
-        return redirect()->route($this->repository->getActionRoute('listRoute'));
+        return redirect()->route($this->repository->getActionRoute('listRoute'))->withFlashSuccess('Event is Created Successfully !');
     }
 
     /**
@@ -73,7 +72,7 @@ class EventController extends Controller
     {
         $event = $this->repository->findOrThrowException($id);
 
-        return view($this->repository->setAdmin(false)->getModuleView('editView'))->with([
+        return view($this->repository->getModuleView('editView'))->with([
             'item'          => $event,
             'repository'    => $this->repository
         ]);
@@ -88,7 +87,7 @@ class EventController extends Controller
     {
         $status = $this->repository->update($id, $request->all());
         
-        return redirect()->route($this->repository->getActionRoute('listRoute'));
+        return redirect()->route($this->repository->getActionRoute('listRoute'))->withFlashSuccess('Event is Edited Successfully !');
     }
 
     /**
@@ -100,7 +99,7 @@ class EventController extends Controller
     {
         $status = $this->repository->destroy($id);
         
-        return redirect()->route($this->repository->getActionRoute('listRoute'));
+        return redirect()->route($this->repository->getActionRoute('listRoute'))->withFlashSuccess('Event is Deleted Successfully !');
     }
 
   	/**

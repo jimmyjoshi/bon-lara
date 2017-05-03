@@ -11,6 +11,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Input, Schema, ReflectionClass;
 use Illuminate\Database\Eloquent\Model;
 use App\Exceptions\GeneralException;
+use App\Models\UpdateLogger;
 
 class BaseModel extends Model
 {
@@ -21,30 +22,26 @@ class BaseModel extends Model
      */
     protected $casts = [ 'id' => 'string' ];
 
-   /* public static function create(array $attributes = Array())
+   public static function create(array $attributes = Array())
     {
         $user = access()->user();
 
         if($user)
         {
-            $attributes['account_id'] = (!isset($attributes['account_id']) ? $user->account->id : $attributes['account_id'] );
+            $attributes['user_id'] = (!isset($attributes['user_id']) ? $user->id : $attributes['user_id'] );
         }
 
         $childClass     = get_called_class();
         $model          = new $childClass;
+        $model->runActionLogger(false, 'create');
 
-        $model->fill($attributes);
-        $model->save();
-
-        $model->runActionLogger($model, 'create');
-
-        return $model;
-    }*/
-
-    public static function create(array $attributes = Array())
-    {
         return parent::query()->create($attributes);
     }
+
+    /*public static function create(array $attributes = Array())
+    {
+        return parent::query()->create($attributes);
+    }*/
 
     /**
      * Update the model in the database.
@@ -55,6 +52,8 @@ class BaseModel extends Model
      */
     public function update(array $attributes = [] , array $options = [])
     {
+        $this->runActionLogger($this, 'update');
+        
         return parent::update($attributes);
     }
 
@@ -1069,4 +1068,56 @@ class BaseModel extends Model
         }
     }
 
+    /**
+     * Run Action Logger
+     *
+     * @param $model
+     * @param $action
+     */
+    public function runActionLogger($model = false, $action)
+    {
+        $modelClass  = (new \ReflectionClass($this))->getShortName();
+        $model       = $model ? $model : $this;
+        $user        = access()->user();
+        
+        $notAllowed  = [
+        ];
+
+        if($user && isset($model->id))
+        {
+            $actionLogger = new UpdateLogger();
+
+            $data = [
+                'user_id'       => $user->id,
+                'section'       => $modelClass,
+                'action'        => $action,
+                'item'          => $model->getOriginal('id')
+            ];
+
+            $actionLogger->create($data);
+        }
+    }
+
+    /**
+     * Get Action Logs
+     *
+     * @param bool $model
+     * @param bool $item
+     * @param int $limit
+     * @return mixed
+     */
+    public function getActionLogs($model = false, $item = true, $limit = 10)
+    {
+        $actionLogger   = new UpdateLogger();
+        $model          = $model ? $model : $this;
+
+        if($item)
+        {
+            return $actionLogger->getActionLogs($model, $model->getOriginal('id'), $limit);
+        }
+        else
+        {
+            return $actionLogger->getActionLogs($model, false, $limit);
+        }
+    }
 }

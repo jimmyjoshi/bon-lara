@@ -1,10 +1,10 @@
-@extends ('backend.layouts.app')
+@extends ('frontend.layouts.app')
 
 @section ('title', isset($title) ? $title : 'Edit Event')
 
 @section('page-header')
     <h1>
-        Events
+        {{ isset($repository->moduleTitle) ? $repository->moduleTitle : '' }}
         <small>Edit</small>
     </h1>
 @endsection
@@ -14,7 +14,7 @@
 
         <div class="box box-success">
             <div class="box-header with-border">
-                <h3 class="box-title">Event</h3>
+                <h3 class="box-title">{{ isset($repository->moduleTitle) ? $repository->moduleTitle : '' }}</h3>
                     <div class="box-tools pull-right">
                         @include('common.event.event-header-buttons', ['listRoute' => $repository->getActionRoute('listRoute'), 'createRoute' => $repository->getActionRoute('createRoute')])
                     </div>
@@ -23,6 +23,8 @@
             @include('common.event.form')
             
         </div>
+        
+        @include('addins.edit-history')
 
         <div class="box box-success">
             <div class="box-body">

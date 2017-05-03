@@ -32,6 +32,6 @@ Route::group(['namespace' => 'Api',], function ()
 
 Route::group(['namespace' => 'Api', 'middleware' => 'jwt.customauth'], function () 
 {
-    Route::get('events', 'EventsController@index')->name('api.events');
+    Route::get('events', 'APIEventsController@index')->name('api.events');
    
 });

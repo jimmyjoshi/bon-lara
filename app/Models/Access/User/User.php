@@ -58,4 +58,16 @@ class User extends Authenticatable
         parent::__construct($attributes);
         $this->table = config('access.users_table');
     }
+
+    /**
+     * Get Full Name
+     *
+     * @param $user
+     * @return string
+     */
+    public function getFullName($user = flase)
+    {
+        $user = $user ? $user : $this;
+        return $user->first_name . ' ' . $user->last_name;
+    }
 }

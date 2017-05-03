@@ -1,4 +1,4 @@
-@extends ('backend.layouts.app')
+@extends ('frontend.layouts.app')
 
 @section ('title',  isset($repository->moduleTitle) ? $repository->moduleTitle. ' Management' : 'Management')
 

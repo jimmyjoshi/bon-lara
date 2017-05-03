@@ -62,7 +62,7 @@ class AdminEventController extends Controller
     {
         $this->repository->create($request->all());
 
-        return redirect()->route($this->repository->setAdmin(true)->getActionRoute('listRoute'));
+        return redirect()->route($this->repository->setAdmin(true)->getActionRoute('listRoute'))->withFlashSuccess('Event is Created Successfully !');
     }
 
     /**
@@ -89,7 +89,7 @@ class AdminEventController extends Controller
     {
         $status = $this->repository->update($id, $request->all());
         
-        return redirect()->route($this->repository->setAdmin(true)->getActionRoute('listRoute'));
+        return redirect()->route($this->repository->setAdmin(true)->getActionRoute('listRoute'))->withFlashSuccess('Event is Edited Successfully !');
     }
 
     /**
