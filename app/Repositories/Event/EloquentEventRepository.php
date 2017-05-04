@@ -87,14 +87,6 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 	protected $isAdmin = false;
 
 	/**
-	 * Table Fields
-	 * 
-	 * @var array
-	 */
-	public $tableFields = [
-	];
-
-	/**
 	 * Admin Route Prefix
 	 * 
 	 * @var string
@@ -168,8 +160,14 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 	public function create($input)
 	{
 		$input = $this->prepareInputData($input, true);
-		
-		return $this->model->create($input);
+		$model =  $this->model->create($input);
+
+		if($model)
+		{
+			return $model;
+		}
+
+		return false;
 	}	
 
 	/**
@@ -209,8 +207,8 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 	/**
      * Get All
      *
-     * @param object $videos [all videos]
-     * @param boolean $hashed
+     * @param string $orderBy
+     * @param string $sort
      * @return mixed
      */
     public function getAll($orderBy = 'id', $sort = 'asc')
@@ -221,8 +219,7 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 	/**
      * Get by Id
      *
-     * @param object $videos [all videos]
-     * @param boolean $hashed
+     * @param int $id
      * @return mixed
      */
     public function getById($id = null)
@@ -288,12 +285,25 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
     		$input = array_merge($input, ['user_id' => access()->user()->id]);
     	}
 
-    	if(isset($input['start_date']) && isset($input['end_date']))
-    	{
-    		$input['start_date'] 	= date('Y-m-d', strtotime($input['start_date']));
-    		$input['end_date'] 		= date('Y-m-d', strtotime($input['end_date']));
 
-    		return $input;
+    	if(isset($input['start_date']))
+    	{
+    		$input['start_date'] = date('Y-m-d', strtotime($input['start_date']));
+    	}
+
+    	if(isset($input['end_date']))
+    	{
+    		$input['end_date'] = date('Y-m-d', strtotime($input['end_date']));
+    	}
+
+    	if(! isset($input['start_date']))
+    	{
+    		$input['start_date'] = date('Y-m-d');
+    	}
+
+    	if(! isset($input['end_date']))
+    	{
+    		$input['end_date'] = date('Y-m-d');
     	}
 
     	return $input;

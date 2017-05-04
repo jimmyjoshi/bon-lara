@@ -16,7 +16,10 @@
             <div class="box-header with-border">
                 <h3 class="box-title">{{ isset($repository->moduleTitle) ? $repository->moduleTitle : '' }}</h3>
                     <div class="box-tools pull-right">
-                        @include('common.event.event-header-buttons', ['listRoute' => $repository->getActionRoute('listRoute'), 'createRoute' => $repository->getActionRoute('createRoute')])
+                        @include('common.event.event-header-buttons', [
+                            'listRoute' => $repository->getActionRoute('listRoute'),
+                            'createRoute' => $repository->getActionRoute('createRoute')
+                        ])
                     </div>
             </div>
 

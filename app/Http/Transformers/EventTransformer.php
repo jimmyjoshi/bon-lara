@@ -22,8 +22,20 @@ class EventTransformer extends Transformer
         return [
             'eventId'           => (int) $data->id,
             'eventName'         => $data->name,
-            'eventStartDate'    => $this->nulltoBlank($data->start_date),
-            'eventEndDate'      => $this->nulltoBlank($data->end_date)
+            'eventTitle'        => $data->title,
+            'eventStartDate'    => date('d-m-Y', strtotime($data->start_date)),
+            'eventEndDate'      => date('d-m-Y', strtotime($data->end_date))
+        ];
+    }
+
+    public function createEvent($model = null)
+    {
+        return [
+            'eventId'           => (int) $model->id,
+            'eventName'         => $model->name,
+            'eventTitle'        => $model->title,
+            'eventStartDate'    => date('d-m-Y', strtotime($model->start_date)),
+            'eventEndDate'      => date('d-m-Y', strtotime($model->end_date))
         ];
     }
 }

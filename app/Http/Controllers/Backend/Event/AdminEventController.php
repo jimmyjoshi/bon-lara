@@ -19,6 +19,27 @@ class AdminEventController extends Controller
 	 */
 	public $repository;
 
+    /**
+     * Create Success Message
+     * 
+     * @var string
+     */
+    protected $createSuccessMessage = "Event Created Successfully!";
+
+    /**
+     * Edit Success Message
+     * 
+     * @var string
+     */
+    protected $editSuccessMessage = "Event Edited Successfully!";
+
+    /**
+     * Delete Success Message
+     * 
+     * @var string
+     */
+    protected $deleteSuccessMessage = "Event Deleted Successfully";
+
 	/**
 	 * __construct
 	 * 
@@ -62,7 +83,7 @@ class AdminEventController extends Controller
     {
         $this->repository->create($request->all());
 
-        return redirect()->route($this->repository->setAdmin(true)->getActionRoute('listRoute'))->withFlashSuccess('Event is Created Successfully !');
+        return redirect()->route($this->repository->setAdmin(true)->getActionRoute('listRoute'))->withFlashSuccess($this->createSuccessMessage);
     }
 
     /**
@@ -89,7 +110,7 @@ class AdminEventController extends Controller
     {
         $status = $this->repository->update($id, $request->all());
         
-        return redirect()->route($this->repository->setAdmin(true)->getActionRoute('listRoute'))->withFlashSuccess('Event is Edited Successfully !');
+        return redirect()->route($this->repository->setAdmin(true)->getActionRoute('listRoute'))->withFlashSuccess($this->editSuccessMessage);
     }
 
     /**
@@ -101,7 +122,7 @@ class AdminEventController extends Controller
     {
         $status = $this->repository->destroy($id);
         
-        return redirect()->route($this->repository->setAdmin(true)->getActionRoute('listRoute'));
+        return redirect()->route($this->repository->setAdmin(true)->getActionRoute('listRoute'))->withFlashSuccess($this->deleteSuccessMessage);
     }
 
   	/**

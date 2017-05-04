@@ -8,7 +8,7 @@ use App\Http\Controllers\Api\BaseApiController;
 use App\Repositories\Event\EloquentEventRepository;
 
 
-class EventsController extends BaseApiController 
+class APIEventsController extends BaseApiController 
 {   
     /**
      * Event Transformer
@@ -22,18 +22,18 @@ class EventsController extends BaseApiController
      * 
      * @var Object
      */
-    protected $respository;
+    protected $repository;
 
     /**
      * __construct
      * 
      * @param EventTransformer $eventTransformer
      */
-    public function __construct(EloquentEventRepository $respository, EventTransformer $eventTransformer)
+    public function __construct(EloquentEventRepository $repository, EventTransformer $eventTransformer)
     {
         parent::__construct();
 
-        $this->respository      = $respository;
+        $this->repository       = $repository;
         $this->eventTransformer = $eventTransformer;
     }
 
@@ -46,12 +46,37 @@ class EventsController extends BaseApiController
     public function index(Request $request) 
     {
         $userInfo   = $this->getApiUserInfo();
-        $events     = $this->respository->getAll()->toArray();
+        $events     = $this->repository->getAll()->toArray();
         $eventsData = $this->eventTransformer->transformCollection($events);
 
         $responseData = array_merge($userInfo, ['events' => $eventsData]);
 
+        return $this->successResponse($responseData);
         // if no errors are encountered we can return a JWT
         return response()->json($responseData);
+    }
+
+    /**
+     * Create
+     * 
+     * @param Request $request
+     * @return string
+     */
+    public function create(Request $request)
+    {
+        $model = $this->repository->create($request->all());
+
+        if($model)
+        {
+            $responseData = $this->eventTransformer->createEvent($model);
+
+            return $this->successResponse($responseData, 'Event is Created Successfully');
+        }
+
+        $error = [
+            'reason' => 'Invalid Inputs'
+        ];
+
+        return $this->setStatusCode(400)->failureResponse($error, 'Something went wrong !');
     }
 }
