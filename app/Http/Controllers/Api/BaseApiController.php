@@ -117,7 +117,7 @@ class BaseApiController extends BaseController
      * @param int $code
      * @return json|string
      */
-    public function failureResponse($data = array(), $message = 'Failure', $code = 400)
+    public function failureResponse($data = array(), $message = 'Failure', $code = null)
     {
         $response = [
             'error'     => $data,

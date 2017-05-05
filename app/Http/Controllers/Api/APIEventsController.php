@@ -7,7 +7,6 @@ use App\Http\Transformers\EventTransformer;
 use App\Http\Controllers\Api\BaseApiController;
 use App\Repositories\Event\EloquentEventRepository;
 
-
 class APIEventsController extends BaseApiController 
 {   
     /**
@@ -47,13 +46,20 @@ class APIEventsController extends BaseApiController
     {
         $userInfo   = $this->getApiUserInfo();
         $events     = $this->repository->getAll()->toArray();
-        $eventsData = $this->eventTransformer->transformCollection($events);
 
-        $responseData = array_merge($userInfo, ['events' => $eventsData]);
+        if($events && count($events))
+        {
+            $eventsData     = $this->eventTransformer->transformCollection($events);
+            $responseData   = array_merge($userInfo, ['events' => $eventsData]);
 
-        return $this->successResponse($responseData);
-        // if no errors are encountered we can return a JWT
-        return response()->json($responseData);
+            return $this->successResponse($responseData);
+        }
+
+        $error = [
+            'reason' => 'Unable to find Events!'
+        ];
+
+        return $this->setStatusCode(400)->failureResponse($error, 'No Events Found !');
     }
 
     /**
@@ -78,5 +84,62 @@ class APIEventsController extends BaseApiController
         ];
 
         return $this->setStatusCode(400)->failureResponse($error, 'Something went wrong !');
+    }
+
+    /**
+     * Edit
+     * 
+     * @param Request $request
+     * @return string
+     */
+    public function edit(Request $request)
+    {
+        $eventId    = (int) $request->event_id;
+        $model      = $this->repository->update($eventId, $request->all());
+
+        if($model)
+        {
+            $eventData      = $this->repository->getById($eventId);
+            $responseData   = $this->eventTransformer->transform($eventData);
+
+            return $this->successResponse($responseData, 'Event is Edited Successfully');
+        }
+
+        $error = [
+            'reason' => 'Invalid Inputs'
+        ];
+
+        return $this->setStatusCode(400)->failureResponse($error, 'Something went wrong !');
+    }
+
+    /**
+     * Delete
+     * 
+     * @param Request $request
+     * @return string
+     */
+    public function delete(Request $request)
+    {
+        $eventId = (int) $request->event_id;
+
+        if($eventId)
+        {
+            $status = $this->repository->destroy($eventId);
+
+            if($status)
+            {
+                $responseData = [
+                    'success' => 'Event Deleted'
+                ];
+
+                return $this->successResponse($responseData, 'Event is Deleted Successfully');
+            }
+        }
+
+        $error = [
+            'reason' => 'Invalid Inputs'
+        ];
+
+        return $this->setStatusCode(404)->failureResponse($error, 'Something went wrong !');
     }
 }

@@ -160,7 +160,7 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 	public function create($input)
 	{
 		$input = $this->prepareInputData($input, true);
-		$model =  $this->model->create($input);
+		$model = $this->model->create($input);
 
 		if($model)
 		{
@@ -179,10 +179,16 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 	 */
 	public function update($id, $input)
 	{
-		$model = $this->findOrThrowException($id);
-		$input = $this->prepareInputData($input);		
-		
-		return $model->update($input);
+		$model = $this->model->find($id);
+
+		if($model)
+		{
+			$input = $this->prepareInputData($input);		
+			
+			return $model->update($input);
+		}
+
+		return false;
 	}
 
 	/**
@@ -194,14 +200,14 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 	 */
 	public function destroy($id)
 	{
-		$model = $this->findOrThrowException($id);
-
+		$model = $this->model->find($id);
+			
 		if($model)
 		{
 			return $model->delete();
 		}
 
-		throw new GeneralException("Unable to Delete Record !");
+		return  false;
 	}
 
 	/**
