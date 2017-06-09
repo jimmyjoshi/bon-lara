@@ -5,6 +5,7 @@ namespace App\Models\Access\User\Traits\Relationship;
 use App\Models\Event\Event;
 use App\Models\System\Session;
 use App\Models\Access\User\SocialLogin;
+use App\Models\Access\User\UserMeta;
 
 /**
  * Class UserRelationship.
@@ -43,5 +44,13 @@ trait UserRelationship
     public function events()
     {
         return $this->hasMany(Event::class);
+    }    
+
+    /**
+     * @return mixed
+     */
+    public function user_meta()
+    {
+        return $this->hasOne(UserMeta::class);
     }    
 }

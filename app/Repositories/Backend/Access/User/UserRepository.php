@@ -3,6 +3,7 @@
 namespace App\Repositories\Backend\Access\User;
 
 use App\Models\Access\User\User;
+use App\Models\Access\User\UserMeta;
 use Illuminate\Support\Facades\DB;
 use App\Exceptions\GeneralException;
 use App\Repositories\BaseRepository;
@@ -17,7 +18,8 @@ use App\Events\Backend\Access\User\UserPasswordChanged;
 use App\Repositories\Backend\Access\Role\RoleRepository;
 use App\Events\Backend\Access\User\UserPermanentlyDeleted;
 use App\Notifications\Frontend\Auth\UserNeedsConfirmation;
-
+use App\Notifications\Frontend\Auth\UserForgotPassword;
+    
 /**
  * Class UserRepository.
  */
@@ -34,11 +36,19 @@ class UserRepository extends BaseRepository
     protected $role;
 
     /**
+     * Model Object
+     * 
+     * @var object
+     */
+    protected $model;
+
+    /**
      * @param RoleRepository $role
      */
     public function __construct(RoleRepository $role)
     {
-        $this->role = $role;
+        $this->role     = $role;
+        $this->model    = new User;
     }
 
     /**
@@ -356,4 +366,93 @@ class UserRepository extends BaseRepository
 
         return $user;
     }
+
+    public function signup($input)
+    {
+
+        $validateRequest = $this->validateApiUser($input);
+
+        if($validateRequest)
+        {
+            return false;
+        }
+
+        $user = new User;
+        
+        $userData = array(
+            'name'      => $input['name'],
+            'email'     => $input['email'],
+            'username'  => $input['username'],
+            'password'  => bcrypt($input['password']),
+            'status'    => 1,
+            'confirmed' => 1
+        );
+
+        $apiUser = $user->create($userData);
+
+        if($apiUser)
+        {
+            $userMeta = new UserMeta();
+
+            $userMetaData = [
+                'user_id'           => $apiUser->id,
+                'campus_id'         => isset($input['campus_id']) ? $input['campus_id'] : 1,
+                'profile_picture'   => 'default.png'
+            ];
+
+            $userMeta->create($userMetaData);
+            return $apiUser;
+        }
+
+        return false;
+    }
+
+    public function validateApiUser($input)
+    {
+        $user = self::MODEL;
+        $user = new $user();
+        return $user->where(['email' => $input['email']])->orWhere(['username' => $input['username']])->first();
+    }
+
+    /**
+     * Forgot Password
+     * 
+     * @param array $input
+     * @return bool
+     */
+    public function forgotPassword($input)
+    {
+        if(isset($input['emailid']))
+        {
+            $user = $this->model->where(['email' => $input['emailid']])->first();
+
+            if($user)
+            {   
+                $randomPassword = rand(111111, 999999);
+                $user->notify(new UserForgotPassword($randomPassword));
+                $user->password = bcrypt($randomPassword);
+                return $user->save();
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get by Id
+     *
+     * @param int $id
+     * @return mixed
+     */
+    public function getById($id = null)
+    {
+        if($id)
+        {
+            return $this->model->with('user_meta')->find($id);
+        }
+        
+        return false;
+    } 
 }
+
+

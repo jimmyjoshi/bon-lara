@@ -3,6 +3,7 @@
 namespace App\Http\Transformers;
 
 use App\Http\Transformers;
+use Html;
 
 class UserTransformer extends Transformer 
 {
@@ -12,6 +13,7 @@ class UserTransformer extends Transformer
             'userId'    => $data->id,
             'userToken' => $data->token,
             'name'      => $this->nulltoBlank($data->name),
+            'username'  => $this->nulltoBlank($data->username),
             'email'     => $this->nulltoBlank($data->email)
         ];
     }
@@ -32,14 +34,22 @@ class UserTransformer extends Transformer
      * @param type $data
      * @return type
      */
-    public function userDetail($data) {
+    public function userDetail($user) 
+    {
+        if(! $user->user_meta)
+        {
+            return false;
+        }
+        
+        $profilePicture =  url('/profile-pictures/'.$user->user_meta->profile_picture);
+
         return [
-            'UserId' => isset($data['id']) ? $data['id'] : "",
-            'QuickBlocksId' => isset($data['quick_blocks_id']) ? $data['quick_blocks_id'] : "",
-            'MobileNumber' => isset($data['mobile_number']) ? $data['mobile_number'] : "",
-            'Name' => isset($data['username']) ? $data['username'] : "",
-            'Specialty' => isset($data['specialty']) ? $data['specialty'] : "",
-            'ProfilePhoto' => isset($data['profile_photo'])?$this->getUserImage($data['profile_photo']):""
+            'userId'            => $user->id,
+            'name'              => $user->name,
+            'email'             => $user->email,
+            'campusId'          => $user->user_meta->campus->id,
+            'campusName'        => $user->user_meta->campus->name,
+            'profile_picture'   => $profilePicture
         ];
     }
 
