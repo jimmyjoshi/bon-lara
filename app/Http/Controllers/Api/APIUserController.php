@@ -64,4 +64,36 @@ class APIUserController extends BaseApiController
 
         return $this->setStatusCode(400)->failureResponse($error, 'No User Found !');
     }
+
+    public function updateProfile($userId = null, Request $request)
+    {
+        if($userId)
+        {
+            $user = $this->repository->getById($userId);
+        }
+        else
+        {
+            $user = $this->getAuthenticatedUser();
+        }
+
+        if($user && $request->get('name'))
+        {
+            $user->name = $request->get('name');
+            $status = $user->save();
+            if($status)
+            {
+                $responseData = $this->apiTransformer->userDetail($user);
+
+                if($responseData)
+                {
+                    return $this->successResponse($responseData);
+                }
+            }
+        }
+
+        $error = [
+            'reason' => 'Unable to find User!'
+        ];
+        return $this->setStatusCode(400)->failureResponse($error, 'No User Found !');
+    }
 }

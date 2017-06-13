@@ -25,14 +25,8 @@ Route::group(['namespace' => 'Api',], function ()
 
     Route::post('forgot-password/', 'UsersController@forgotPassword')->name('api.forgot-password');
     
-    /*Route::post('register', 'UsersController@register')->name('api.register');
-    Route::post('verifyotp', 'UsersController@verifyOtp')->name('api.verifyotp');
-    Route::post('resendotp', 'UsersController@resendOtp')->name('api.resendotp');
-    Route::post('forgotpassword', 'UsersController@forgotPassword')->name('api.forgotPassword');
-    Route::post('specializations', 'SpecializationController@specializationList')->name('api.specializationList');
-    Route::post('removeotp', 'UsersController@removeOtp')->name('api.removeotp');
-    // send next appointment notification
-    Route::post('sendnext', 'PatientsController@sendNextAppoint')->name('api.sendnext');*/
+    Route::get('campus/', 'APICampusController@index')->name('campus.index');
+    Route::get('interests/', 'APIInterestsController@index')->name('interest.index');
 });
 
 Route::group(['namespace' => 'Api', 'middleware' => 'jwt.customauth'], function () 
@@ -42,9 +36,7 @@ Route::group(['namespace' => 'Api', 'middleware' => 'jwt.customauth'], function 
     Route::post('events/edit', 'APIEventsController@edit')->name('events.edit');
     Route::post('events/delete', 'APIEventsController@delete')->name('events.delete');
 
-    Route::get('campus/', 'APICampusController@index')->name('campus.index');
-
-    Route::get('interests/', 'APIInterestsController@index')->name('interest.index');
 
     Route::get('user-profile/{id}', 'APIUserController@profile')->name('api-user.profile');
+    Route::post('user-profile/update-profile', 'APIUserController@updateProfile')->name('api-user.update-profile');
 });
