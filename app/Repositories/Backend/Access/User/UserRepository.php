@@ -4,6 +4,8 @@ namespace App\Repositories\Backend\Access\User;
 
 use App\Models\Access\User\User;
 use App\Models\Access\User\UserMeta;
+use App\Models\Access\User\UserInterest;
+use App\Models\Interest\Interest;
 use Illuminate\Support\Facades\DB;
 use App\Exceptions\GeneralException;
 use App\Repositories\BaseRepository;
@@ -453,6 +455,80 @@ class UserRepository extends BaseRepository
         
         return false;
     } 
+
+    /**
+     * Add Interest
+     * 
+     * @param int $userId
+     * @param int $interestId
+     * @return bool
+     */
+    public function addInterest($userId = null, $interestId = null)
+    {
+        if($userId && $interestId)
+        {
+            $userInterest = new UserInterest;
+
+            $interestData = [
+                'user_id'       => $userId,
+                'interest_id'   => $interestId
+            ];
+
+            return $userInterest->create($interestData);
+        }
+
+        return false;
+    }
+
+    /**
+     * Get User Interest
+     * 
+     * @param object $user
+     * @return array|mixed
+     */
+    public function getUserInterest($user = null)
+    {
+        if($user)
+        {
+            $userInterests = $user->user_interests->pluck('interest_id')->toArray();
+            $userInterests = array_unique($userInterests);
+
+            $interestObj = new Interest;
+            return $interestObj->whereIn('id', $userInterests)->select('name', 'image')
+                ->get()
+                ->filter(function($item)
+                {
+                    if($item->image && file_exists(base_path() . '/public/interests/'.$item->image))
+                    {
+                        $item->image = url('/interests/'.$item->image);
+                    }
+                    else
+                    {
+                        $item->image = url('/interests/default.png');    
+                    }        
+
+                    return $item;
+                })
+                ->toArray();
+        }
+
+        return false;
+    }
+
+    /**
+     * Remove Interest
+     * 
+     * @param int $userId
+     * @param int $interestId
+     * @return bool
+     */
+    public function removeInterest($userId = null, $interestId = null)
+    {
+        if($userId && $interestId)
+        {
+            return UserInterest::where(['user_id' => $userId, 'interest_id' => $interestId])->delete();
+        }
+
+        return false;        
+    }
 }
-
-

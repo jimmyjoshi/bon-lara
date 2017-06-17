@@ -39,4 +39,11 @@ Route::group(['namespace' => 'Api', 'middleware' => 'jwt.customauth'], function 
 
     Route::get('user-profile/{id}', 'APIUserController@profile')->name('api-user.profile');
     Route::post('user-profile/update-profile', 'APIUserController@updateProfile')->name('api-user.update-profile');
+    
+    Route::get('user-profile-with-interest/{id}', 'APIUserController@profileWithInterest')->name('api-user.profile-with-interest');
+
+    Route::post('user-interest/add-interest', 'APIUserController@addInterest')->name('api-user.add-interest');
+    Route::post('user-interest/remove-interest', 'APIUserController@removeInterest')->name('api-user.remove-interest');
+
+    
 });
