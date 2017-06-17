@@ -6,6 +6,9 @@ use App\Models\Event\Event;
 use App\Models\System\Session;
 use App\Models\Access\User\SocialLogin;
 use App\Models\Access\User\UserMeta;
+use App\Models\Access\User\UserInterest;
+use App\Models\Access\User\User;
+use App\Models\Interest\Interest;
 
 /**
  * Class UserRelationship.
@@ -53,4 +56,12 @@ trait UserRelationship
     {
         return $this->hasOne(UserMeta::class);
     }    
+
+    /**
+     * @return mixed
+     */
+    public function user_interests()
+    {
+        return $this->hasMany(UserInterest::class);
+    } 
 }

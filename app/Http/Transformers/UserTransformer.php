@@ -53,6 +53,33 @@ class UserTransformer extends Transformer
         ];
     }
 
+    /**
+     * userDetail
+     * Single user detail
+     * 
+     * @param type $data
+     * @return type
+     */
+    public function userDetailWithInterest($user, $userInterests = null) 
+    {
+        if(! $user->user_meta)
+        {
+            return false;
+        }
+        
+        $profilePicture = url('/profile-pictures/'.$user->user_meta->profile_picture);
+        
+        return [
+            'userId'            => $user->id,
+            'name'              => $user->name,
+            'email'             => $user->email,
+            'campusId'          => $user->user_meta->campus->id,
+            'campusName'        => $user->user_meta->campus->name,
+            'profile_picture'   => $profilePicture,
+            'interests'         => isset($userInterests) ? $userInterests : []
+        ];
+    }
+
     /*
      * User Detail and it's parameters
      */
