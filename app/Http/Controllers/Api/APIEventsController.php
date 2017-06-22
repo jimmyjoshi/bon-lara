@@ -44,15 +44,14 @@ class APIEventsController extends BaseApiController
      */
     public function index(Request $request) 
     {
-        $userInfo   = $this->getApiUserInfo();
-        $events     = $this->repository->getAll()->toArray();
+        $userInfo   = $this->getAuthenticatedUser();
+        $campusId   = $userInfo->user_meta->campus_id;
+        $events     = $this->repository->getAllEventsByCampusId($campusId);
 
         if($events && count($events))
         {
-            $eventsData     = $this->eventTransformer->transformCollection($events);
-            $responseData   = array_merge($userInfo, ['events' => $eventsData]);
-
-            return $this->successResponse($responseData);
+            $response = $this->eventTransformer->getAllEvents($events, $userInfo);
+            return $this->successResponse($response);
         }
 
         $error = [
@@ -70,7 +69,10 @@ class APIEventsController extends BaseApiController
      */
     public function create(Request $request)
     {
-        $model = $this->repository->create($request->all());
+        $input      = $request->all();
+        $userInfo   = $this->getAuthenticatedUser();
+        $input      = array_merge($input, ['campus_id' => $userInfo->user_meta->campus_id, 'user_id' => $userInfo->id]);
+        $model      = $this->repository->create($input);
 
         if($model)
         {
@@ -120,11 +122,12 @@ class APIEventsController extends BaseApiController
      */
     public function delete(Request $request)
     {
-        $eventId = (int) $request->event_id;
+        $eventId    = (int) $request->event_id;
+        $userInfo   = $this->getAuthenticatedUser();
 
         if($eventId)
         {
-            $status = $this->repository->destroy($eventId);
+            $status = $this->repository->destroy($eventId, $userInfo);
 
             if($status)
             {
@@ -137,7 +140,71 @@ class APIEventsController extends BaseApiController
         }
 
         $error = [
-            'reason' => 'Invalid Inputs'
+            'reason' => "You don't have permission to Delete Event!"
+        ];
+
+        return $this->setStatusCode(404)->failureResponse($error, 'Something went wrong !');
+    }
+
+    /**
+     * Join Event
+     * 
+     * @param Request $request
+     * @return json
+     */
+    public function joinEvent(Request $request)
+    {
+        $eventId    = (int) $request->event_id;
+        $userInfo   = $this->getAuthenticatedUser();
+
+        if($eventId)
+        {
+            $status = $this->repository->joinEvent($eventId, $userInfo);
+
+            if($status)
+            {
+                $responseData = [
+                    'success' => 'Event Joined Successfully.'
+                ];
+
+                return $this->successResponse($responseData, 'Event added to your Calendar.');
+            }
+        }
+
+        $error = [
+            'reason' => "Already Event Join or Event is not Exists!"
+        ];
+
+        return $this->setStatusCode(404)->failureResponse($error, 'Something went wrong !');
+    }
+
+    /**
+     * Skip Event
+     * 
+     * @param Request $request
+     * @return json
+     */
+    public function skipEvent(Request $request)
+    {
+        $eventId    = (int) $request->event_id;
+        $userInfo   = $this->getAuthenticatedUser();
+
+        if($eventId)
+        {
+            $status = $this->repository->removeEventMember($eventId, $userInfo);
+
+            if($status)
+            {
+                $responseData = [
+                    'success' => 'Exit from Event Successfully.'
+                ];
+
+                return $this->successResponse($responseData, 'Event removed From your Calendar.');
+            }
+        }
+
+        $error = [
+            'reason' => "Event is not Exists or Deleted!"
         ];
 
         return $this->setStatusCode(404)->failureResponse($error, 'Something went wrong !');

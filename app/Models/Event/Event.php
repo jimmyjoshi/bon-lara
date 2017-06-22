@@ -26,6 +26,7 @@ class Event extends BaseModel
     protected $fillable = [
         'name',
         'user_id',
+        'campus_id',
         'title',
         'creator_id',
         'start_date',

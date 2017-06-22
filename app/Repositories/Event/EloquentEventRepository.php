@@ -1,6 +1,7 @@
 <?php namespace App\Repositories\Event;
 
 use App\Models\Event\Event;
+use App\Models\Event\EventMember;
 use App\Models\Access\User\User;
 use App\Repositories\DbRepository;
 use App\Exceptions\GeneralException;
@@ -170,6 +171,7 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 		return false;
 	}	
 
+	
 	/**
 	 * Update Event
 	 *
@@ -194,13 +196,22 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 	/**
 	 * Destroy Event
 	 *
+	 * @param object $user
 	 * @param int $id
 	 * @return mixed
 	 * @throws GeneralException
 	 */
-	public function destroy($id)
+	public function destroy($id, $user = null)
 	{
 		$model = $this->model->find($id);
+
+		if($user)
+		{
+			if($user->id != $model->user_id )
+			{
+				return false;
+			}
+		}
 			
 		if($model)
 		{
@@ -219,7 +230,7 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
      */
     public function getAll($orderBy = 'id', $sort = 'asc')
     {
-        return $this->model->all();
+    	return $this->model->with('event_members')->get();
     }
 
 	/**
@@ -237,6 +248,16 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
         
         return false;
     }   
+
+    public function getAllEventsByCampusId($campusId = null)
+    {
+    	if($campusId)
+    	{
+    		return $this->model->with('event_members')->where(['campus_id' => 1])->get();
+    	}
+
+    	return false;
+    }
 
     /**
      * Get Table Fields
@@ -352,4 +373,59 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
     	
     	return json_encode($this->setTableStructure($clientColumns));
     }
+
+    /**
+     * Join Event
+     * 
+     * @param int $eventId
+     * @param object $user
+     * @return bool
+     */
+    public function joinEvent($eventId = null, $user = null)
+    {
+    	if($eventId && $user)
+    	{
+    		$eventMember = new EventMember;
+
+	    	$status = $eventMember->where(['event_id' => $eventId, 'user_id' => $user->id])->first();
+
+	    	if($status)
+	    	{
+	    		return false;
+	    	}
+	    	
+	    	$eventMemberData = [
+	    		'event_id'	=> $eventId,
+	    		'user_id'	=> $user->id
+	    	];
+
+	    	return $eventMember->create($eventMemberData);
+    	}
+
+    	return false;
+    }
+
+    /**
+     * Remove Event Member
+     * @param int $eventId
+     * @param object $user
+     * @return bool
+     */
+    public function removeEventMember($eventId = null, $user = null)
+	{
+		if($eventId && $user)
+    	{
+			$eventMember = EventMember::where(['event_id' => $eventId, 'user_id' => $user->id])->first();
+
+			if(! $eventMember)
+			{
+				return false;
+			}
+			
+			return $eventMember->delete();
+		}
+
+		return false;
+	}
+
 }
