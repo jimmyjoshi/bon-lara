@@ -205,6 +205,11 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 	{
 		$model = $this->model->find($id);
 
+		if(!$model)
+		{
+			return false;
+		}
+
 		if($user)
 		{
 			if($user->id != $model->user_id )
