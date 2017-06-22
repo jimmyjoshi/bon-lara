@@ -31,10 +31,13 @@ Route::group(['namespace' => 'Api',], function ()
 
 Route::group(['namespace' => 'Api', 'middleware' => 'jwt.customauth'], function () 
 {
-    Route::get('events', 'APIEventsController@index')->name('events.index');
+    Route::get('events/', 'APIEventsController@index')->name('events.index');
     Route::post('events/create', 'APIEventsController@create')->name('events.create');
     Route::post('events/edit', 'APIEventsController@edit')->name('events.edit');
     Route::post('events/delete', 'APIEventsController@delete')->name('events.delete');
+
+    Route::post('events/join-event', 'APIEventsController@joinEvent')->name('events.join-event');
+    Route::post('events/exit-event', 'APIEventsController@skipEvent')->name('events.exit-event');
 
 
     Route::get('user-profile/{id}', 'APIUserController@profile')->name('api-user.profile');

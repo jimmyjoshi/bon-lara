@@ -2,12 +2,12 @@
 
 use App\Models\Access\User\User;
 use App\Models\Event\EventMember;
+use App\Models\Event\Event;
 
-trait Relationship
+trait EventMemberRelationship
 {
 	/**
 	 * Relationship Mapping for Account
-	 * 
 	 * @return mixed
 	 */
 	public function user()
@@ -16,17 +16,18 @@ trait Relationship
 	}
 
 	/**
+	 * Relationship Mapping for Events
+	 * @return mixed
+	 */
+	public function events()
+	{
+	    return $this->belongsTo(Event::class, 'event_id');
+	}
+
+	/**
 	 * Relationship Mapping for EventMember
 	 * 
 	 * @return mixed
 	 */
-	public function members1()
-	{
-	    return $this->hasMany(EventMember::class);
-	}
-
-	public function event_members()
-	{
-	    return $this->belongsToMany(User::class, 'event_members', 'event_id',  'user_id');
-	}
+	
 }
