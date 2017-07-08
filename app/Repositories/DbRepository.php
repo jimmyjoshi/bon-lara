@@ -171,4 +171,30 @@ Abstract class DbRepository
     {
         return array_values($array);
     }
+
+    /**
+     * Get Select Options
+     * 
+     * @param string $key
+     * @param string $value
+     * @return array
+     */
+    public function getSelectOptions($key = 'id', $value = 'name')
+    {
+        $options    = $this->model->all();
+        $result     = [];
+        
+        if($options && count($options))
+        {
+            foreach($options as $option)
+            {
+                if($option->$key && $option->$value)
+                {
+                    $result[$option->$key] = $option->$value;
+                }
+            }
+        }
+
+        return $result;
+    }
 }
