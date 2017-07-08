@@ -21,6 +21,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        \App\Http\Middleware\Cors::class, 
     ];
 
     /**
@@ -37,7 +38,6 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \App\Http\Middleware\LocaleMiddleware::class,
         ],
 
         'admin' => [
@@ -75,6 +75,8 @@ class Kernel extends HttpKernel
         'access.routeNeedsPermission'   => \App\Http\Middleware\RouteNeedsPermission::class,
         'jwt.customauth'                =>   \App\Http\Middleware\CustomJWTMiddleware::class,
         //'jwt.auth'                      =>   \Tymon\JWTAuth\Middleware\GetUserFromToken::class,
-        'jwt.refresh'                   => \TymonJWTAuth\Middleware\RefreshToken::class  
+        'jwt.refresh'                   => \TymonJWTAuth\Middleware\RefreshToken::class  ,
+
+        'cors' => \App\Http\Middleware\Cors::class, 
     ];
 }

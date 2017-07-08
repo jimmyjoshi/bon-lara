@@ -46,9 +46,9 @@
 # http://enable-cors.org/
 # http://www.w3.org/TR/cors/
 
-# <IfModule mod_headers.c>
-#     Header set Access-Control-Allow-Origin "*"
-# </IfModule>
+ <IfModule mod_headers.c>
+     Header set Access-Control-Allow-Origin "*"
+ </IfModule>
 
 # ----------------------------------------------------------------------
 # | Cross-origin images                                                |
@@ -94,9 +94,9 @@
 # http://www.w3.org/TR/resource-timing/
 # http://www.stevesouders.com/blog/2014/08/21/resource-timing-practical-tips/
 
-# <IfModule mod_headers.c>
-#     Header set Timing-Allow-Origin: "*"
-# </IfModule>
+ <IfModule mod_headers.c>
+     Header set Timing-Allow-Origin: "*"
+ </IfModule>
 
 
 # ######################################################################
