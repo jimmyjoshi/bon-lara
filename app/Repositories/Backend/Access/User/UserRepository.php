@@ -531,4 +531,17 @@ class UserRepository extends BaseRepository
 
         return false;        
     }
+
+    public function getAllCampusUsers($user = null)
+    {
+        $campusId = $user->user_meta->campus_id;
+
+        return $this->model->get()->filter(function($item)  use ($campusId)
+        {
+            if($item->user_meta && $campusId == $item->user_meta->campus_id)
+            {
+                return $item;
+            }
+        });
+    }
 }
