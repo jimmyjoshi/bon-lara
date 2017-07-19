@@ -131,4 +131,34 @@ class APIFeedsController extends BaseApiController
 
         return $this->setStatusCode(400)->failureResponse($error, 'No Feed Found !');        
     }
+
+    /**
+     * Destroy
+     * 
+     * @param Request $request
+     * @return json
+     */
+    public function destroy(Request $request)
+    {
+        if($request->get('feed_id'))
+        {
+            $userInfo = $this->getAuthenticatedUser();
+            $campusId = $userInfo->user_meta->campus_id;
+            $status   = $this->repository->destroy($userInfo, $request->get('feed_id'));
+
+            if($status)
+            {
+                $allFeeds       = $this->repository->getFeedsByCampusId($campusId);
+                $responseData   = $this->apiTransformer->feedTransformCollection($allFeeds);
+                
+                return $this->successResponse($responseData);
+            }
+        }
+
+        $error = [
+            'reason' => 'Unable to Delete Feed!'
+        ];
+
+        return $this->setStatusCode(400)->failureResponse($error, 'Unable to Delete Feed!');        
+    }
 }

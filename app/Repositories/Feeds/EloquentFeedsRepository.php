@@ -194,25 +194,6 @@ class EloquentFeedsRepository extends DbRepository
 	}
 
 	/**
-	 * Destroy Campus
-	 *
-	 * @param int $id
-	 * @return mixed
-	 * @throws GeneralException
-	 */
-	public function destroy($id)
-	{
-		$model = $this->model->find($id);
-			
-		if($model)
-		{
-			return $model->delete();
-		}
-
-		return  false;
-	}
-
-	/**
      * Get All
      *
      * @param string $orderBy
@@ -347,6 +328,23 @@ class EloquentFeedsRepository extends DbRepository
     	if($channelId)
     	{
     		return $this->model->with(['campus', 'channel', 'group', 'user', 'feed_interests'])->where(['channel_id' => $channelId])->orderBy('id', 'desc')->get();
+    	}
+
+    	return false;
+    }
+
+    /**
+     * Destroy
+     * 
+     * @param object $user
+     * @param int $feedId
+     * @return bool
+     */
+    public function destroy($user = null, $feedId = null)
+    {
+    	if($user && $feedId)
+    	{
+    		return $this->model->where(['id' => $feedId, 'user_id' => $user->id])->delete();
     	}
 
     	return false;
