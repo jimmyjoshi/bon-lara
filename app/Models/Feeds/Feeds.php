@@ -1,36 +1,36 @@
-<?php namespace App\Models\Event;
+<?php namespace App\Models\Feeds;
 
 /**
- * Class Event
+ * Class Feeds
  *
  * @author Anuj Jaha er.anujjaha@gmail.com
  */
 
 use App\Models\BaseModel;
-use App\Models\Event\Traits\Attribute\Attribute;
-use App\Models\Event\Traits\Relationship\Relationship;
+use App\Models\Feeds\Traits\Attribute\Attribute;
+use App\Models\Feeds\Traits\Relationship\Relationship;
 
-class Event extends BaseModel
+class Feeds extends BaseModel
 {
     use Attribute, Relationship;
     /**
      * Database Table
      *
      */
-    protected $table = "events";
+    protected $table = "data_feeds";
 
     /**
      * Fillable Database Fields
      *
      */
     protected $fillable = [
-        'name',
         'user_id',
         'campus_id',
-        'title',
-        'creator_id',
-        'start_date',
-        'end_date'
+        'channel_id',
+        'group_id',
+        'description',
+        'attachment',
+        'is_attachment',
     ];
 
     /**
