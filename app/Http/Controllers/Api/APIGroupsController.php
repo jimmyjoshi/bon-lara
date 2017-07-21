@@ -72,26 +72,29 @@ class APIGroupsController extends BaseApiController
     {
         $input = $request->all();
 
-        if($request->file('image'))
+        if(isset($input['name']) && !empty($input['name']))
         {
-            $imageName  = rand(11111, 99999) . '_interest.' . $request->file('image')->getClientOriginalExtension();
-            $request->file('image')->move(base_path() . '/public/groups/', $imageName);
-            $input = array_merge($request->all(), ['image' => $imageName]);
-        }
-        else
-        {
-            $input = array_merge($request->all(), ['image' => 'default.png']);    
-        }
+            if($request->file('image'))
+            {
+                $imageName  = rand(11111, 99999) . '_interest.' . $request->file('image')->getClientOriginalExtension();
+                $request->file('image')->move(base_path() . '/public/groups/', $imageName);
+                $input = array_merge($request->all(), ['image' => $imageName]);
+            }
+            else
+            {
+                $input = array_merge($request->all(), ['image' => 'default.png']);    
+            }
 
-        $userInfo   = $this->getAuthenticatedUser();
-        $input      = array_merge($input, ['campus_id' => $userInfo->user_meta->campus_id, 'user_id' => $userInfo->id]);
-        $model      = $this->repository->create($input);
+            $userInfo   = $this->getAuthenticatedUser();
+            $input      = array_merge($input, ['campus_id' => $userInfo->user_meta->campus_id, 'user_id' => $userInfo->id]);
+            $model      = $this->repository->create($input);
 
-        if($model)
-        {
-            $response = $this->groupTransformer->getSingleGroup($model, $userInfo);
-            
-            return $this->successResponse($response, 'Group is Created Successfully');
+            if($model)
+            {
+                $response = $this->groupTransformer->getSingleGroup($model, $userInfo);
+                
+                return $this->successResponse($response, 'Group is Created Successfully');
+            }
         }
 
         $error = [

@@ -227,6 +227,6 @@ class APIUserController extends BaseApiController
             'reason' => 'Unable to find User with Interest!'
         ];
 
-        return $this->setStatusCode(400)->failureResponse($error, 'No User Found !');        
+        return $this->setStatusCode(400)->failureResponse($error, 'No Users Found !');        
     }
 }

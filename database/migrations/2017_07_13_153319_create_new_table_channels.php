@@ -17,6 +17,7 @@ class CreateNewTableChannels extends Migration
         {
             $table->bigInteger('id', true);
             $table->integer('campus_id');
+            $table->integer('group_id');
             $table->integer('user_id');
             $table->string('name');
             $table->timestamps();
