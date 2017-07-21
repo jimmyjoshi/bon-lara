@@ -26,6 +26,7 @@ class Channel extends BaseModel
     protected $fillable = [
         'name',
         'user_id',
+        'group_id',
         'campus_id',
     ];
 

@@ -23,6 +23,7 @@ class ChannelTransformer extends Transformer
             'channelId'    => (int) $channel->id,
             'channelName'  => $channel->name,
             'campusId'     => $channel->campus_id,
+            'groupId'      => $channel->group_id,
             'channelCreator'  => [
                 'name'      => $channel->user->name,
                 'emailId'   => $channel->user->email,
@@ -46,6 +47,7 @@ class ChannelTransformer extends Transformer
                 'channelId'    => (int) $model->id,
                 'channelName'  => $model->name,
                 'campusId'     => $model->campus_id,
+                'groupId'      => $model->group_id,
                 'channelCreator'  => [
                     'userId'    => (int) $model->user->id,
                     'name'      => $model->user->name,
@@ -75,6 +77,7 @@ class ChannelTransformer extends Transformer
                     'channelId'    => (int) $channel->id,
                     'channelName'  => $channel->name,
                     'campusId'     => $channel->campus_id,
+                    'groupId'      => $channel->group_id,
                     'channelCreator'  => [
                         'userId'    => (int) $channel->user->id,
                         'name'      => $channel->user->name,
