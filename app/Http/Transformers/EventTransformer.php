@@ -76,7 +76,7 @@ class EventTransformer extends Transformer
 
             foreach($events as $event)
             {
-                if(! isset($model->user->user_meta))
+                if(! isset($event->user->user_meta))
                     continue;
 
                 $creatorProfilePicture =  url('/profile-pictures/'.$event->user->user_meta->profile_picture);

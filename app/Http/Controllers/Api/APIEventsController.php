@@ -47,7 +47,7 @@ class APIEventsController extends BaseApiController
         $userInfo   = $this->getAuthenticatedUser();
         $campusId   = $userInfo->user_meta->campus_id;
         $events     = $this->repository->getAllEventsByCampusId($campusId);
-
+        
         if($events && count($events))
         {
             $response = $this->eventTransformer->getAllEvents($events, $userInfo);
