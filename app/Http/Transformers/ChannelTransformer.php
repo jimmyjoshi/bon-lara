@@ -73,6 +73,9 @@ class ChannelTransformer extends Transformer
         {
             foreach($channels as $channel)
             {
+                if(!isset($channel->user))
+                    continue;
+                    
                 $result[] = [
                     'channelId'    => (int) $channel->id,
                     'channelName'  => $channel->name,
