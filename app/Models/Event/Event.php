@@ -27,6 +27,7 @@ class Event extends BaseModel
         'name',
         'user_id',
         'campus_id',
+        'group_id',
         'title',
         'creator_id',
         'start_date',
