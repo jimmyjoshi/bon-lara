@@ -139,8 +139,8 @@ class EloquentFeedsRepository extends DbRepository
 			{
 				$this->addFeedInterests($model, $input);
 			}
-
-			return $model->with(['campus', 'channel', 'group', 'user', 'feed_interests'])->first();
+			
+			return $model->with(['campus', 'channel', 'group', 'user', 'feed_interests'])->where(['id' => $model->id])->first();
 		}
 
 		return false;
