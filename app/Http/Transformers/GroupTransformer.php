@@ -40,6 +40,9 @@ class GroupTransformer extends Transformer
 
     public function createEvent($model = null)
     {
+        if(! isset($model->user->user_meta))
+            return;
+
         $creatorProfilePicture =  url('/profile-pictures/'.$model->user->user_meta->profile_picture);
 
         return [
@@ -76,6 +79,9 @@ class GroupTransformer extends Transformer
 
             foreach($events as $event)
             {
+                if(! isset($event->user->user_meta))
+                    continue;
+
                 $creatorProfilePicture =  url('/profile-pictures/'.$event->user->user_meta->profile_picture);
                     
                 $result[$sr] = [
@@ -137,12 +143,10 @@ class GroupTransformer extends Transformer
             foreach($groups as $group)        
             {
                 if(! isset($group->user->user_meta))
-                {
                     continue;
-                }
-
+                
                 $groupImage             =  url('/groups/'.$group->image);
-                $creatorProfilePicture  = url('/profile-pictures/'.$group->user->user_meta->profile_picture);   
+                $creatorProfilePicture  =  url('/profile-pictures/'.$group->user->user_meta->profile_picture);   
 
                 $result[$sr] = [
                     'groupId'           => (int) $group->id,
