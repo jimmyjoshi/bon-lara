@@ -25,8 +25,8 @@ class EventTransformer extends Transformer
             'eventId'           => (int) $data->id,
             'eventName'         => $data->name,
             'eventTitle'        => $data->title,
-            'eventStartDate'    => date('d-m-Y', strtotime($data->start_date)),
-            'eventEndDate'      => date('d-m-Y', strtotime($data->end_date)),
+            'eventStartDate'    => date('m-d-Y H:i:s', strtotime($data->start_date)),
+            'eventEndDate'      => date('m-d-Y H:i:s', strtotime($data->end_date)),
                 'eventCreator'      => [
                 'userId'            => $data->user->id,
                 'name'              => $data->user->name,
@@ -46,8 +46,8 @@ class EventTransformer extends Transformer
             'eventId'           => (int) $model->id,
             'eventName'         => $model->name,
             'eventTitle'        => $model->title,
-            'eventStartDate'    => date('d-m-Y', strtotime($model->start_date)),
-            'eventEndDate'      => date('d-m-Y', strtotime($model->end_date)),
+            'eventStartDate'    => date('m-d-Y H:i:s', strtotime($model->start_date)),
+            'eventEndDate'      => date('m-d-Y H:i:s', strtotime($model->end_date)),
             'eventCreator'      => [
                 'userId'            => $model->user->id,
                 'name'              => $model->user->name,
@@ -76,6 +76,9 @@ class EventTransformer extends Transformer
 
             foreach($events as $event)
             {
+                if(! isset($model->user->user_meta))
+                    continue;
+
                 $creatorProfilePicture =  url('/profile-pictures/'.$event->user->user_meta->profile_picture);
                     
                 $result[$sr] = [

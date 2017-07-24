@@ -62,6 +62,34 @@ class APIEventsController extends BaseApiController
     }
 
     /**
+     * List of All Group Events
+     * 
+     * @param Request $request
+     * @return json
+     */
+    public function getGroupEvents(Request $request) 
+    {
+        if($request->get('group_id'))
+        {
+            $userInfo   = $this->getAuthenticatedUser();
+            $groupId    = $request->get('group_id');
+            $events     = $this->repository->getAllEventsByGroupId($groupId);
+
+            if($events && count($events))
+            {
+                $response = $this->eventTransformer->getAllEvents($events, $userInfo);
+                return $this->successResponse($response);
+            }
+        }
+
+        $error = [
+            'reason' => 'Unable to find Group Events!'
+        ];
+
+        return $this->setStatusCode(400)->failureResponse($error, 'No Group Events Found !');
+    }
+
+    /**
      * Create
      * 
      * @param Request $request

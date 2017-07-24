@@ -253,12 +253,34 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
         
         return false;
     }   
+		
+	/**
+	 * Get All Events By GroupId
+	 * 
+	 * @param int $groupId 
+	 * @return bool|mixed
+	 */
+	public function getAllEventsByGroupId($groupId = null)
+    {
+    	if($groupId)
+    	{
+    		return $this->model->with('event_members')->where(['group_id' => $groupId])->get();
+    	}
 
+    	return false;
+    }
+
+    /**
+     * Get All Events By CampusId
+     * 
+     * @param int $campusId
+     * @return bool|mixed
+     */
     public function getAllEventsByCampusId($campusId = null)
     {
     	if($campusId)
     	{
-    		return $this->model->with('event_members')->where(['campus_id' => 1])->get();
+    		return $this->model->with('event_members')->where(['campus_id' => $campusId])->get();
     	}
 
     	return false;
@@ -320,22 +342,22 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 
     	if(isset($input['start_date']))
     	{
-    		$input['start_date'] = date('Y-m-d', strtotime($input['start_date']));
+    		$input['start_date'] = date('Y-m-d H:i:s', strtotime($input['start_date']));
     	}
 
     	if(isset($input['end_date']))
     	{
-    		$input['end_date'] = date('Y-m-d', strtotime($input['end_date']));
+    		$input['end_date'] = date('Y-m-d H:i:s', strtotime($input['end_date']));
     	}
 
     	if(! isset($input['start_date']))
     	{
-    		$input['start_date'] = date('Y-m-d');
+    		$input['start_date'] = date('Y-m-d H:i:s');
     	}
 
     	if(! isset($input['end_date']))
     	{
-    		$input['end_date'] = date('Y-m-d');
+    		$input['end_date'] = date('Y-m-d H:i:s');
     	}
 
     	return $input;

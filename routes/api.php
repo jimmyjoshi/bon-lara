@@ -36,6 +36,9 @@ Route::group(['namespace' => 'Api', 'middleware' => 'jwt.customauth'], function 
     Route::post('events/edit', 'APIEventsController@edit')->name('events.edit');
     Route::post('events/delete', 'APIEventsController@delete')->name('events.delete');
 
+    Route::post('get-group-events/', 'APIEventsController@getGroupEvents')->name('events.get-group-events');
+
+
     Route::post('events/join-event', 'APIEventsController@joinEvent')->name('events.join-event');
     Route::post('events/exit-event', 'APIEventsController@skipEvent')->name('events.exit-event');
 
