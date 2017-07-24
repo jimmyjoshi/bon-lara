@@ -280,7 +280,7 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
     {
     	if($campusId)
     	{
-    		return $this->model->with('event_members')->where(['campus_id' => $campusId])->get();
+    		return $this->model->with('event_members')->where(['campus_id' => $campusId, 'group_id' => NULL])->get();
     	}
 
     	return false;
