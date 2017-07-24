@@ -136,8 +136,13 @@ class GroupTransformer extends Transformer
             $sr = 0;
             foreach($groups as $group)        
             {
+                if(! isset($group->user->user_meta))
+                {
+                    continue;
+                }
+
                 $groupImage             =  url('/groups/'.$group->image);
-                $creatorProfilePicture  =  url('/profile-pictures/'.$group->user->user_meta->profile_picture);   
+                $creatorProfilePicture  = url('/profile-pictures/'.$group->user->user_meta->profile_picture);   
 
                 $result[$sr] = [
                     'groupId'           => (int) $group->id,
