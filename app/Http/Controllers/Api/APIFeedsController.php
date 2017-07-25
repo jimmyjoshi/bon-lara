@@ -63,6 +63,32 @@ class APIFeedsController extends BaseApiController
     }
 
     /**
+     * List of All Campus Feeds
+     * 
+     * @param Request $request
+     * @return json
+     */
+    public function getAllCampusFeeds(Request $request) 
+    {
+        $userInfo   = $this->getAuthenticatedUser();
+        $campusId   = $userInfo->user_meta->campus_id;
+        $allFeeds   = $this->repository->getAllHomeFeeds($campusId);
+
+        if($allFeeds && count($allFeeds))
+        {
+            $responseData = $this->apiTransformer->feedTransformCollection($allFeeds);
+            
+            return $this->successResponse($responseData);
+        }
+
+        $error = [
+            'reason' => 'Unable to find Feeds!'
+        ];
+
+        return $this->setStatusCode(400)->failureResponse($error, 'No Feed Found !');
+    }
+
+    /**
      * Create
      * 
      * @param Request $request

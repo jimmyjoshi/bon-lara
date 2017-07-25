@@ -311,11 +311,34 @@ class EloquentFeedsRepository extends DbRepository
     {
     	if($campusId)
     	{
-    		return $this->model->with(['campus', 'channel', 'group', 'user', 'feed_interests'])->where(['campus_id' => $campusId])->orderBy('id', 'desc')->get();
+    		return $this->model->with(['campus', 'channel', 'group', 'user', 'feed_interests'])->where([
+    			'campus_id' 		=> $campusId,
+    			'is_campus_feed' 	=> 0
+    			])->orderBy('id', 'desc')->get();
     	}
 
     	return false;
     }
+
+    /**
+     * Get Feeds By CampusId
+     * 
+     * @param int $campusId
+     * @return object
+     */
+    public function getAllHomeFeeds($campusId = null)
+    {
+    	if($campusId)
+    	{
+    		return $this->model->with(['campus', 'channel', 'group', 'user', 'feed_interests'])->where([
+    			'campus_id' 		=> $campusId,
+    			'is_campus_feed' 	=> 1
+    			])->orderBy('id', 'desc')->get();
+    	}
+
+    	return false;
+    }
+    
 
     /**
      * Get Feeds By ChannelId
@@ -327,7 +350,10 @@ class EloquentFeedsRepository extends DbRepository
     {
     	if($channelId)
     	{
-    		return $this->model->with(['campus', 'channel', 'group', 'user', 'feed_interests'])->where(['channel_id' => $channelId])->orderBy('id', 'desc')->get();
+    		return $this->model->with(['campus', 'channel', 'group', 'user', 'feed_interests'])->where([
+    			'channel_id' 		=> $channelId,
+    			'is_campus_feed' 	=> 0
+    			])->orderBy('id', 'desc')->get();
     	}
 
     	return false;
