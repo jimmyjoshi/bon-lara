@@ -23,10 +23,21 @@ class FeedsTransformer extends Transformer
             $feedAttachment = url('/feeds/'.$feed->user_id.'/'.$feed->attachment);
         }
 
+        $creatorProfilePicture  =  url('/profile-pictures/'.$feed->user->user_meta->profile_picture);   
+
         $response = [
             'feedId'            => $feed->id,
             'description'       => $feed->description,
             'is_attachment'     => $feed->is_attachment,
+            'feedCreator'       => [
+                'userId'            => (int) $feed->user->id,
+                'name'              => $feed->user->name,
+                'email'             => $feed->user->email,
+                'campusId'          => $feed->user->user_meta->campus->id,
+                'campusName'        => $feed->user->user_meta->campus->name,
+                'profile_picture'   => $creatorProfilePicture
+            ], 
+            
             'attachment_link'   => $feedAttachment,
                 'channel'       => [
                     'channelId'    => (int) $feed->channel->id,
@@ -100,10 +111,19 @@ class FeedsTransformer extends Transformer
                 {
                     $feedAttachment = url('/feeds/'.$feed->user_id.'/'.$feed->attachment);
                 }
+                $creatorProfilePicture  =  url('/profile-pictures/'.$feed->user->user_meta->profile_picture);   
                 $result[$sr] = [
                     'feedId'            => $feed->id,
                     'description'       => $feed->description,
                     'is_attachment'     => $feed->is_attachment,
+                    'feedCreator'       => [
+                        'userId'            => (int) $feed->user->id,
+                        'name'              => $feed->user->name,
+                        'email'             => $feed->user->email,
+                        'campusId'          => $feed->user->user_meta->campus->id,
+                        'campusName'        => $feed->user->user_meta->campus->name,
+                        'profile_picture'   => $creatorProfilePicture
+                    ],
                     'attachment_link'   => $feedAttachment,
                         'interests' => [],
                         'channel'       => [
