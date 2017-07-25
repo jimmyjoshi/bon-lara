@@ -23,6 +23,11 @@ class FeedsTransformer extends Transformer
             $feedAttachment = url('/feeds/'.$feed->user_id.'/'.$feed->attachment);
         }
 
+        if(! isset($feed->user->user_meta))
+        {
+            return false;
+        }
+
         $creatorProfilePicture  =  url('/profile-pictures/'.$feed->user->user_meta->profile_picture);   
 
         $response = [
@@ -99,6 +104,11 @@ class FeedsTransformer extends Transformer
                 }
 
                 if(!isset($feed->channel->user))
+                {
+                    continue;
+                }
+
+                if(! isset($feed->user->user_meta))
                 {
                     continue;
                 }
