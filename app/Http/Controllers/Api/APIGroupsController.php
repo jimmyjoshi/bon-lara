@@ -63,6 +63,31 @@ class APIGroupsController extends BaseApiController
     }
 
     /**
+     * Get ForYou Groups
+     * 
+     * @param Request $request
+     * @return array
+     */
+    public function getForYouGroups(Request $request)
+    {
+        $userInfo   = $this->getAuthenticatedUser();
+        $groups     = $this->repository->getAllGroupsForYou($userInfo);
+
+        if($groups && count($groups))
+        {
+            $response = $this->groupTransformer->getAllGroupsWithMembers($groups, $userInfo);
+            
+            return $this->successResponse($response);
+        }
+
+        $error = [
+            'reason' => 'Unable to find Groups For You!'
+        ];
+
+        return $this->setStatusCode(400)->failureResponse($error, 'No Groups Found For You!');  
+    }
+
+    /**
      * Create
      * 
      * @param Request $request

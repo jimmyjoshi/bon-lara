@@ -82,6 +82,16 @@ class FeedsTransformer extends Transformer
                 if( !$feed->group)
                     continue;
                 
+                if(!isset($feed->channel))
+                {
+                    continue;
+                }
+
+                if(!isset($feed->channel->user))
+                {
+                    continue;
+                }
+
                 $groupImage =  url('/groups/'.$feed->group->image);
                 
                 $feedAttachment = '';
