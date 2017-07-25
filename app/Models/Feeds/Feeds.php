@@ -31,6 +31,7 @@ class Feeds extends BaseModel
         'description',
         'attachment',
         'is_attachment',
+        'is_campus_feed'
     ];
 
     /**
