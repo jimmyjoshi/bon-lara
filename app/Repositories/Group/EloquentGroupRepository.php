@@ -407,4 +407,38 @@ class EloquentGroupRepository extends DbRepository
 
 		return false;
 	}
+
+	/**
+	 * Get All Groups For You
+	 * 
+	 * @param object $user
+	 * @return object
+	 */
+	public function getAllGroupsForYou($user = null)
+	{
+		if($user)
+		{
+			$userInterest 	= $user->user_interests->pluck('id')->toArray();
+			$responseGroup 	= [];
+			
+			$groups = $this->model->with(['campus', 'user', 'group_members', 'group_feeds'])->get();
+			foreach($groups as $group)
+			{
+				foreach($group->group_feeds as $feed)
+				{
+					foreach($feed->feed_interests->pluck('id') as $interest)
+					{
+						if(in_array($interest, $userInterest))
+						{
+							$responseGroup[] = $group;
+						}
+					}
+				}
+			}
+
+			return $responseGroup;
+		}
+
+		return false;
+	}
 }

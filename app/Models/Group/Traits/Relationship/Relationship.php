@@ -2,6 +2,7 @@
 
 use App\Models\Access\User\User;
 use App\Models\Campus\Campus;
+use App\Models\Feeds\Feeds;
 
 trait Relationship
 {
@@ -35,8 +36,21 @@ trait Relationship
 		return $this->belongsToMany(User::class, 'data_group_members', 'group_id',  'user_id');
 	}
 	
+	/**
+	 * Get Leaders
+	 * 
+	 * @return mixed
+	 */
 	public function getLeaders()
 	{
 	    return $this->group_members()->where(['is_leader' => 1])->get();
 	}
+
+	/**
+     * @return mixed
+     */
+    public function group_feeds()
+    {
+        return $this->hasMany(Feeds::class);
+    } 
 }

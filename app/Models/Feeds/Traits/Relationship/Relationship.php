@@ -49,6 +49,11 @@ trait Relationship
 	    return $this->belongsTo(Campus::class, 'campus_id');
 	}
 
+	/**
+	 * Feed Interests
+	 * 
+	 * @return mixed
+	 */
 	public function feed_interests()
 	{
 	    return $this->belongsToMany(Interest::class, 'feeds_interests', 'feed_id', 'interest_id');
