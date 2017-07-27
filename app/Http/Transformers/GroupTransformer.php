@@ -148,6 +148,10 @@ class GroupTransformer extends Transformer
                 $groupImage             =  url('/groups/'.$group->image);
                 $creatorProfilePicture  =  url('/profile-pictures/'.$group->user->user_meta->profile_picture);   
 
+                $loginUserId    =  access()->user()->id;
+                $isLeader       = ($group->user->id == $loginUserId) ? 1 : 0;
+                $isMember       = 0;
+
                 $result[$sr] = [
                     'groupId'           => (int) $group->id,
                     'groupName'         => $group->name,
@@ -155,6 +159,8 @@ class GroupTransformer extends Transformer
                     'groupImage'        => $groupImage,
                     'isPrivate'         => $group->is_private,
                     'isDiscovery'       => $group->group_type,
+                    'isMember'          => 0,
+                    'isLeader'          => $isLeader,
                     'groupCampus'       => [
                         'campusId'      => (int) $group->campus->id,
                         'campusName'    => $group->campus->name,
@@ -184,6 +190,17 @@ class GroupTransformer extends Transformer
                             {
                                 $leader = 0;
                             }
+
+                            if($loginUserId == $groupMember->id)
+                            {
+                                $isMember = 1;
+
+                                if($isLeader == 0 )
+                                {
+                                    $isLeader = $leader;
+                                }
+                            }
+
                             $result[$sr]['group_members'][] =   [
                                 'userId'            => (int) $groupMember->id,
                                 'name'              => $groupMember->name,
@@ -193,10 +210,14 @@ class GroupTransformer extends Transformer
                                 'isLeader'          => $leader,
                                 'profile_picture'   => $profilePicture
                             ];
+
                         }
                     }
                 }
 
+                $result[$sr]['isMember'] = $isMember;
+                $result[$sr]['isLeader'] = $isLeader;
+                    
                 $sr++;
             }
         }
