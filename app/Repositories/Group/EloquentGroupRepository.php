@@ -2,6 +2,7 @@
 
 use App\Models\Group\Group;
 use App\Models\Group\GroupMember;
+use App\Models\Group\GroupInterest;
 use App\Models\Access\User\User;
 use App\Repositories\DbRepository;
 use App\Exceptions\GeneralException;
@@ -159,11 +160,42 @@ class EloquentGroupRepository extends DbRepository
 
 		if($model)
 		{
+			if(isset($input['interests']))
+			{
+				$interestStatus = $this->addGroupInterest($model, $input);
+			}
+			
 			return $model;
 		}
 
 		return false;
 	}	
+
+	/**
+	 * Add Group Interest
+	 *
+	 * @param object $model
+	 * @param array $input [description]
+	 */
+	public function addGroupInterest($model = null, $input = array())
+	{
+		$groupInterest = [];
+
+		foreach($input['interests'] as $interest)
+		{
+			$groupInterest[] = [
+				'group_id' 		=> $model->id,
+				'interest_id' 	=> $interest
+			];
+		}
+
+		if(count($groupInterest))
+		{
+			return GroupInterest::insert($groupInterest);
+		}
+
+		return true;
+	}
 
 	
 	/**

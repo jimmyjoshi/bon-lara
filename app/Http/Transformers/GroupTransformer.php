@@ -161,6 +161,7 @@ class GroupTransformer extends Transformer
                     'isDiscovery'       => $group->group_type,
                     'isMember'          => 0,
                     'isLeader'          => $isLeader,
+                    'interests'         => [],
                     'groupCampus'       => [
                         'campusId'      => (int) $group->campus->id,
                         'campusName'    => $group->campus->name,
@@ -175,6 +176,27 @@ class GroupTransformer extends Transformer
                         'profile_picture'   => $creatorProfilePicture
                     ],
                 ];
+
+                if($group->group_interests && count($group->group_interests))
+                {
+                    foreach($group->group_interests as $interest)   
+                    {
+                        if(isset($interest) && $interest->image && file_exists(base_path() . '/public/interests/'.$interest->image))
+                        {
+                            $image = url('/interests/'.$interest->image);
+                        }
+                        else
+                        {
+                            $image = url('/interests/default.png');    
+                        }
+
+                        $result[$sr]['interests'][] = [
+                            'interestId'        => (int) $interest->id,
+                            'name'              => $interest->name,
+                            'image'             => $image
+                        ];
+                    }
+                }
 
                 $groupLeaders = $group->getLeaders()->pluck('id')->toArray();
                 if($group->group_members)
@@ -245,6 +267,7 @@ class GroupTransformer extends Transformer
             'groupImage'        => $groupImage,
             'isPrivate'         => $group->is_private,
             'isDiscovery'       => $group->group_type,
+            'interests'         => [],
             'groupCampus'       => [
                 'campusId'      => (int) $group->campus->id,
                 'campusName'    => $group->campus->name,
@@ -260,9 +283,38 @@ class GroupTransformer extends Transformer
             ],
         ];
 
+        if($group->get_group_interests && count($group->get_group_interests))
+        {
+            $sr = 0;
+            foreach($group->get_group_interests as $interest)   
+            {
+                if(! $interest->interest)
+                {
+                    continue;
+                }
+                if(isset($interest->interest) && $interest->interest->image && file_exists(base_path() . '/public/interests/'.$interest->interest))
+                {
+                    $image = url('/interests/'.$interest->interest->image);
+                }
+                else
+                {
+                    $image = url('/interests/default.png');    
+                }
+                
+                $result['interests'][$sr] = [
+                    'interestId'        => $interest->interest->id,
+                    'name'              => $interest->interest->name,
+                    'image'             => $image
+                ];
+
+                $sr++;
+            }
+        }
+
         $groupLeaders = $group->getLeaders()->pluck('id')->toArray();
         if($group->group_members)
         {
+            $sr = 0;
             foreach($group->group_members as $groupMember) 
             {
                 if($groupMember->user_meta)
@@ -274,7 +326,7 @@ class GroupTransformer extends Transformer
                     {
                         $leader = 0;
                     }
-                    $result[$sr]['group_members'][] =   [
+                    $result['group_members'][$sr] =   [
                         'userId'            => (int) $groupMember->id,
                         'name'              => $groupMember->name,
                         'email'             => $groupMember->email,
@@ -284,6 +336,7 @@ class GroupTransformer extends Transformer
                         'profile_picture'   => $profilePicture
                     ];
                 }
+                $sr++;
             }
         }
 
