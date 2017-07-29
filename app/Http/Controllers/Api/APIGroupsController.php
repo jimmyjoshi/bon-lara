@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Transformers\GroupTransformer;
 use App\Http\Controllers\Api\BaseApiController;
 use App\Repositories\Group\EloquentGroupRepository;
+use App\Models\Access\User\User;
 
 class APIGroupsController extends BaseApiController 
 {   
@@ -209,9 +210,18 @@ class APIGroupsController extends BaseApiController
      */
     public function joinMember(Request $request)
     {
-        $groupId    = (int) $request->group_id;
-        $userInfo   = $this->getAuthenticatedUser();
-        $isLeader   = isset($request->is_leader) ? $request->is_leader : 0;
+        $groupId = (int) $request->group_id;
+
+        if($request->get('user_id'))
+        {
+            $userInfo = User::findOrfail($request->get('user_id'));
+        }
+        else
+        {
+            $userInfo = $this->getAuthenticatedUser();
+        }
+
+        $isLeader = isset($request->is_leader) ? $request->is_leader : 0;
 
         if($groupId)
         {

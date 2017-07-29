@@ -34,6 +34,7 @@ class FeedsTransformer extends Transformer
             'feedId'            => $feed->id,
             'description'       => $feed->description,
             'is_attachment'     => $feed->is_attachment,
+            'createdAt'         => date('m-d-Y H:i:s', strtotime($feed->created_at)),
             'feedCreator'       => [
                 'userId'            => (int) $feed->user->id,
                 'name'              => $feed->user->name,
@@ -126,6 +127,7 @@ class FeedsTransformer extends Transformer
                     'feedId'            => $feed->id,
                     'description'       => $feed->description,
                     'is_attachment'     => $feed->is_attachment,
+                    'createdAt'         => date('m-d-Y H:i:s', strtotime($feed->created_at)),
                     'feedCreator'       => [
                         'userId'            => (int) $feed->user->id,
                         'name'              => $feed->user->name,
