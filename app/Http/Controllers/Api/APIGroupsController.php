@@ -97,7 +97,7 @@ class APIGroupsController extends BaseApiController
     public function create(Request $request)
     {
         $input = $request->all();
-
+        
         if(isset($input['name']) && !empty($input['name']))
         {
             if($request->file('image'))
