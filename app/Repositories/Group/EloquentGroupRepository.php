@@ -402,6 +402,46 @@ class EloquentGroupRepository extends DbRepository
     }
 
     /**
+     * Join Group Multi Members
+     * 
+     * @param int $groupId
+     * @param array $userIds
+     * @param integer $isLeader
+     * @return bool
+     */
+    public function joinGroupMultiMembers($groupId = null, $userIds = array(), $isLeader = 0)
+    {
+    	$groupMemberData = [];
+
+    	if($groupId && count($userIds))
+    	{
+    		foreach($userIds as $userId)	
+    		{
+    			$status = $this->groupMember->where(['group_id' => $groupId, 'user_id' => $userId])->first();
+
+		    	if($status)
+		    	{
+		    		continue;
+		    	}
+		    	
+		    	$groupMemberData[] = [
+		    		'group_id'	=> $groupId,
+		    		'user_id'	=> $userId,
+		    		'is_leader'	=> $isLeader
+		    	];
+
+    		}
+		    
+		    if(count($groupMemberData))
+		    {
+		    	return $this->groupMember->insert($groupMemberData);
+		    }
+    	}
+
+    	return false;
+    }
+
+    /**
      * Remove Event Member
      * @param int $eventId
      * @param object $user
