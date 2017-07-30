@@ -212,7 +212,7 @@ class APIGroupsController extends BaseApiController
     {
         $groupId = (int) $request->group_id;
 
-        if($request->get('user_id'))
+        if($request->get('user_id') && !is_array($request->get('user_id')))
         {
             $userInfo = User::findOrfail($request->get('user_id'));
         }
@@ -225,8 +225,15 @@ class APIGroupsController extends BaseApiController
 
         if($groupId)
         {
-            $status = $this->repository->joinGroup($groupId, $userInfo, $isLeader);
-
+            if(is_array($request->get('user_id')))
+            {
+                $status = $this->repository->joinGroupMultiMembers($groupId, $request->get('user_id'), $isLeader);
+            }
+            else
+            {
+                $status = $this->repository->joinGroup($groupId, $userInfo, $isLeader);    
+            }
+            
             if($status)
             {
                 $responseData = [
