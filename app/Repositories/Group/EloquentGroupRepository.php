@@ -545,25 +545,27 @@ class EloquentGroupRepository extends DbRepository
 	{
 		if($user)
 		{
-			$userInterest 	= $user->user_interests->pluck('id')->toArray();
-			$responseGroup 	= [];
-			
-			$groups = $this->model->with(['campus', 'user', 'group_members', 'group_feeds'])->get();
-			foreach($groups as $group)
+			$userInterest = $user->user_interests->pluck('interest_id')->toArray();
+
+			if(count($userInterest))
 			{
-				foreach($group->group_feeds as $feed)
-				{
-					foreach($feed->feed_interests->pluck('id') as $interest)
+				$responseGroup 	= [];
+				
+				$groups = $this->model->with(['campus', 'user', 'group_members'])->get();
+
+				foreach($groups as $group)
+				{	
+					foreach($group->get_group_interests as $interest)
 					{
-						if(in_array($interest, $userInterest))
+						if(in_array($interest->id, $userInterest))
 						{
 							$responseGroup[] = $group;
 						}
 					}
 				}
-			}
 
-			return $responseGroup;
+				return $responseGroup;
+			}
 		}
 
 		return false;
