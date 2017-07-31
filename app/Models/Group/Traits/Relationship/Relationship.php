@@ -77,6 +77,11 @@ trait Relationship
 	    return $this->group_members()->where(['is_leader' => 0])->get();
 	}
 
+	public function get_group_feeds()
+	{
+		return $this->hasMany(Feeds::class)->where(['is_campus_feed' => 0]);	
+	}
+
 	/**
      * @return mixed
      */
