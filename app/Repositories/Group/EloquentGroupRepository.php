@@ -2,6 +2,7 @@
 
 use App\Models\Group\Group;
 use App\Models\Group\GroupMember;
+use App\Models\Campus\Campus;
 use App\Models\Group\GroupInterest;
 use App\Models\Access\User\User;
 use App\Repositories\DbRepository;
@@ -31,8 +32,11 @@ class EloquentGroupRepository extends DbRepository
 	public $tableHeaders = [
 		'name' 			=> 'Group Name',
 		'description' 	=> 'Details',
-		'is_private' 	=> 'Access',
-		'group_type' 	=> 'Group Type',
+		'group_leader'	=> 'Group Leader',
+		'members_count'	=> 'Members Count',
+		'campus_name' 	=> 'Campus',
+		'is_private' 	=> 'Private Group',
+		'group_type' 	=> 'Discovery Type',
 		'actions' 		=> 'Actions'
 	];
 
@@ -51,6 +55,24 @@ class EloquentGroupRepository extends DbRepository
 		'description' => [
 			'data' 			=> 'description',
 			'name' 			=> 'description',
+			'searchable' 	=> true, 
+			'sortable'		=> true
+		],
+		'group_leader'	=> [
+			'data' 			=> 'group_leader',
+			'name' 			=> 'group_leader',
+			'searchable' 	=> true, 
+			'sortable'		=> true
+		],
+		'members_count'	=> [
+			'data' 			=> 'members_count',
+			'name' 			=> 'members_count',
+			'searchable' 	=> false, 
+			'sortable'		=> false
+		],
+		'campus_name' => [
+			'data' 			=> 'campus_name',
+			'name' 			=> 'campus_name',
 			'searchable' 	=> true, 
 			'sortable'		=> true
 		],
@@ -117,6 +139,7 @@ class EloquentGroupRepository extends DbRepository
 	public $moduleRoutes = [
 		'listRoute' 	=> 'group.index',
 		'createRoute' 	=> 'group.create',
+		'viewRoute' 	=> 'group.show',
 		'storeRoute' 	=> 'group.store',
 		'editRoute' 	=> 'group.edit',
 		'updateRoute' 	=> 'group.update',
@@ -131,6 +154,7 @@ class EloquentGroupRepository extends DbRepository
 	 */
 	public $moduleViews = [
 		'listView' 		=> 'group.index',
+		'showView' 		=> 'group.show',
 		'createView' 	=> 'group.create',
 		'editView' 		=> 'group.edit',
 		'deleteView' 	=> 'group.destroy',
@@ -142,9 +166,10 @@ class EloquentGroupRepository extends DbRepository
 	 */
 	public function __construct()
 	{
-		$this->model 		= new Group;
-		$this->userModel 	= new User;
-		$this->groupMember  = new GroupMember;
+		$this->model 			= new Group;
+		$this->userModel 		= new User;
+		$this->groupMember  	= new GroupMember;
+		$this->campusModel 		= new Campus;
 	}
 
 	/**
@@ -293,7 +318,8 @@ class EloquentGroupRepository extends DbRepository
 			$this->model->getTable().'.description',
 			$this->model->getTable().'.is_private',
 			$this->model->getTable().'.group_type',
-			$this->userModel->getTable().'.name as username'
+			$this->userModel->getTable().'.name as username',
+			$this->campusModel->getTable().'.name as campus_name',
 		];
     }
 
@@ -303,7 +329,9 @@ class EloquentGroupRepository extends DbRepository
     public function getForDataTable()
     {
     	return  $this->model->select($this->getTableFields())
-    			->leftjoin($this->userModel->getTable(), $this->userModel->getTable().'.id', '=', $this->model->getTable().'.user_id')->get();
+    			->leftjoin($this->userModel->getTable(), $this->userModel->getTable().'.id', '=', $this->model->getTable().'.user_id')
+    			->leftjoin($this->campusModel->getTable(), $this->campusModel->getTable().'.id', '=', $this->model->getTable().'.campus_id')
+    			->get();
         
     }
 
@@ -509,6 +537,24 @@ class EloquentGroupRepository extends DbRepository
 			}
 
 			return $responseGroup;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get Group Members
+	 * 
+	 * @param int $groupId
+	 * @return array|bool|mixed
+	 */
+	public function getGroupMembers($groupId = null)
+	{
+		if($groupId)	
+		{
+			$model = $this->model->find($groupId);
+
+			return $model->group_members;
 		}
 
 		return false;

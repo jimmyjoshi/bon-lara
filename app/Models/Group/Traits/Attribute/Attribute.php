@@ -22,8 +22,17 @@ trait Attribute
 	/**
 	 * @return string
 	 */
+	public function getViewButtonAttribute($routes, $prefix = 'admin')
+	{
+		return '<a href="'.route($prefix .'.'. $routes->viewRoute, $this).'" class="btn btn-xs btn-success"><i class="fa fa-eye" data-toggle="tooltip" data-placement="top" title="View"></i></a> ';
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getDeleteButtonAttribute($routes, $prefix = 'admin')
 	{
+		return '';
 	    return '<a href="'.route($prefix .'.'. $routes->deleteRoute, $this).'"
 	            data-method="delete"
 	            data-trans-button-cancel="Cancel"
@@ -53,6 +62,6 @@ trait Attribute
 
 		$routes = $repository->getModuleRoutes();
 
-		return $this->getEditButtonAttribute($routes, $repository->adminRoutePrefix) . $this->getDeleteButtonAttribute($routes, $repository->adminRoutePrefix);
+		return $this->getViewButtonAttribute($routes, $repository->adminRoutePrefix) . $this->getEditButtonAttribute($routes, $repository->adminRoutePrefix) . $this->getDeleteButtonAttribute($routes, $repository->adminRoutePrefix);
 	}   
 }

@@ -9,6 +9,6 @@ Route::group([
      */
     Route::resource('event', 'AdminEventController');
 
-    Route::get('/', 'AdminEventController@index')->name('event.index');
-    Route::get('/get', 'AdminEventController@getTableData')->name('event.get-list-data');
+    Route::get('event/', 'AdminEventController@index')->name('event.index');
+    Route::get('event/get-list-data', 'AdminEventController@getTableData')->name('event.get-list-data');
 });
