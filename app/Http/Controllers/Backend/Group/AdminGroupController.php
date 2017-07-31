@@ -64,7 +64,6 @@ class AdminGroupController extends Controller
      */
     public function show($id, Request $request)
     {
-        die('test');
         $model = $this->repository->getById($id);
 
         return view($this->repository->setAdmin(true)->getModuleView('showView'))->with(

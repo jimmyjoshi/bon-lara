@@ -554,7 +554,7 @@ class EloquentGroupRepository extends DbRepository
 		{
 			$model = $this->model->find($groupId);
 
-			return $model->group_members;
+			return $model->get_only_group_members();
 		}
 
 		return false;

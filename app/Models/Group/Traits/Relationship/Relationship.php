@@ -4,6 +4,10 @@ use App\Models\Access\User\User;
 use App\Models\Group\GroupInterest;
 use App\Models\Campus\Campus;
 use App\Models\Feeds\Feeds;
+use App\Models\Channel\Channel;
+
+use App\Models\Event\Event;
+
 use App\Models\Interest\Interest;
 
 trait Relationship
@@ -64,10 +68,36 @@ trait Relationship
 	}
 
 	/**
+	 * Get Members
+	 * 
+	 * @return mixed
+	 */
+	public function get_only_group_members()
+	{
+	    return $this->group_members()->where(['is_leader' => 0])->get();
+	}
+
+	/**
      * @return mixed
      */
     public function group_feeds()
     {
-        return $this->hasMany(Feeds::class);
+        return $this->hasMany(Feeds::class)->where(['is_campus_feed' => 0])->get();
     } 
+
+    /**
+     * @return mixed
+     */
+    public function group_events()
+    {
+        return $this->hasMany(Event::class);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function group_channels()
+    {
+        return $this->hasMany(Channel::class);
+    }
 }
