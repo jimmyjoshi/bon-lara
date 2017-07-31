@@ -412,16 +412,30 @@ class EloquentGroupRepository extends DbRepository
     	{
     		$status = $this->groupMember->where(['group_id' => $groupId, 'user_id' => $user->id])->first();
 
-	    	if($status)
+    		if($status)
 	    	{
 	    		return false;
 	    	}
-	    	
-	    	$groupMemberData = [
-	    		'group_id'	=> $groupId,
-	    		'user_id'	=> $user->id,
-	    		'is_leader'	=> $isLeader
-	    	];
+    		
+    		if($isLeader == 1)
+    		{
+    			$groupMemberData = [
+		    		'group_id'	=> $groupId,
+		    		'user_id'	=> $user->id,
+		    		'is_leader'	=> $isLeader
+		    	];
+    		}
+    		else
+    		{
+    			$groupInfo = $this->model->find($groupId);
+
+    			$groupMemberData = [
+		    		'group_id'	=> $groupId,
+		    		'user_id'	=> $user->id,
+		    		'is_leader'	=> $isLeader,
+		    		'status' 	=> $groupInfo->is_private ? 0 : 1
+		    	];
+    		}
 
 	    	return $this->groupMember->create($groupMemberData);
     	}
@@ -443,6 +457,8 @@ class EloquentGroupRepository extends DbRepository
 
     	if($groupId && count($userIds))
     	{
+    		$groupInfo = $this->model->find($groupId);
+
     		foreach($userIds as $userId)	
     		{
     			$status = $this->groupMember->where(['group_id' => $groupId, 'user_id' => $userId])->first();
@@ -452,13 +468,24 @@ class EloquentGroupRepository extends DbRepository
 		    		continue;
 		    	}
 		    	
-		    	$groupMemberData[] = [
-		    		'group_id'	=> $groupId,
-		    		'user_id'	=> $userId,
-		    		'is_leader'	=> $isLeader
-		    	];
-
-    		}
+		    	if($isLeader == 1)
+	    		{
+	    			$groupMemberData[] = [
+			    		'group_id'	=> $groupId,
+			    		'user_id'	=> $userId,
+			    		'is_leader'	=> $isLeader
+			    	];
+	    		}
+	    		else
+	    		{
+	    			$groupMemberData[] = [
+			    		'group_id'	=> $groupId,
+			    		'user_id'	=> $userId,
+			    		'is_leader'	=> $isLeader,
+			    		'status' 	=> $groupInfo->is_private ? 0 : 1
+			    	];
+	    		}
+	    	}
 		    
 		    if(count($groupMemberData))
 		    {
@@ -555,6 +582,53 @@ class EloquentGroupRepository extends DbRepository
 			$model = $this->model->find($groupId);
 
 			return $model->get_only_group_members();
+		}
+
+		return false;
+	}
+
+	/**
+	 * Remove Member
+	 * 
+	 * @param int $groupId
+	 * @param mix $userIds
+	 * @param object $userInfo
+	 * @return bool
+	 */
+	public function removeMember($groupId = null, $userIds, $userInfo = null)
+	{
+		if($groupId && $userInfo)
+		{
+			$flag  = false;
+			$model = $this->model->find($groupId);
+
+			if($model->getLeaders())
+			{
+				foreach($model->getLeaders() as $leaders)
+				{
+					if($leaders->id == $userInfo->id)
+					{
+						$flag = true;
+					}
+				}
+
+				if($flag)
+				{
+					if(is_array($userIds))
+					{
+						foreach($userIds as $userId)
+						{
+							$this->groupMember->where(['group_id' => $groupId, 'user_id' => $userId])->delete();
+						}
+
+						return true;
+					}
+					else
+					{
+						return $this->groupMember->where(['group_id' => $groupId, 'user_id' => $userIds])->delete();
+					}
+				}
+			}
 		}
 
 		return false;

@@ -252,6 +252,37 @@ class APIGroupsController extends BaseApiController
     }
 
     /**
+     * Remove Member
+     * 
+     * @param Request $request
+     * @return json
+     */
+    public function removeMember(Request $request)
+    {
+        $userInfo = $this->getAuthenticatedUser();
+        
+        if($request->get('group_id') && $request->get('user_id'))
+        {
+            $status = $this->repository->removeMember($request->get('group_id'), $request->get('user_id'), $userInfo);    
+            
+            if($status)
+            {
+                $responseData = [
+                    'success' => 'Group Member Removed Successfully.'
+                ];
+
+                return $this->successResponse($responseData, 'Group Member Removed Successfully !.');
+            }
+        }
+
+        $error = [
+            'reason' => "Unable to Remove Group Members, Only Group Leader can Remove Members!"
+        ];
+
+        return $this->setStatusCode(404)->failureResponse($error, 'Something went wrong !');
+    }
+
+    /**
      * Skip Event
      * 
      * @param Request $request
