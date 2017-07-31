@@ -1,10 +1,10 @@
 @extends ('backend.layouts.app')
 
-@section ('title', isset($title) ? $title : 'Edit Event')
+@section ('title', isset($title) ? $title : 'Edit Group')
 
 @section('page-header')
     <h1>
-        Events
+        Groups
         <small>Edit</small>
     </h1>
 @endsection
@@ -14,7 +14,7 @@
 
         <div class="box box-success">
             <div class="box-header with-border">
-                <h3 class="box-title">Event</h3>
+                <h3 class="box-title">Group</h3>
                     <div class="box-tools pull-right">
                         @include('common.group.header-buttons', ['listRoute' => $repository->getActionRoute('listRoute'), 'createRoute' => $repository->getActionRoute('createRoute')])
                     </div>

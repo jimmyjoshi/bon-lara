@@ -30,7 +30,7 @@
                 </div>
             </div>
 
-            {{-- Event Form --}}
+            {{-- Group Form --}}
             @include('common.group.form')
             
         </div>

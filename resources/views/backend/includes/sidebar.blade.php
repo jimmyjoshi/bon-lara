@@ -65,6 +65,41 @@
             </li>
             @endauth
 
+            <li class="{{ active_class(Active::checkUriPattern('admin/interests')) }}">
+                <a href="{{ route('admin.interests.index') }}">
+                    <i class="fa fa-circle-o"></i>
+                    <span>Manage Interest</span>
+                </a>
+            </li>
+
+            <li class="{{ active_class(Active::checkUriPattern('admin/campus')) }}">
+                <a href="{{ route('admin.campus.index') }}">
+                    <i class="fa fa-circle-o"></i>
+                    <span>Manage Campus</span>
+                </a>
+            </li>
+
+            <li class="{{ active_class(Active::checkUriPattern('admin/group')) }}">
+                <a href="{{ route('admin.group.index') }}">
+                    <i class="fa fa-circle-o"></i>
+                    <span>Manage Groups</span>
+                </a>
+            </li>
+
+            <li class="{{ active_class(Active::checkUriPattern('admin/channel')) }}">
+                <a href="{{ route('admin.channel.index') }}">
+                    <i class="fa fa-circle-o"></i>
+                    <span>Manage Channels</span>
+                </a>
+            </li>
+
+            <li class="{{ active_class(Active::checkUriPattern('admin/feeds')) }}">
+                <a href="{{ route('admin.feeds.index') }}">
+                    <i class="fa fa-circle-o"></i>
+                    <span>Manage Feeds</span>
+                </a>
+            </li>
+
             <li class="{{ active_class(Active::checkUriPattern('admin/log-viewer*')) }} treeview">
                 <a href="#">
                     <i class="fa fa-list"></i>
@@ -87,6 +122,8 @@
                     </li>
                 </ul>
             </li>
+
+
         </ul><!-- /.sidebar-menu -->
     </section><!-- /.sidebar -->
 </aside>

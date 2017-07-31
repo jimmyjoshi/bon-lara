@@ -74,6 +74,11 @@ class AdminEventController extends Controller
         ]);
     }
 
+    public function show()
+    {
+
+    }
+
     /**
      * Store View
      * 
@@ -132,7 +137,7 @@ class AdminEventController extends Controller
      */
     public function getTableData()
     {
-     	return Datatables::of($this->repository->getForDataTable())
+        return Datatables::of($this->repository->getForDataTable())
 		    ->escapeColumns(['name', 'sort'])
             ->escapeColumns(['username', 'sort'])
             ->escapeColumns(['title', 'sort'])

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Backend\Group;
 /**
  * Class AdminGroupController
  *
- * @author Anuj Jaha er.anujjaha@gmail.com
+ * @author Anuj Jaha er.anujjaha@gmail.
  */
 
 use Illuminate\Http\Request;
@@ -43,6 +43,8 @@ class AdminGroupController extends Controller
      */
     protected $deleteSuccessMessage = "Group Deleted Successfully";
 
+    public $groupLeaders = [];
+
 	/**
 	 * __construct
 	 * 
@@ -53,6 +55,24 @@ class AdminGroupController extends Controller
 		$this->repository          = $groupRepository;
         $this->campusRepository    = $campusRepository;
 	}
+        
+    /**
+     * Show
+     * @param int $id
+     * @param Request $request
+     * @return view
+     */
+    public function show($id, Request $request)
+    {
+        die('test');
+        $model = $this->repository->getById($id);
+
+        return view($this->repository->setAdmin(true)->getModuleView('showView'))->with(
+            [
+                'item'          => $model,
+                'repository'    => $this->repository
+            ]);
+    }
 
     /**
      * Event Listing 
@@ -155,11 +175,49 @@ class AdminGroupController extends Controller
             ->addColumn('start_date', function ($event) {
                 return date('m-d-Y', strtotime($event->start_date));
             })
+            ->addColumn('group_leader', function ($group)
+            {
+                $groupLeaders = $group->getLeaders()->filter(function($item)
+                {
+                    return $this->groupLeaders[] = $item->name;
+
+                });
+
+                return implode(', ', $this->groupLeaders);
+            })
+             ->addColumn('members_count', function ($group)
+            {
+                return '<span class="btn btn-primary group-members" data-group-id="'.$group->id.'" >' . count($group->group_members) . '</span>';
+            })
 		    ->escapeColumns(['start_date', 'sort'])
 		    ->escapeColumns(['end_date', 'sort'])
 		    ->addColumn('actions', function ($event) {
                 return $event->admin_action_buttons;
             })
 		    ->make(true);
+    }
+
+    /**
+     * Get Group Members
+     * 
+     * @param Request $request
+     * @return json
+     */
+    public function getGroupMembers(Request $request)
+    {
+        if($request->get('groupId'))
+        {
+            $members = $this->repository->getGroupMembers($request->get('groupId'));
+
+            if($members && count($members))
+            {
+                return response()->json((object) [
+                    'status'    => true,
+                    'members'   => $members
+                ], 200);
+            }
+        }
+
+        return response()->json((object) ['status' => false], 200);
     }
 }
