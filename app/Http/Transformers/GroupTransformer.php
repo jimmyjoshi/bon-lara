@@ -230,6 +230,7 @@ class GroupTransformer extends Transformer
                                 'campusId'          => $groupMember->user_meta->campus->id,
                                 'campusName'        => $groupMember->user_meta->campus->name,
                                 'isLeader'          => $leader,
+                                'memberStatus'      => $groupMember->status,
                                 'profile_picture'   => $profilePicture
                             ];
 
@@ -333,6 +334,7 @@ class GroupTransformer extends Transformer
                         'campusId'          => $groupMember->user_meta->campus->id,
                         'campusName'        => $groupMember->user_meta->campus->name,
                         'isLeader'          => $leader,
+                        'memberStatus'      => $groupMember->status,
                         'profile_picture'   => $profilePicture
                     ];
                 }

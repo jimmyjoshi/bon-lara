@@ -25,7 +25,8 @@ class GroupMember extends BaseModel
         'group_id',
         'user_id',
         'campus_id',
-        'is_leader'
+        'is_leader',
+        'status'
     ];
 
     /**
