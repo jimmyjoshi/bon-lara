@@ -24,6 +24,7 @@ trait Attribute
 	 */
 	public function getDeleteButtonAttribute($routes, $prefix = 'admin')
 	{
+		return ;
 	    return '<a href="'.route($prefix .'.'. $routes->deleteRoute, $this).'"
 	            data-method="delete"
 	            data-trans-button-cancel="Cancel"

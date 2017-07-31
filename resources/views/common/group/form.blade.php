@@ -67,8 +67,8 @@
         {{ Form::label('group_type', 'Group Type:', ['class' => 'col-lg-2 control-label']) }}
 
         <div class="col-lg-10">
-            <label>{{ Form::radio('group_type', 1, true, ['class' => 'field']) }} Regular</label>
-            <label>{{ Form::radio('group_type', 0, false, ['class' => 'field']) }} Discovery</label>
+            <label>{{ Form::radio('group_type', 0, true, ['class' => 'field']) }} Regular</label>
+            <label>{{ Form::radio('group_type', 1, false, ['class' => 'field']) }} Discovery</label>
         </div>
     </div>
 </div>
