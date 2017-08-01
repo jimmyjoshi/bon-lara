@@ -229,4 +229,34 @@ class APIUserController extends BaseApiController
 
         return $this->setStatusCode(400)->failureResponse($error, 'No Users Found !');        
     }
+
+    /**
+     * SetToken
+     * 
+     * @param Request $request
+     */
+    public function setToken(Request $request)
+    {
+        $user = $this->getAuthenticatedUser();       
+        
+        if($user && $request->get('device_token'))
+        {
+            $status = $this->repository->setToken($user, $request->get('device_token'));   
+
+            if($status)
+            {
+                $responseData = [
+                    'success' => 'Token Saved Successfully !'
+                ];
+
+                return $this->successResponse($responseData, 'Token Saved Successfully !');
+            }
+        }
+
+        $error = [
+            'reason' => 'Unable to Set User Token!'
+        ];
+
+        return $this->setStatusCode(400)->failureResponse($error, 'No Users Found !');   
+    }
 }
