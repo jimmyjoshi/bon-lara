@@ -187,4 +187,87 @@ class FeedsTransformer extends Transformer
 
         return $result;
     }
+
+    public function homeFeedTransformCollection($feeds = null)
+    {
+        $result = [];
+
+        if($feeds)
+        {
+            $sr = 0;
+            foreach($feeds as $feed)
+            {
+                if(! isset($feed->user->user_meta))
+                {
+                    continue;
+                }
+
+                $groupImage     =  ''
+                $feedAttachment = '';
+
+                if(isset($feed->is_attachment) && $feed->is_attachment == 1 && file_exists(base_path() . '/public/feeds/'.$feed->user_id.'/'.$feed->attachment))
+                {
+                    $feedAttachment = url('/feeds/'.$feed->user_id.'/'.$feed->attachment);
+                }
+                $creatorProfilePicture  =  url('/profile-pictures/'.$feed->user->user_meta->profile_picture);   
+                $result[$sr] = [
+                    'feedId'            => $feed->id,
+                    'description'       => $feed->description,
+                    'is_attachment'     => $feed->is_attachment,
+                    'createdAt'         => date('m-d-Y H:i:s', strtotime($feed->created_at)),
+                    'feedCreator'       => [
+                        'userId'            => (int) $feed->user->id,
+                        'name'              => $feed->user->name,
+                        'email'             => $feed->user->email,
+                        'campusId'          => $feed->user->user_meta->campus->id,
+                        'campusName'        => $feed->user->user_meta->campus->name,
+                        'profile_picture'   => $creatorProfilePicture
+                    ],
+                    'attachment_link'   => $feedAttachment,
+                        'interests' => [],
+                        'channel'       => [
+                            'channelId'    => 0,
+                            'channelName'  => '',
+                                'channelCreator'  => [
+                                    'name'      => '',
+                                    'emailId'   => ''
+                                ]
+                        ],
+                        'groupDetails' => [
+                            'groupId'           => 0,
+                            'groupName'         => '',
+                            'groupDescription'  => '',
+                            'groupImage'        => '',
+                            'isPrivate'         => '',
+                            'isDiscovery'       => '',
+                        ]
+                ];
+
+                if($feed->feed_interests && count($feed->feed_interests))
+                {
+                    foreach($feed->feed_interests as $interest)   
+                    {
+                        if(isset($interest) && $interest->image && file_exists(base_path() . '/public/interests/'.$interest->image))
+                        {
+                            $image = url('/interests/'.$interest->image);
+                        }
+                        else
+                        {
+                            $image = url('/interests/default.png');    
+                        }
+
+                        $result[$sr]['interests'][] = [
+                            'interestId'        => (int) $interest->id,
+                            'name'              => $interest->name,
+                            'image'             => $image
+                        ];
+                    }
+                }
+                $sr++;
+            }
+
+        }
+
+        return $result;
+    }
 }

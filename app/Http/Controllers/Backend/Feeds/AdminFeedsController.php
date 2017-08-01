@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\Datatables\Facades\Datatables;
 use App\Repositories\Feeds\EloquentFeedsRepository;
+use App\Repositories\Campus\EloquentCampusRepository;
+use App\Repositories\Interest\EloquentInterestRepository;
 
 /**
  * Class AdminFeedsController
@@ -47,7 +49,9 @@ class AdminFeedsController extends Controller
 	 */
 	public function __construct()
 	{
-        $this->repository = new EloquentFeedsRepository;
+        $this->repository           = new EloquentFeedsRepository;
+        $this->campusRepository     = new EloquentCampusRepository;
+        $this->interestRepository   = new EloquentInterestRepository;
 	}
 
     /**
@@ -70,7 +74,9 @@ class AdminFeedsController extends Controller
     public function create(Request $request)
     {
         return view($this->repository->setAdmin(true)->getModuleView('createView'))->with([
-            'repository' => $this->repository
+            'repository'        => $this->repository,
+            'campusRepository'  => $this->campusRepository,
+            'interestRepository' => $this->interestRepository
         ]);
     }
 
@@ -81,7 +87,23 @@ class AdminFeedsController extends Controller
      */
     public function store(Request $request)
     {
-        $this->repository->create($request->all());
+        $input = $request->all();
+
+        if($request->file('attachment'))
+        {
+            $attachment  = rand(11111, 99999) . '_feed_attachment.' . $request->file('attachment')->getClientOriginalExtension();
+            $path = base_path() . '/public/feeds/'.access()->user()->id.'/';
+            if(! is_dir($path))
+            {
+                mkdir($path, 0777, true);
+            }
+            
+            $request->file('attachment')->move($path, $attachment);
+
+            $input = array_merge($input, ['is_attachment' => 1, 'attachment' => $attachment]);
+        }
+
+        $this->repository->createCampusFeeds($input);
 
         return redirect()->route($this->repository->setAdmin(true)->getActionRoute('listRoute'))->withFlashSuccess($this->createSuccessMessage);
     }

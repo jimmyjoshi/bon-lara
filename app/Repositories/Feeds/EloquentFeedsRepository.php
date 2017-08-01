@@ -147,6 +147,30 @@ class EloquentFeedsRepository extends DbRepository
 	}	
 
 	/**
+	 * Create Campus Feeds
+	 * 
+	 * @param array $input
+	 * @return bool
+	 */
+	public function createCampusFeeds($input = array())
+	{
+		$input = $this->prepareInputData($input, true);
+		$model = $this->model->create($input);
+
+		if($model)
+		{
+			if(isset($input['interests']) && count($input['interests']))
+			{
+				$this->addFeedInterests($model, $input);
+			}
+			
+			return $model->with(['campus', 'channel', 'group', 'user', 'feed_interests'])->where(['id' => $model->id])->first();
+		}
+
+		return false;
+	}
+
+	/**
 	 * Add FeedInterests
 	 * 
 	 * @param object $model
@@ -330,7 +354,7 @@ class EloquentFeedsRepository extends DbRepository
     {
     	if($campusId)
     	{
-    		return $this->model->with(['campus', 'channel', 'group', 'user', 'feed_interests'])->where([
+    		return $this->model->with(['campus', 'user', 'feed_interests'])->where([
     			'campus_id' 		=> $campusId,
     			'is_campus_feed' 	=> 1
     			])->orderBy('id', 'desc')->get();
