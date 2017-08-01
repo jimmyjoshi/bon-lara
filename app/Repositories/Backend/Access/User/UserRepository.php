@@ -4,6 +4,7 @@ namespace App\Repositories\Backend\Access\User;
 
 use App\Models\Access\User\User;
 use App\Models\Access\User\UserMeta;
+use App\Models\Access\User\UserToken;
 use App\Models\Access\User\UserInterest;
 use App\Models\Interest\Interest;
 use Illuminate\Support\Facades\DB;
@@ -543,5 +544,29 @@ class UserRepository extends BaseRepository
                 return $item;
             }
         });
+    }
+
+    /**
+     * Set Token
+     * 
+     * @param object $userInfo
+     */
+    public function setToken($userInfo = null, $token = null)
+    {
+        if($userInfo && $token)
+        {
+            $userToken = new UserToken;
+
+            $userToken->where('user_id', $userInfo->id)->delete();
+
+            $tokenInfo = [
+                'user_id'   => $userInfo->id,
+                'token'     => $token
+            ];
+
+            return $userToken->create($tokenInfo);
+        }
+
+        return false;
     }
 }
