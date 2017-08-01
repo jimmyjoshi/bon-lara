@@ -202,7 +202,8 @@ class FeedsTransformer extends Transformer
                     continue;
                 }
 
-                $groupImage     =  ''
+                $groupImage = '';
+                
                 $feedAttachment = '';
 
                 if(isset($feed->is_attachment) && $feed->is_attachment == 1 && file_exists(base_path() . '/public/feeds/'.$feed->user_id.'/'.$feed->attachment))
@@ -237,7 +238,7 @@ class FeedsTransformer extends Transformer
                             'groupId'           => 0,
                             'groupName'         => '',
                             'groupDescription'  => '',
-                            'groupImage'        => '',
+                            'groupImage'        => $groupImage,
                             'isPrivate'         => '',
                             'isDiscovery'       => '',
                         ]
