@@ -100,6 +100,13 @@
                 </a>
             </li>
 
+            <li class="{{ active_class(Active::checkUriPattern('admin/feeds/create')) }}">
+                <a href="{{ route('admin.feeds.create') }}">
+                    <i class="fa fa-circle-o"></i>
+                    <span>Announcement</span>
+                </a>
+            </li>
+
             <li class="{{ active_class(Active::checkUriPattern('admin/log-viewer*')) }} treeview">
                 <a href="#">
                     <i class="fa fa-list"></i>

@@ -14,7 +14,8 @@
         'route'     => $repository->getActionRoute('storeRoute'),
         'class'     => 'form-horizontal',
         'role'      => 'form',
-        'method'    => 'post'
+        'method'    => 'post',
+        'files'     => true
     ])}}
 
         <div class="box box-success">
@@ -22,7 +23,7 @@
                 <h3 class="box-title">Create {{ isset($repository->moduleTitle) ? $repository->moduleTitle : '' }}</h3>
 
                 <div class="box-tools pull-right">
-                    @include('common.campus.header-buttons', [
+                    @include('common.feeds.header-buttons', [
                         'listRoute'     => $repository->getActionRoute('listRoute'),
                         'createRoute'   => $repository->getActionRoute('createRoute')
                     ])
@@ -30,7 +31,7 @@
             </div>
 
             {{-- Event Form --}}
-            @include('common.campus.form')
+            @include('common.feeds.form')
             
         </div>
 
