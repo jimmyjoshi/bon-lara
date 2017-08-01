@@ -237,6 +237,11 @@ class EloquentGroupRepository extends DbRepository
 		if($model)
 		{
 			$input = $this->prepareInputData($input);		
+
+			if(isset($input['interests']))
+			{
+				$interestStatus = $this->addGroupInterest($model, $input);
+			}
 			
 			return $model->update($input);
 		}

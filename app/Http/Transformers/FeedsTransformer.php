@@ -14,7 +14,12 @@ class FeedsTransformer extends Transformer
      */
     public function transform($feed) 
     {
-        $groupImage =  url('/groups/'.$feed->group->image);
+        $groupImage = '';
+
+        if(isset($feed->group))
+        {
+            $groupImage =  url('/groups/'.$feed->group->image);
+        }
         
         $feedAttachment = '';
 
@@ -43,23 +48,22 @@ class FeedsTransformer extends Transformer
                 'campusName'        => $feed->user->user_meta->campus->name,
                 'profile_picture'   => $creatorProfilePicture
             ], 
-            
             'attachment_link'   => $feedAttachment,
                 'channel'       => [
-                    'channelId'    => (int) $feed->channel->id,
-                    'channelName'  => $feed->channel->name,
+                    'channelId'    => isset($feed->channel) ? (int) $feed->channel->id : 0,
+                    'channelName'  => isset($feed->channel) ? $feed->channel->name : '',
                         'channelCreator'  => [
-                            'name'      => $feed->channel->user->name,
-                            'emailId'   => $feed->channel->user->email
+                            'name'      => isset($feed->channel) ? $feed->channel->user->name : '',
+                            'emailId'   => isset($feed->channel) ? $feed->channel->user->email : ''
                         ]
                 ],
                 'groupDetails' => [
-                    'groupId'           => (int) $feed->group->id,
-                    'groupName'         => $feed->group->name,
-                    'groupDescription'  => $feed->group->description,
+                    'groupId'           => isset($feed->group) ? (int) $feed->group->id : '',
+                    'groupName'         => isset($feed->group) ? $feed->group->name : '',
+                    'groupDescription'  => isset($feed->group) ? $feed->group->description : '',
                     'groupImage'        => $groupImage,
-                    'isPrivate'         => $feed->group->is_private,
-                    'isDiscovery'       => $feed->group->group_type,
+                    'isPrivate'         => isset($feed->group) ? $feed->group->is_private : '',
+                    'isDiscovery'       => isset($feed->group) ? $feed->group->group_type : '',
                 ]
         ];
 
