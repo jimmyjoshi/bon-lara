@@ -63,6 +63,7 @@ Route::group(['namespace' => 'Api', 'middleware' => 'jwt.customauth'], function 
     Route::post('groups/get-group-members', 'APIGroupsController@getAllGroupMembers')->name('groups.get-group-members');
 
     Route::get('get-channels/', 'APIChannelController@index')->name('channels.get-all-channels');
+    Route::post('channels/get-channels-by-group-id/', 'APIChannelController@getChannelsByGroupId')->name('channels.get-channels-by-group-id');
     Route::post('create-new-channel/', 'APIChannelController@create')->name('channels.create-new-channel');
 
     Route::get('get-all-feeds/', 'APIFeedsController@index')->name('feeds.get-all-feeds');

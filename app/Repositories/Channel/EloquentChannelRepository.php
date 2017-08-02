@@ -297,4 +297,21 @@ class EloquentChannelRepository extends DbRepository
 
     	return false;
     }
+
+    /**
+     * Get Channels By CampusId GroupId
+     * 
+     * @param int $campusId
+     * @param int $groupId
+     * @return object
+     */
+    public function getChannelsByCampusIdGroupId($campusId = null, $groupId = null)
+    {
+    	if($campusId && $groupId)
+    	{
+    		return $this->model->where(['campus_id' => $campusId, 'group_id' => $groupId])->get();
+    	}
+
+    	return false;
+    }
 }
