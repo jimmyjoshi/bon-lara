@@ -83,4 +83,33 @@ class APIChannelController extends BaseApiController
 
         return $this->setStatusCode(400)->failureResponse($error, 'Please Try Again !');
     }
+
+    /**
+     * Get Channels By GroupId
+     * 
+     * @param Request $request
+     * @return json
+     */
+    public function getChannelsByGroupId(Request $request)
+    {
+        $userInfo   = $this->getAuthenticatedUser();
+        $campusId   = $userInfo->user_meta->campus_id;
+        if($request->get('group_id'))
+        {
+            $allChannels = $this->repository->getChannelsByCampusIdGroupId($campusId, $request->get('group_id'));
+
+            if($allChannels && count($allChannels))
+            {
+                $responseData = $this->apiTransformer->transformChannelCollection($allChannels);
+
+                return $this->successResponse($responseData);
+            }
+        }
+
+        $error = [
+            'reason' => 'Unable to find Channel!'
+        ];
+
+        return $this->setStatusCode(400)->failureResponse($error, 'No Channel Found !');        
+    }
 }
