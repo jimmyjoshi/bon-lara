@@ -200,13 +200,15 @@ class EloquentGroupRepository extends DbRepository
 	 * Add Group Interest
 	 *
 	 * @param object $model
-	 * @param array $input [description]
+	 * @param array $input
 	 */
 	public function addGroupInterest($model = null, $input = array())
 	{
 		$groupInterest = [];
 
-		foreach($input['interests'] as $interest)
+		$interests = explode(',', $input['interests']);
+
+		foreach($interests as $interest)
 		{
 			$groupInterest[] = [
 				'group_id' 		=> $model->id,
