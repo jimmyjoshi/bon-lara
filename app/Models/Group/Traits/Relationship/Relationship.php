@@ -43,6 +43,16 @@ trait Relationship
 	}
 
 	/**
+	 * Relationship Mapping for Member
+	 * 
+	 * @return mixed
+	 */
+	public function get_group_leaders()
+	{
+		return $this->belongsToMany(User::class, 'data_group_members', 'group_id',  'user_id')->where('is_leader', 1);
+	}
+
+	/**
 	 * Relationship Mapping for interest
 	 * 
 	 * @return mixed
