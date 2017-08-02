@@ -354,6 +354,9 @@ class GroupTransformer extends Transformer
             $sr = 0;
             foreach($group->get_only_group_members() as $member)   
             {
+                if(!$member->user_meta)
+                    continue;
+
                 $creatorProfilePicture =  url('/profile-pictures/'.$member->user_meta->profile_picture);   
 
                 $result[$sr] = [
@@ -370,6 +373,9 @@ class GroupTransformer extends Transformer
 
         foreach($group->get_group_leaders()->get() as $member)   
         {
+            if(!$member->user_meta)
+                    continue;
+                
             $creatorProfilePicture =  url('/profile-pictures/'.$member->user_meta->profile_picture);   
 
             $result[$sr] = [
