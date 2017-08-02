@@ -595,6 +595,22 @@ class EloquentGroupRepository extends DbRepository
 	}
 
 	/**
+	 * Get All Members By GroupId
+	 * 
+	 * @param int $groupId
+	 * @return array
+	 */
+	public function getAllMembersByGroupId($groupId = null)
+	{
+		if($groupId)	
+		{
+			return $this->model->with(['group_members', 'get_group_leaders'])->where('id', $groupId)->first();
+		}
+
+		return false;
+	}
+
+	/**
 	 * Remove Member
 	 * 
 	 * @param int $groupId

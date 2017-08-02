@@ -188,10 +188,10 @@ class APIGroupsController extends BaseApiController
             if($status)
             {
                 $responseData = [
-                    'success' => 'Event Deleted'
+                    'success' => 'Group Deleted'
                 ];
 
-                return $this->successResponse($responseData, 'Event is Deleted Successfully');
+                return $this->successResponse($responseData, 'Group is Deleted Successfully');
             }
         }
 
@@ -313,4 +313,30 @@ class APIGroupsController extends BaseApiController
 
         return $this->setStatusCode(404)->failureResponse($error, 'Something went wrong !');
     }
+
+    /**
+     * Get Group Members
+     * 
+     * @param Request $request
+     * @return json
+     */
+    public function getAllGroupMembers(Request $request)
+    {
+        $userInfo = $this->getAuthenticatedUser();
+        
+        if($request->get('group_id'))
+        {
+            $group      = $this->repository->getAllMembersByGroupId($request->get('group_id'));
+            $response   = $this->groupTransformer->getGroupMembers($group);
+                    
+            return $this->successResponse($response, 'Fetch All Memebrs');
+        }
+
+        $error = [
+            'reason' => "No Members Found !"
+        ];
+
+        return $this->setStatusCode(404)->failureResponse($error, 'Something went wrong !');
+    }
 }
+

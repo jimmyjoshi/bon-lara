@@ -344,5 +344,46 @@ class GroupTransformer extends Transformer
 
     return $result;
     }
+
+    public function getGroupMembers($group)
+    {
+        $result = [];
+
+        if($group->get_only_group_members())
+        {
+            $sr = 0;
+            foreach($group->get_only_group_members() as $member)   
+            {
+                $creatorProfilePicture =  url('/profile-pictures/'.$member->user_meta->profile_picture);   
+
+                $result[$sr] = [
+                    'userId'            => $member->id,
+                    'name'              => $member->name,
+                    'email'             => $member->email,
+                    'profile_picture'   => $creatorProfilePicture,
+                    'isLeader'          => 0
+                ];    
+                $sr++;
+            }
+        }
+
+
+        foreach($group->get_group_leaders()->get() as $member)   
+        {
+            $creatorProfilePicture =  url('/profile-pictures/'.$member->user_meta->profile_picture);   
+
+            $result[$sr] = [
+                'userId'            => $member->id,
+                'name'              => $member->name,
+                'email'             => $member->email,
+                'profile_picture'   => $creatorProfilePicture,
+                'isLeader'          => 1
+            ];
+
+            $sr++;   
+        }
+            
+        return $result;
+    }
 }
 
