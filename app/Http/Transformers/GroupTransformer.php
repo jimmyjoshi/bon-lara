@@ -311,7 +311,7 @@ class GroupTransformer extends Transformer
                 $sr++;
             }
         }
-
+        
         $groupLeaders = $group->getLeaders()->pluck('id')->toArray();
         if($group->group_members)
         {
