@@ -324,10 +324,16 @@ class GroupTransformer extends Transformer
                 {
                     $profilePicture = url('/profile-pictures/'.$groupMember->user_meta->profile_picture);
                     $leader         = 0;
+                    $member         = 1;
 
                     if(in_array($groupMember->id, $groupLeaders))
                     {
                         $leader = 1;
+                    }
+
+                    if($leader == 1)
+                    {
+                        $member = 0;
                     }
 
                     $result['group_members'][$sr] =   [
@@ -337,6 +343,7 @@ class GroupTransformer extends Transformer
                         'campusId'          => $groupMember->user_meta->campus->id,
                         'campusName'        => $groupMember->user_meta->campus->name,
                         'isLeader'          => $leader,
+                        'isMember'          => $member,
                         'memberStatus'      => $groupMember->status,
                         'profile_picture'   => $profilePicture
                     ];
