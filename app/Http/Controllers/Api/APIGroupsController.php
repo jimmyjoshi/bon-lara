@@ -236,11 +236,15 @@ class APIGroupsController extends BaseApiController
             
             if($status)
             {
-                $responseData = [
-                    'success' => 'Group Joined Successfully.'
-                ];
+                $userInfo   = $this->getAuthenticatedUser();
+                $model      = $this->repository->getById($groupId);
 
-                return $this->successResponse($responseData, 'Group Joined Successfully !.');
+                if($model)
+                {
+                    $response = $this->groupTransformer->getSingleGroup($model, $userInfo);
+                    
+                    return $this->successResponse($response, 'Group Joined Successfully !');
+                }
             }
         }
 
