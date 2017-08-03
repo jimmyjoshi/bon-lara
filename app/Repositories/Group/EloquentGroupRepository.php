@@ -473,7 +473,7 @@ class EloquentGroupRepository extends DbRepository
      * @param integer $isLeader
      * @return bool
      */
-    public function joinGroupMultiMembers($groupId = null, $userIds = array(), $isLeader = 0)
+    public function joinGroupMultiMembers($groupId = null, $userIds = array(), $isLeader = 0, $sync = 0)
     {
     	$groupMemberData = [];
 
@@ -511,6 +511,11 @@ class EloquentGroupRepository extends DbRepository
 		    
 		    if(count($groupMemberData))
 		    {
+		    	if($sync && $sync == 1)
+		    	{
+		    		$this->groupMember->where('group_id', $groupId)->delete();
+		    	}
+
 		    	return $this->groupMember->insert($groupMemberData);
 		    }
     	}

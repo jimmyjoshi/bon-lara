@@ -227,7 +227,7 @@ class APIGroupsController extends BaseApiController
         {
             if(is_array($request->get('user_id')))
             {
-                $status = $this->repository->joinGroupMultiMembers($groupId, $request->get('user_id'), $isLeader);
+                $status = $this->repository->joinGroupMultiMembers($groupId, $request->get('user_id'), $isLeader, $request->get('sync'));
             }
             else
             {
