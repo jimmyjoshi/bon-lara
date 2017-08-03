@@ -59,6 +59,63 @@ class EventTransformer extends Transformer
         ];
     }
 
+    public function getAllGroupEvents($events = null, $userInfo = null)
+    {
+        $result = [];
+
+        if($events)
+        {
+            $sr = 0;
+
+            foreach($events as $event)
+            {
+                if(! isset($event->user->user_meta))
+                    continue;
+
+                $creatorProfilePicture =  url('/profile-pictures/'.$event->user->user_meta->profile_picture);
+                    
+                $result[$sr] = [
+                    'eventId'           => (int) $event->id,
+                    'eventName'         => $event->name,
+                    'eventTitle'        => $event->title,
+                    'eventStartDate'    => date('d M', strtotime($event->start_date)),
+                    'eventEndDate'      => date('d M', strtotime($event->end_date)),
+                    'joinEvent'         => false,
+                    'eventCreator'      => [
+                        'userId'            => (int) $event->user->id,
+                        'name'              => $event->user->name,
+                        'email'             => $event->user->email,
+                        'campusId'          => $event->user->user_meta->campus->id,
+                        'campusName'        => $event->user->user_meta->campus->name,
+                        'profile_picture'   => $creatorProfilePicture
+                    ],
+                ];
+
+                foreach($event->event_members as $user)
+                {
+                    if($userInfo->id == $user->id)
+                    {
+                        $result[$sr]['joinEvent'] = true;
+                    }
+                    
+                    $profilePicture =  url('/profile-pictures/'.$user->user_meta->profile_picture);
+
+                    $result[$sr]['event_members'][] =   [
+                            'userId'            => (int) $user->id,
+                            'name'              => $user->name,
+                            'email'             => $user->email,
+                            'campusId'          => $user->user_meta->campus->id,
+                            'campusName'        => $user->user_meta->campus->name,
+                            'profile_picture'   => $profilePicture
+                        ];
+                }   
+                $sr++;
+            }
+        }
+        
+        return $result;
+    }
+
     /**
      * Get All Events
      * 

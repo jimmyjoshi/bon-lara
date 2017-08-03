@@ -271,4 +271,23 @@ class FeedsTransformer extends Transformer
 
         return $result;
     }
+
+    public function feedTransformCollectionTimeline($feeds = null)
+    {
+        $result = [];
+
+        if($feeds)
+        {
+            foreach($feeds as $feed)
+            {
+                $key = date('m-d-Y', strtotime($feed['createdAt']));
+
+                $result[$key][] = $feed;
+            }
+        }
+
+        dd($result);
+        
+        return $result;
+    }
 }
