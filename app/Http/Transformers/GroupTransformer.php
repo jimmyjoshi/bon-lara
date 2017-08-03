@@ -239,6 +239,30 @@ class GroupTransformer extends Transformer
                     }
                 }
 
+                // Group Events
+                if($group->group_events)
+                {
+                    foreach($group->group_events as $event)   
+                    {
+                        $result[$sr]['group_events'][] = [
+                            'eventId'           => (int) $event->id,
+                            'eventName'         => $event->name,
+                            'eventTitle'        => $event->title,
+                            'eventStartDate'    => date('m-d-Y H:i:s', strtotime($event->start_date)),
+                            'eventEndDate'      => date('m-d-Y H:i:s', strtotime($event->end_date)),
+                            'eventCreator'      => [
+                                'userId'            => $event->user->id,
+                                'name'              => $event->user->name,
+                                'email'             => $event->user->email,
+                                'campusId'          => $event->user->user_meta->campus->id,
+                                'campusName'        => $event->user->user_meta->campus->name,
+                                'profile_picture'   => url('/profile-pictures/'.$event->user->user_meta->profile_picture)
+                            ],
+                        ];
+                    }
+                }
+
+
                 $result[$sr]['isMember'] = $isMember;
                 $result[$sr]['isLeader'] = $isLeader;
                     
@@ -284,6 +308,30 @@ class GroupTransformer extends Transformer
                 'profile_picture'   => $creatorProfilePicture
             ],
         ];
+
+        // Group Events
+        if($group->group_events)
+        {
+            foreach($group->group_events as $event)   
+            {
+                $result['group_events'][] = [
+                    'eventId'           => (int) $event->id,
+                    'eventName'         => $event->name,
+                    'eventTitle'        => $event->title,
+                    'eventStartDate'    => date('m-d-Y H:i:s', strtotime($event->start_date)),
+                    'eventEndDate'      => date('m-d-Y H:i:s', strtotime($event->end_date)),
+                    'eventCreator'      => [
+                        'userId'            => $event->user->id,
+                        'name'              => $event->user->name,
+                        'email'             => $event->user->email,
+                        'campusId'          => $event->user->user_meta->campus->id,
+                        'campusName'        => $event->user->user_meta->campus->name,
+                        'profile_picture'   => url('/profile-pictures/'.$event->user->user_meta->profile_picture)
+                    ],
+                ];
+            }
+        }
+
 
         if($group->get_group_interests && count($group->get_group_interests))
         {
