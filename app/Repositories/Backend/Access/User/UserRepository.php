@@ -482,6 +482,70 @@ class UserRepository extends BaseRepository
     }
 
     /**
+     * Add Bulk Interest
+     * 
+     * @param int $userId
+     * @param array|mixed $interests
+     */
+    public function addBulkInterest($userId = null, $interests)
+    {
+        if($userId && isset($interests))
+        {
+            if(is_array($interests))
+            {
+                $userInterests = $interests;
+            }
+            else
+            {
+                $userInterests = explode(',', $interests);    
+            }
+
+            $interestInfo = [];
+
+            foreach($userInterests as $interest)
+            {
+                $interestInfo[] = [
+                    'user_id'       => $userId,
+                    'interest_id'   => $interest
+                ];
+            }
+
+            if(count($interestInfo))
+            {
+                UserInterest::where('user_id', $userId)->delete();
+                return UserInterest::insert($interestInfo);
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Remove Bulk Interest
+     * 
+     * @param int $userId
+     * @param array|mixed $interests
+     */
+    public function removeBulkInterest($userId = null, $interests)
+    {
+        if($userId && isset($interests))
+        {
+            if(is_array($interests))
+            {
+                $userInterests = $interests;
+            }
+            else
+            {
+                $userInterests = explode(',', $interests);    
+            }
+
+            return UserInterest::where('user_id', $userId)->whereIn('interest_id', $userInterests)->delete();
+        }
+
+        return false;
+    }
+
+    /**
      * Get User Interest
      * 
      * @param object $user
@@ -495,7 +559,7 @@ class UserRepository extends BaseRepository
             $userInterests = array_unique($userInterests);
 
             $interestObj = new Interest;
-            return $interestObj->whereIn('id', $userInterests)->select('name', 'image')
+            return $interestObj->whereIn('id', $userInterests)->select('id', 'name', 'image')
                 ->get()
                 ->filter(function($item)
                 {
@@ -558,7 +622,7 @@ class UserRepository extends BaseRepository
             $userToken = new UserToken;
 
             $userToken->where('user_id', $userInfo->id)->delete();
-            
+
             $tokenInfo = [
                 'user_id'   => $userInfo->id,
                 'campus_id' => $userInfo->user_meta->campus_id,
