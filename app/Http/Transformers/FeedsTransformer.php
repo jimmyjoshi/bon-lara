@@ -278,11 +278,18 @@ class FeedsTransformer extends Transformer
 
         if($feeds)
         {
+            $sr = 0;
             foreach($feeds as $feed)
             {
-                $key = date('m-d-Y', strtotime($feed['createdAt']));
 
-                $result[$key][] = $feed;
+                $key = date('m-d-Y', strtotime($feed['createdAt']));
+                dd($key);
+
+                $result[$sr]['dateKey'][$key] = $key;
+
+                $result[$sr] = $feed;
+
+                $sr++;
             }
         }
 
