@@ -370,5 +370,28 @@ class APIGroupsController extends BaseApiController
 
         return $this->setStatusCode(404)->failureResponse($error, 'Something went wrong !');        
     }
+
+    public function getMemberSuggestions(Request $request)
+    {
+        if($request->get('group_id'))
+        {
+            $userInfo   = $this->getAuthenticatedUser();
+            $group      = $this->repository->getById($request->get('group_id'));
+            $allMembers = $this->repository->getAllCampusUsers($userInfo);
+            
+            if($group && $allMembers)
+            {
+                $response = $this->groupTransformer->getMemberSuggestions($group, $allMembers);
+
+                return $this->successResponse($response);
+            }
+        }
+
+        $error = [
+            'reason' => "Group is not Exists or Deleted!"
+        ];
+
+        return $this->setStatusCode(404)->failureResponse($error, 'Something went wrong !');   
+    }
 }
 

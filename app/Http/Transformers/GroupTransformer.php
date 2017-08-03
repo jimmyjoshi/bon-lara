@@ -394,5 +394,42 @@ class GroupTransformer extends Transformer
             
         return $result;
     }
+
+    public function getMemberSuggestions($group = null, $allMembers = null)
+    {
+        $result = [];
+
+        $groupMembers = $group->get_only_group_members()->pluck('id')->toArray();
+        $groupLeaders = $group->getLeaders()->pluck('id')->toArray();
+
+        foreach($allMembers as $member)
+        {
+            $creatorProfilePicture  =  url('/profile-pictures/'.$member->user_meta->profile_picture);   
+            $isLeader = $isMember   = 0;
+
+            if(in_array($member->id, $groupMembers))
+            {
+                $isMember = 1;                  
+            }
+
+            if(in_array($member->id, $groupLeaders))
+            {
+                $isLeader = 1;                  
+            }
+
+            $result[] = [
+                'userId'            => (int) $member->id,
+                'name'              => $member->name,
+                'email'             => $member->email,
+                'campusId'          => $member->user_meta->campus->id,
+                'campusName'        => $member->user_meta->campus->name,
+                'isMember'          => $isMember,
+                'isLeader'          => $isLeader,
+                'profile_picture'   => $creatorProfilePicture
+            ];
+        }
+
+        return $result;
+    }
 }
 
