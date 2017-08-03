@@ -149,8 +149,8 @@ class GroupTransformer extends Transformer
                 $creatorProfilePicture  =  url('/profile-pictures/'.$group->user->user_meta->profile_picture);   
 
                 $loginUserId    =  access()->user()->id;
-                $isLeader       = ($group->user->id == $loginUserId) ? 1 : 0;
-                $isMember       = 0;
+                $isLeader       =  0;
+                $isMember       =  0;
 
                 $result[$sr] = [
                     'groupId'           => (int) $group->id,
@@ -199,6 +199,7 @@ class GroupTransformer extends Transformer
                 }
 
                 $groupLeaders = $group->getLeaders()->pluck('id')->toArray();
+                
                 if($group->group_members)
                 {
                     foreach($group->group_members as $groupMember) 
@@ -206,11 +207,11 @@ class GroupTransformer extends Transformer
                         if($groupMember->user_meta)
                         {
                             $profilePicture = url('/profile-pictures/'.$groupMember->user_meta->profile_picture);
-                            $leader         = 1;
+                            $leader         = 0;
 
                             if(in_array($groupMember->id, $groupLeaders))
                             {
-                                $leader = 0;
+                                $leader = 1;
                             }
 
                             if($loginUserId == $groupMember->id)
@@ -313,6 +314,7 @@ class GroupTransformer extends Transformer
         }
         
         $groupLeaders = $group->getLeaders()->pluck('id')->toArray();
+
         if($group->group_members)
         {
             $sr = 0;
@@ -327,6 +329,7 @@ class GroupTransformer extends Transformer
                     {
                         $leader = 1;
                     }
+
                     $result['group_members'][$sr] =   [
                         'userId'            => (int) $groupMember->id,
                         'name'              => $groupMember->name,
