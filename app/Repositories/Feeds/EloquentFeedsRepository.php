@@ -4,6 +4,7 @@ use App\Models\Feeds\Feeds;
 use App\Models\Feeds\FeedInterests;
 use App\Repositories\DbRepository;
 use App\Exceptions\GeneralException;
+use App\Library\Push\PushNotifications;
 
 class EloquentFeedsRepository extends DbRepository
 {
@@ -163,11 +164,30 @@ class EloquentFeedsRepository extends DbRepository
 			{
 				$this->addFeedInterests($model, $input);
 			}
+
+			$this->sendCampusFeedPushNotification($model);
 			
 			return $model->with(['campus', 'channel', 'group', 'user', 'feed_interests'])->where(['id' => $model->id])->first();
 		}
 
 		return false;
+	}
+
+	/**
+	 * Send Campus Feed PushNotification
+	 * 
+	 * @param object $model
+	 * @return bool
+	 */
+	public function sendCampusFeedPushNotification($model = null)
+	{
+		dd($model);
+		$payload = [
+			'mtitle' 	=> 'BonFire',
+            'mdesc' 	=> 'New Message send by User'
+		];
+
+        PushNotifications::iOS($payload, $token);
 	}
 
 	/**
@@ -265,7 +285,6 @@ class EloquentFeedsRepository extends DbRepository
     public function getForDataTable()
     {
     	return  $this->model->select($this->getTableFields())->get();
-        
     }
 
     /**

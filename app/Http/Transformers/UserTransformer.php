@@ -103,6 +103,24 @@ class UserTransformer extends Transformer
         }
         
         $profilePicture = url('/profile-pictures/'.$user->user_meta->profile_picture);
+
+        if($user->user_groups)
+        {
+            foreach($user->user_groups as $group) 
+            {
+                $groupImage =  url('/groups/'.$group->image);
+
+                $groupDetails[] = [
+                    'groupId'           => (int) $group->id,
+                    'groupName'         => $group->name,
+                    'groupDescription'  => $group->description,
+                    'groupImage'        => $groupImage,
+                    'isPrivate'         => $group->is_private,
+                    'isDiscovery'       => $group->group_type,
+                ];
+            }
+        }
+
         
         return [
             'userId'            => $user->id,
@@ -111,7 +129,8 @@ class UserTransformer extends Transformer
             'campusId'          => $user->user_meta->campus->id,
             'campusName'        => $user->user_meta->campus->name,
             'profile_picture'   => $profilePicture,
-            'interests'         => isset($userInterests) ? $userInterests : []
+            'interests'         => isset($userInterests) ? $userInterests : [],
+            'userGroups'        => $groupDetails
         ];
     }
 
