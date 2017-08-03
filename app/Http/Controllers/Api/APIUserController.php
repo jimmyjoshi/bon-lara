@@ -259,4 +259,51 @@ class APIUserController extends BaseApiController
 
         return $this->setStatusCode(400)->failureResponse($error, 'No Users Found !');   
     }
+
+    public function addBulkInterest(Request $request)
+    {
+        $user = $this->getAuthenticatedUser();
+        
+        if($user && $request->get('interest_id'))
+        {
+            $status = $this->repository->addBulkInterest($user->id, $request->get('interest_id'));
+
+            if($status)
+            {
+                $interests    = $this->repository->getUserInterest($user);
+                $responseData = $this->apiTransformer->userDetailWithInterest($user, $interests);
+                
+                return $this->successResponse($responseData);
+            }
+        }
+
+        $error = [
+            'reason' => 'Unable to find User!'
+        ];
+        return $this->setStatusCode(400)->failureResponse($error, 'No User Found !');
+    }
+
+    public function removeBulkInterest(Request $request)
+    {
+        $user = $this->getAuthenticatedUser();
+
+        if($user && $request->get('interest_id'))
+        {
+            $status = $this->repository->removeBulkInterest($user->id, $request->get('interest_id'));
+
+            if($status)
+            {
+                $responseData = [
+                    'success' => 'Interests Removed Successfully !'
+                ];
+
+                return $this->successResponse($responseData, 'Interests Removed Successfully !');
+            }
+        }
+
+        $error = [
+            'reason' => 'Unable to find User!'
+        ];
+        return $this->setStatusCode(400)->failureResponse($error, 'No User Found !'); 
+    }
 }
