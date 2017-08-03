@@ -145,6 +145,7 @@ class EventTransformer extends Transformer
                     'eventName'         => $event->name,
                     'eventTitle'        => $event->title,
                     'eventStartDate'    => $event->start_date,
+                    'eventDateMonth'    => date('m-d-Y', strtotime($event->start_date)),
                     'eventEndDate'      => $event->end_date,
                     'joinEvent'         => false,
                     'eventCreator'      => [
