@@ -133,6 +133,7 @@ class FeedsTransformer extends Transformer
                     'is_attachment'     => $feed->is_attachment,
                     'createdAt'         => date('m-d-Y H:i:s', strtotime($feed->created_at)),
                     'createdDateTime'   => date('m-d-Y', strtotime($feed->created_at)),
+                    'createdMonthDate'   => date('M d', strtotime($feed->created_at)),
                     'feedCreator'       => [
                         'userId'            => (int) $feed->user->id,
                         'name'              => $feed->user->name,
@@ -299,8 +300,8 @@ class FeedsTransformer extends Transformer
 
                 $dateArray[] = $key;
 
-                $temp[$sr]['dataKey']   = $key;
-                $temp[$sr]['dataMonthKey'] = date('M d', strtotime($feed['createdDateTime']));
+                $temp[$sr]['dataKey']       = $key;
+                $temp[$sr]['dataMonthKey']  = $feed['createdMonthDate'];
 
                 foreach($feeds as $singleFeed)
                 {
