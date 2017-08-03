@@ -169,6 +169,7 @@ class UserTransformer extends Transformer
                 }
 
                 $groupLeaders = $group->getLeaders()->pluck('id')->toArray();
+                
                 if($group->group_members)
                 {
                     foreach($group->group_members as $groupMember) 
@@ -176,11 +177,11 @@ class UserTransformer extends Transformer
                         if($groupMember->user_meta)
                         {
                             $profilePicture = url('/profile-pictures/'.$groupMember->user_meta->profile_picture);
-                            $leader         = 1;
+                            $leader         = 0;
 
                             if(in_array($groupMember->id, $groupLeaders))
                             {
-                                $leader = 0;
+                                $leader = 1;
                             }
 
                             if($loginUserId == $groupMember->id)
