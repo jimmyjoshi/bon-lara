@@ -695,7 +695,7 @@ class EloquentGroupRepository extends DbRepository
 						}
 					}
 
-					return $groupMember = $this->groupMember->where(['group_id' => $groupId, 'user_id' => $userId])->first();
+					return $this->groupMember->where(['group_id' => $groupId, 'user_id' => $userId])->delete();
 				}
 
 			}
