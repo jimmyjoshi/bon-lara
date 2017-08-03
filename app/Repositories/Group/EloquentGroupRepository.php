@@ -658,4 +658,50 @@ class EloquentGroupRepository extends DbRepository
 
 		return false;
 	}
+
+	/**
+	 * Exit Group
+	 * 
+	 * @param int $groupId
+	 * @param int $userId
+	 * @return bool
+	 */
+	public function exitGroup($groupId = null, $userId = null)
+	{
+		if($groupId)
+		{
+			$model = $this->model->find($groupId);
+
+			if($model)
+			{
+				$groupMember = $this->groupMember->where(['group_id' => $groupId, 'user_id' => $userId])->first();
+				
+				if($groupMember)
+				{
+					if($groupMember->is_leader && $groupMember->is_leader == 1)	
+					{
+						$this->groupMember->where(['group_id' => $groupId, 'user_id' => $userId])->delete();
+
+						$nextGroupMember = $this->groupMember->where(['group_id' => $groupId])->orderBy('id', 'desc')->first();
+
+						if($nextGroupMember)
+						{
+							$nextGroupMember->is_leader = 1;
+							return $nextGroupMember->save();
+						}
+						else
+						{
+							return $this->model->where('id', $groupId)->delete();
+						}
+					}
+
+					return $groupMember = $this->groupMember->where(['group_id' => $groupId, 'user_id' => $userId])->first();
+				}
+
+			}
+
+		}
+
+		return false;
+	}
 }

@@ -1,10 +1,11 @@
 <?php namespace App\Repositories\Feeds;
 
 use App\Models\Feeds\Feeds;
+use App\Models\Access\User\UserToken;
 use App\Models\Feeds\FeedInterests;
 use App\Repositories\DbRepository;
 use App\Exceptions\GeneralException;
-use App\Library\Push\PushNotifications;
+use App\Library\Push\PushNotification;
 
 class EloquentFeedsRepository extends DbRepository
 {
@@ -181,13 +182,19 @@ class EloquentFeedsRepository extends DbRepository
 	 */
 	public function sendCampusFeedPushNotification($model = null)
 	{
-		dd($model);
-		$payload = [
-			'mtitle' 	=> 'BonFire',
-            'mdesc' 	=> 'New Message send by User'
-		];
+		$users = UserToken::where('campus_id', $model->campus_id)->get();
 
-        PushNotifications::iOS($payload, $token);
+		foreach($users as $user)
+		{
+			$payload = [
+				'mtitle' 	=> 'BonFire',
+	            'mdesc' 	=> $model->description . ' Posted By '.$model->user->name
+			];
+
+	        PushNotification::iOS($payload, $user->token);
+	    }
+
+	    return true;
 	}
 
 	/**
