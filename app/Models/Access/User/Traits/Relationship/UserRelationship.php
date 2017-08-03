@@ -2,6 +2,8 @@
 
 namespace App\Models\Access\User\Traits\Relationship;
 
+
+use App\Models\Group\Group;
 use App\Models\Event\Event;
 use App\Models\System\Session;
 use App\Models\Access\User\SocialLogin;
@@ -63,5 +65,13 @@ trait UserRelationship
     public function user_interests()
     {
         return $this->hasMany(UserInterest::class);
+    } 
+
+    /**
+     * @return mixed
+     */
+    public function user_groups()
+    {
+        return $this->hasMany(Group::class);
     } 
 }
