@@ -479,6 +479,11 @@ class EloquentGroupRepository extends DbRepository
 
     	if($groupId && count($userIds))
     	{
+    		if($sync && $sync == 1)
+	    	{
+	    		$this->groupMember->where('group_id', $groupId)->delete();
+	    	}
+
     		$groupInfo = $this->model->find($groupId);
 
     		foreach($userIds as $userId)	
@@ -511,11 +516,6 @@ class EloquentGroupRepository extends DbRepository
 		    
 		    if(count($groupMemberData))
 		    {
-		    	if($sync && $sync == 1)
-		    	{
-		    		$this->groupMember->where('group_id', $groupId)->delete();
-		    	}
-
 		    	return $this->groupMember->insert($groupMemberData);
 		    }
     	}
