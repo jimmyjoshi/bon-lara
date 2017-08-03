@@ -132,6 +132,7 @@ class FeedsTransformer extends Transformer
                     'description'       => $feed->description,
                     'is_attachment'     => $feed->is_attachment,
                     'createdAt'         => date('m-d-Y H:i:s', strtotime($feed->created_at)),
+                    'createdDateTime'   => date('m-d-Y', strtotime($feed->created_at)),
                     'feedCreator'       => [
                         'userId'            => (int) $feed->user->id,
                         'name'              => $feed->user->name,
@@ -216,6 +217,7 @@ class FeedsTransformer extends Transformer
                     'description'       => $feed->description,
                     'is_attachment'     => $feed->is_attachment,
                     'createdAt'         => date('m-d-Y H:i:s', strtotime($feed->created_at)),
+                    'createdDateTime'   => date('m-d-Y', strtotime($feed->created_at)),
                     'feedCreator'       => [
                         'userId'            => (int) $feed->user->id,
                         'name'              => $feed->user->name,
@@ -272,29 +274,45 @@ class FeedsTransformer extends Transformer
         return $result;
     }
 
+    /**
+     * Feed TransformCollection Timeline
+     * 
+     * @param collection $feeds
+     * @return array
+     */
     public function feedTransformCollectionTimeline($feeds = null)
     {
-        $result = [];
+        $temp       = [];
+        $dateArray  = [];
 
         if($feeds)
         {
             $sr = 0;
             foreach($feeds as $feed)
             {
+                $key = $feed['createdDateTime'];
 
-                $key = date('m-d-Y', strtotime($feed['createdAt']));
-                dd($key);
+                if(in_array($key, $dateArray))
+                {
+                    continue;
+                }
 
-                $result[$sr]['dateKey'][$key] = $key;
+                $dateArray[] = $key;
 
-                $result[$sr] = $feed;
+                $temp[$sr]['dataKey'] = $key;
+
+                foreach($feeds as $singleFeed)
+                {
+                    if($singleFeed['createdDateTime'] == $key)
+                    {
+                        $temp[$sr]['values'][] = $singleFeed;
+                    }
+                }
 
                 $sr++;
             }
         }
 
-        dd($result);
-        
-        return $result;
+        return $temp;
     }
 }
