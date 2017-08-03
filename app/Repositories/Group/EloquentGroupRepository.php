@@ -189,6 +189,14 @@ class EloquentGroupRepository extends DbRepository
 			{
 				$interestStatus = $this->addGroupInterest($model, $input);
 			}
+
+			$groupMemberData = [
+		    		'group_id'	=> $model->id,
+		    		'user_id'	=> access()->user()->id,
+		    		'is_leader'	=> 1
+		    	];
+
+		   	$this->groupMember->create($groupMemberData);
 			
 			return $model;
 		}
@@ -206,7 +214,14 @@ class EloquentGroupRepository extends DbRepository
 	{
 		$groupInterest = [];
 
-		$interests = explode(',', $input['interests']);
+		if(is_array($input['interests']))
+		{
+			$interests = $input['interests'];
+		}
+		else
+		{
+			$interests = explode(',', $input['interests']);
+		}
 
 		foreach($interests as $interest)
 		{
