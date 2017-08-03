@@ -559,7 +559,7 @@ class UserRepository extends BaseRepository
             $userInterests = array_unique($userInterests);
 
             $interestObj = new Interest;
-            return $interestObj->whereIn('id', $userInterests)->select('id', 'name', 'image')
+            return $interestObj->whereIn('id', $userInterests)->select('id as interestId', 'name', 'image')
                 ->get()
                 ->filter(function($item)
                 {
