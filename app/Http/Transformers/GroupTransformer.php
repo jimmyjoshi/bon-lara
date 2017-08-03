@@ -321,11 +321,11 @@ class GroupTransformer extends Transformer
                 if($groupMember->user_meta)
                 {
                     $profilePicture = url('/profile-pictures/'.$groupMember->user_meta->profile_picture);
-                    $leader         = 1;
+                    $leader         = 0;
 
                     if(in_array($groupMember->id, $groupLeaders))
                     {
-                        $leader = 0;
+                        $leader = 1;
                     }
                     $result['group_members'][$sr] =   [
                         'userId'            => (int) $groupMember->id,
