@@ -78,8 +78,10 @@ class EventTransformer extends Transformer
                     'eventId'           => (int) $event->id,
                     'eventName'         => $event->name,
                     'eventTitle'        => $event->title,
-                    'eventStartDate'    => date('d M', strtotime($event->start_date)),
-                    'eventEndDate'      => date('d M', strtotime($event->end_date)),
+                    'eventStartDate'    => $event->start_date,
+                    'eventEndDate'      => $event->end_date,
+                    'eventMonth'        => date('M', strtotime($event->start_date)),
+                    'eventDate'         => date('d', strtotime($event->start_date)),
                     'joinEvent'         => false,
                     'eventCreator'      => [
                         'userId'            => (int) $event->user->id,
