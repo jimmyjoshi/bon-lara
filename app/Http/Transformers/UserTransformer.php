@@ -107,21 +107,113 @@ class UserTransformer extends Transformer
 
         if($user->user_groups)
         {
-            foreach($user->user_groups as $group) 
+            $result = [];
+        
+            $sr = 0;
+            foreach($user->user_groups as $group)        
             {
-                $groupImage =  url('/groups/'.$group->image);
+                if(! isset($group->user->user_meta))
+                    continue;
+                
+                $groupImage             =  url('/groups/'.$group->image);
+                $creatorProfilePicture  =  url('/profile-pictures/'.$group->user->user_meta->profile_picture);   
 
-                $groupDetails[] = [
+                $loginUserId    =  access()->user()->id;
+                $isLeader       = ($group->user->id == $loginUserId) ? 1 : 0;
+                $isMember       = 0;
+
+                $result[$sr] = [
                     'groupId'           => (int) $group->id,
                     'groupName'         => $group->name,
                     'groupDescription'  => $group->description,
                     'groupImage'        => $groupImage,
                     'isPrivate'         => $group->is_private,
                     'isDiscovery'       => $group->group_type,
+                    'isMember'          => 0,
+                    'isLeader'          => $isLeader,
+                    'interests'         => [],
+                    'groupCampus'       => [
+                        'campusId'      => (int) $group->campus->id,
+                        'campusName'    => $group->campus->name,
+                        'campusCode'    => $group->campus->campus_code,
+                    ],
+                    'groupCreator'      => [
+                        'userId'            => (int) $group->user->id,
+                        'name'              => $group->user->name,
+                        'email'             => $group->user->email,
+                        'campusId'          => $group->user->user_meta->campus->id,
+                        'campusName'        => $group->user->user_meta->campus->name,
+                        'profile_picture'   => $creatorProfilePicture
+                    ],
                 ];
+
+                if($group->group_interests && count($group->group_interests))
+                {
+                    foreach($group->group_interests as $interest)   
+                    {
+                        if(isset($interest) && $interest->image && file_exists(base_path() . '/public/interests/'.$interest->image))
+                        {
+                            $image = url('/interests/'.$interest->image);
+                        }
+                        else
+                        {
+                            $image = url('/interests/default.png');    
+                        }
+
+                        $result[$sr]['interests'][] = [
+                            'interestId'        => (int) $interest->id,
+                            'name'              => $interest->name,
+                            'image'             => $image
+                        ];
+                    }
+                }
+
+                $groupLeaders = $group->getLeaders()->pluck('id')->toArray();
+                if($group->group_members)
+                {
+                    foreach($group->group_members as $groupMember) 
+                    {
+                        if($groupMember->user_meta)
+                        {
+                            $profilePicture = url('/profile-pictures/'.$groupMember->user_meta->profile_picture);
+                            $leader         = 1;
+
+                            if(in_array($groupMember->id, $groupLeaders))
+                            {
+                                $leader = 0;
+                            }
+
+                            if($loginUserId == $groupMember->id)
+                            {
+                                $isMember = 1;
+
+                                if($isLeader == 0 )
+                                {
+                                    $isLeader = $leader;
+                                }
+                            }
+
+                            $result[$sr]['group_members'][] =   [
+                                'userId'            => (int) $groupMember->id,
+                                'name'              => $groupMember->name,
+                                'email'             => $groupMember->email,
+                                'campusId'          => $groupMember->user_meta->campus->id,
+                                'campusName'        => $groupMember->user_meta->campus->name,
+                                'isLeader'          => $leader,
+                                'memberStatus'      => $groupMember->status,
+                                'profile_picture'   => $profilePicture
+                            ];
+
+                        }
+                    }
+                }
+
+                $result[$sr]['isMember'] = $isMember;
+                $result[$sr]['isLeader'] = $isLeader;
+                    
+                $sr++;
             }
         }
-
         
         return [
             'userId'            => $user->id,
@@ -131,7 +223,7 @@ class UserTransformer extends Transformer
             'campusName'        => $user->user_meta->campus->name,
             'profile_picture'   => $profilePicture,
             'interests'         => isset($userInterests) ? $userInterests : [],
-            'userGroups'        => $groupDetails
+            'userGroups'        => $result
         ];
     }
 
