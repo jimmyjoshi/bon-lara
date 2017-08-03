@@ -77,7 +77,7 @@ class APIEventsController extends BaseApiController
 
             if($events && count($events))
             {
-                $response = $this->eventTransformer->getAllEvents($events, $userInfo);
+                $response = $this->eventTransformer->getAllGroupEvents($events, $userInfo);
                 return $this->successResponse($response);
             }
         }
