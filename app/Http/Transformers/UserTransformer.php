@@ -102,6 +102,7 @@ class UserTransformer extends Transformer
             return false;
         }
         
+        $groupDetails = [];
         $profilePicture = url('/profile-pictures/'.$user->user_meta->profile_picture);
 
         if($user->user_groups)
