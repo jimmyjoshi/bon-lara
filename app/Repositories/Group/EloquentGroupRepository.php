@@ -481,7 +481,7 @@ class EloquentGroupRepository extends DbRepository
     	{
     		if($sync && $sync == 1)
 	    	{
-	    		$this->groupMember->where('group_id', $groupId)->delete();
+	    		$this->groupMember->where(['group_id' => $groupId, 'is_leader' => $isLeader])->delete();
 	    	}
 
     		$groupInfo = $this->model->find($groupId);
