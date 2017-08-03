@@ -300,7 +300,7 @@ class FeedsTransformer extends Transformer
                 $dateArray[] = $key;
 
                 $temp[$sr]['dataKey']   = $key;
-                $temp[$sr]['dataMonthKey'] = date('m D', strtotime($feed['createdDateTime']));
+                $temp[$sr]['dataMonthKey'] = date('M m', strtotime($feed['createdDateTime']));
 
                 foreach($feeds as $singleFeed)
                 {
