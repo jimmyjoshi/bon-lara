@@ -238,7 +238,7 @@ class APIUserController extends BaseApiController
     public function setToken(Request $request)
     {
         $user = $this->getAuthenticatedUser();       
-        
+
         if($user && $request->get('device_token'))
         {
             $status = $this->repository->setToken($user, $request->get('device_token'));   

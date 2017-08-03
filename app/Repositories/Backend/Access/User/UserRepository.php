@@ -558,9 +558,10 @@ class UserRepository extends BaseRepository
             $userToken = new UserToken;
 
             $userToken->where('user_id', $userInfo->id)->delete();
-
+            
             $tokenInfo = [
                 'user_id'   => $userInfo->id,
+                'campus_id' => $userInfo->user_meta->campus_id,
                 'token'     => $token
             ];
 

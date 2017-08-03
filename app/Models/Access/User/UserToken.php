@@ -21,5 +21,5 @@ class UserToken extends BaseModel
      *
      * @var array
      */
-    protected $fillable = ['user_id', 'token'];
+    protected $fillable = ['user_id', 'campus_id', 'token'];
 }
