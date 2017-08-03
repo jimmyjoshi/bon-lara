@@ -338,5 +338,37 @@ class APIGroupsController extends BaseApiController
 
         return $this->setStatusCode(404)->failureResponse($error, 'Something went wrong !');
     }
+
+    /**
+     * Exit Group
+     * 
+     * @param Request $request
+     * @return json
+     */
+    public function exitGroup(Request $request)
+    {
+        if($request->get('group_id') && $request->get('user_id'))
+        {
+            $groupId    = (int) $request->group_id;
+            $userId     = (int) $request->user_id;
+            
+            $status = $this->repository->exitGroup($groupId, $userId);
+
+            if($status)
+            {
+                $responseData = [
+                    'success' => 'Exit from Group Successfully.'
+                ];
+
+                return $this->successResponse($responseData, 'Exit From Group !');
+            }
+        }
+
+        $error = [
+            'reason' => "Group is not Exists or Deleted!"
+        ];
+
+        return $this->setStatusCode(404)->failureResponse($error, 'Something went wrong !');        
+    }
 }
 
