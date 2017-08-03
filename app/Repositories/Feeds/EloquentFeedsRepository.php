@@ -135,7 +135,7 @@ class EloquentFeedsRepository extends DbRepository
 
 		if($model)
 		{
-			if(isset($input['interests']) && count($input['interests']))
+			if(isset($input['interests']))
 			{
 				$this->addFeedInterests($model, $input);
 			}
@@ -178,11 +178,12 @@ class EloquentFeedsRepository extends DbRepository
 	 */
 	public function addFeedInterests($model = null, $input = array())
 	{
-		if(isset($input['interests']) && count($input['interests']))	
+		if(isset($input['interests']))	
 		{
+			$interests = is_array($input['interests']) ? $input['interests'] : explode(',', $input['interests']);
 			$feedInterests = [];
 
-			foreach($input['interests'] as $interest)
+			foreach($interests as $interest)
 			{
 				$feedInterests[] = [
 					'feed_id'		=> $model->id,
