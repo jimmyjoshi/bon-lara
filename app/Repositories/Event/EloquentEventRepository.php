@@ -264,7 +264,9 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
     {
     	if($groupId)
     	{
-    		return $this->model->with('event_members')->where(['group_id' => $groupId])->get();
+    		return $this->model->with('event_members')->where(['group_id' => $groupId])
+    			->orderBy('id', 'desc')
+    			->get();
     	}
 
     	return false;
@@ -280,7 +282,9 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
     {
     	if($campusId)
     	{
-    		return $this->model->with('event_members')->where(['campus_id' => $campusId, 'group_id' => NULL])->get();
+    		return $this->model->with('event_members')->where(['campus_id' => $campusId, 'group_id' => NULL])
+    			->orderBy('id', 'desc')
+    			->get();
     	}
 
     	return false;
