@@ -221,7 +221,6 @@ class GroupTransformer extends Transformer
 
                             if($loginUserId == $groupMember->id)
                             {
-                                $memberStatus = $groupMember->status;
                                 $isMember = 1;
 
                                 if($isLeader == 0 )
