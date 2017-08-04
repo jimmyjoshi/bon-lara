@@ -151,6 +151,7 @@ class GroupTransformer extends Transformer
                 $loginUserId    =  access()->user()->id;
                 $isLeader       =  0;
                 $isMember       =  0;
+                $memberStatus   =  0;
 
                 $result[$sr] = [
                     'groupId'           => (int) $group->id,
