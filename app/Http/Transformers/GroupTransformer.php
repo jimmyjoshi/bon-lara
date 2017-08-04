@@ -216,6 +216,7 @@ class GroupTransformer extends Transformer
 
                             if($loginUserId == $groupMember->id)
                             {
+                                $memberStatus = $groupMember->status;
                                 $isMember = 1;
 
                                 if($isLeader == 0 )
@@ -265,6 +266,7 @@ class GroupTransformer extends Transformer
 
                 $result[$sr]['isMember'] = $isMember;
                 $result[$sr]['isLeader'] = $isLeader;
+                $result[$sr]['memberStatus'] = $memberStatus;
                     
                 $sr++;
             }
