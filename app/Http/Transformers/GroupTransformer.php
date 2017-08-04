@@ -3,6 +3,7 @@
 namespace App\Http\Transformers;
 
 use App\Http\Transformers;
+use App\Models\Group\GroupMember;
 
 class GroupTransformer extends Transformer 
 {
@@ -139,6 +140,7 @@ class GroupTransformer extends Transformer
     
         if($groups)        
         {
+            $grpMember = new GroupMember;
             $sr = 0;
             foreach($groups as $group)        
             {
@@ -151,7 +153,8 @@ class GroupTransformer extends Transformer
                 $loginUserId    =  access()->user()->id;
                 $isLeader       =  0;
                 $isMember       =  0;
-                $memberStatus   =  0;
+                $memberStatusObject = $grpMember->select('status')->where(['user_id' => $loginUserId, 'status' => 1])->first();
+                $memberStatus   =  isset($memberStatusObject) ? $memberStatusObject->status : 0;
 
                 $result[$sr] = [
                     'groupId'           => (int) $group->id,
@@ -162,7 +165,7 @@ class GroupTransformer extends Transformer
                     'isDiscovery'       => $group->group_type,
                     'isMember'          => 0,
                     'isLeader'          => $isLeader,
-                    'memberStatus'      => 0,
+                    'memberStatus'      => $memberStatus,
                     'interests'         => [],
                     'groupCampus'       => [
                         'campusId'      => (int) $group->campus->id,
@@ -201,7 +204,7 @@ class GroupTransformer extends Transformer
                 }
 
                 $groupLeaders = $group->getLeaders()->pluck('id')->toArray();
-                
+
                 if($group->group_members)
                 {
                     foreach($group->group_members as $groupMember) 
@@ -268,7 +271,6 @@ class GroupTransformer extends Transformer
 
                 $result[$sr]['isMember'] = $isMember;
                 $result[$sr]['isLeader'] = $isLeader;
-                $result[$sr]['memberStatus'] = $memberStatus;
                     
                 $sr++;
             }
