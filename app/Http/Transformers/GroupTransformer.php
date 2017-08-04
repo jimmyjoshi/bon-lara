@@ -162,6 +162,7 @@ class GroupTransformer extends Transformer
                     'isDiscovery'       => $group->group_type,
                     'isMember'          => 0,
                     'isLeader'          => $isLeader,
+                    'memberStatus'      => 0,
                     'interests'         => [],
                     'groupCampus'       => [
                         'campusId'      => (int) $group->campus->id,
