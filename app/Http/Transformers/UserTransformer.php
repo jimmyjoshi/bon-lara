@@ -225,7 +225,7 @@ class UserTransformer extends Transformer
             'email'             => $user->email,
             'campusId'          => $user->user_meta->campus->id,
             'campusName'        => $user->user_meta->campus->name,
-            'profile_picture'   => $profilePicture,
+            'profile_picture'   => url('/profile-pictures/'.$user->user_meta->profile_picture),
             'interests'         => isset($userInterests) ? $userInterests : [],
             'userGroups'        => $result
         ];
