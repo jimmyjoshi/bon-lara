@@ -167,6 +167,7 @@ class GroupTransformer extends Transformer
                     'isLeader'          => $isLeader,
                     'memberStatus'      => $memberStatus,
                     'interests'         => [],
+                    'groupLeaderFeeds'  => [],
                     'groupCampus'       => [
                         'campusId'      => (int) $group->campus->id,
                         'campusName'    => $group->campus->name,
@@ -180,7 +181,41 @@ class GroupTransformer extends Transformer
                         'campusName'        => $group->user->user_meta->campus->name,
                         'profile_picture'   => $creatorProfilePicture
                     ],
+                    
                 ];
+
+
+                if($group->get_group_leader_feeds())
+                {
+                    foreach($group->get_group_leader_feeds()->get() as $groupLeaderFeed)
+                    {
+                        
+                        $creatorProfilePicture  =  url('/profile-pictures/'.$groupLeaderFeed->user->user_meta->profile_picture);
+                        $feedAttachment = '';
+
+                        if(isset($feed->is_attachment) && $groupLeaderFeed->is_attachment == 1 && file_exists(base_path() . '/public/feeds/'.$groupLeaderFeed->user_id.'/'.$groupLeaderFeed->attachment))
+                        {
+                            $feedAttachment = url('/feeds/'.$feed->user_id.'/'.$feed->attachment);
+                        }
+                        
+                        $result[$sr]['groupLeaderFeeds'][] = [
+                            'feedId'            => $groupLeaderFeed->id,
+                            'description'       => $groupLeaderFeed->description,
+                            'is_attachment'     => $groupLeaderFeed->is_attachment,
+                            'attachment_link'   => $feedAttachment,
+                            'createdAt'         => date('m-d-Y H:i:s', strtotime($groupLeaderFeed->created_at)),
+                            'createdDateTime'   => date('m-d-Y', strtotime($groupLeaderFeed->created_at)),
+                            'feedCreator'       => [
+                                'userId'            => (int) $groupLeaderFeed->user->id,
+                                'name'              => $groupLeaderFeed->user->name,
+                                'email'             => $groupLeaderFeed->user->email,
+                                'campusId'          => $groupLeaderFeed->user->user_meta->campus->id,
+                                'campusName'        => $groupLeaderFeed->user->user_meta->campus->name,
+                                'profile_picture'   => $creatorProfilePicture
+                            ]
+                        ];   
+                    }
+                }
 
                 if($group->group_interests && count($group->group_interests))
                 {
