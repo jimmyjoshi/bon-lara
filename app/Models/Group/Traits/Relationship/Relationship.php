@@ -92,6 +92,11 @@ trait Relationship
 		return $this->hasMany(Feeds::class)->where(['is_campus_feed' => 0]);	
 	}
 
+	public function get_group_leader_feeds()
+	{
+		return $this->hasMany(Feeds::class)->where(['is_campus_feed' => 0, 'channel_id' => NULL]);	
+	}
+
 	/**
      * @return mixed
      */
