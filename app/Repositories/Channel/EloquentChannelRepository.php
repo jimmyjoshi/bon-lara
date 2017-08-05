@@ -3,6 +3,7 @@
 use App\Models\Channel\Channel;
 use App\Repositories\DbRepository;
 use App\Exceptions\GeneralException;
+use App\Models\Group\Group;
 
 class EloquentChannelRepository extends DbRepository
 {
@@ -118,7 +119,8 @@ class EloquentChannelRepository extends DbRepository
 	 */
 	public function __construct()
 	{
-		$this->model = new Channel;
+		$this->model 		= new Channel;
+		$this->groupModel 	= new Group;
 	}
 
 	/**
@@ -313,5 +315,41 @@ class EloquentChannelRepository extends DbRepository
     	}
 
     	return false;
+    }
+
+    /**
+     * Remove Group Channel
+     * 
+     * @param object $userInfo
+     * @param int $groupId
+     * @param int $channelId
+     * @return bool
+     */
+    public function removeGroupChannel($userInfo, $groupId = null, $channelId = null)
+    {
+    	if($userInfo && $groupId && $channelId)
+    	{
+    		if($this->model->find($channelId))
+    		{
+    			$group 			= $this->groupModel->find($groupId);
+	    		$deleteChannel 	= false;
+
+	    		foreach($group->getLeaders() as $leader)
+	    		{
+	    			if($userInfo->id == $leader->id)
+	    			{
+	    				$deleteChannel = true;
+	    				break;
+	    			}
+	    		}
+
+	    		if($deleteChannel)
+	    		{
+	    			return $this->model->where(['id' => $channelId, 'group_id' => $groupId])->delete();
+	    		}
+    		}
+    	}
+
+    	return true;
     }
 }

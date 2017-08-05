@@ -47,7 +47,7 @@ class ChannelTransformer extends Transformer
                 'channelId'    => (int) $model->id,
                 'channelName'  => $model->name,
                 'campusId'     => $model->campus_id,
-                'groupId'      => $model->group_id,
+                'groupId'      => (int) $model->group_id,
                 'channelCreator'  => [
                     'userId'    => (int) $model->user->id,
                     'name'      => $model->user->name,
