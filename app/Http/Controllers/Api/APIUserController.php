@@ -85,6 +85,15 @@ class APIUserController extends BaseApiController
 
         if($user && $request->get('name'))
         {
+            if($request->file('image'))
+            {
+                
+                $imageName  = rand(11111, 99999) . '_profile-pic.' . $request->file('image')->getClientOriginalExtension();
+                $request->file('image')->move(base_path() . '/public/profile-pictures/', $imageName);
+                $user->user_meta->profile_picture = $imageName;
+                $user->user_meta->save();
+            }
+
             $user->name = $request->get('name');
             $status = $user->save();
             if($status)
