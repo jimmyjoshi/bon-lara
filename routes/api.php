@@ -73,6 +73,7 @@ Route::group(['namespace' => 'Api', 'middleware' => 'jwt.customauth'], function 
     Route::get('get-channels/', 'APIChannelController@index')->name('channels.get-all-channels');
     Route::post('channels/get-channels-by-group-id/', 'APIChannelController@getChannelsByGroupId')->name('channels.get-channels-by-group-id');
     Route::post('create-new-channel/', 'APIChannelController@create')->name('channels.create-new-channel');
+    Route::post('channels/delete-channel/', 'APIChannelController@deleteChannel')->name('channels.delete-channel');
 
     Route::get('get-all-feeds/', 'APIFeedsController@index')->name('feeds.get-all-feeds');
     Route::get('get-home-feeds/', 'APIFeedsController@getAllCampusFeeds')->name('feeds.get-home-feeds');

@@ -112,4 +112,28 @@ class APIChannelController extends BaseApiController
 
         return $this->setStatusCode(400)->failureResponse($error, 'No Channel Found !');        
     }
+
+    public function deleteChannel(Request $request)
+    {
+        if($request->get('channel_id') && $request->get('group_id'))
+        {
+            $userInfo = $this->getAuthenticatedUser();
+            $status   = $this->repository->removeGroupChannel($userInfo, $request->get('group_id'), $request->get('channel_id'));
+
+            if($status)
+            {
+                $allChannels = $this->repository->getChannelsByCampusIdGroupId($userInfo->user_meta->campus_id, $request->get('group_id'));
+
+                $responseData = $this->apiTransformer->transformChannelCollection($allChannels);
+
+                    return $this->successResponse($responseData);
+            }
+        }
+
+        $error = [
+            'reason' => 'Unable to find Channel or Unable to Remove Channel!'
+        ];
+
+        return $this->setStatusCode(400)->failureResponse($error, 'Unable to find Channel or Unable to Remove Channel !');
+    }
 }
