@@ -212,27 +212,12 @@ class APIGroupsController extends BaseApiController
     {
         $groupId = (int) $request->group_id;
 
-        if($request->get('user_id') && !is_array($request->get('user_id')))
-        {
-            $userInfo = User::findOrfail($request->get('user_id'));
-        }
-        else
-        {
-            $userInfo = $this->getAuthenticatedUser();
-        }
-
         $isLeader = isset($request->is_leader) ? $request->is_leader : 0;
 
         if($groupId)
         {
-            if(is_array($request->get('user_id')))
-            {
-                $status = $this->repository->joinGroupMultiMembers($groupId, $request->get('user_id'), $isLeader, $request->get('sync'));
-            }
-            else
-            {
-                $status = $this->repository->joinGroup($groupId, $userInfo, $isLeader);    
-            }
+            $userIds = explode(',', $request->get('user_id'));
+            $status = $this->repository->joinGroupMultiMembers($groupId, userIds, $isLeader, $request->get('sync'));
             
             if($status)
             {

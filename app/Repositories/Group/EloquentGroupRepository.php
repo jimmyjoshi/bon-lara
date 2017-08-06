@@ -488,12 +488,10 @@ class EloquentGroupRepository extends DbRepository
 
     		foreach($userIds as $userId)	
     		{
-    			$status = $this->groupMember->where(['group_id' => $groupId, 'user_id' => $userId])->first();
-
-		    	if($status)
-		    	{
-		    		continue;
-		    	}
+    			if(! $userId)
+    			{
+    				continue;
+    			}
 		    	
 		    	if($isLeader == 1)
 	    		{
