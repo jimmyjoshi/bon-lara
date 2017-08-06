@@ -220,7 +220,9 @@ class FeedsTransformer extends Transformer
                     $feedAttachment = url('/feeds/'.$feed->user_id.'/'.$feed->attachment);
                 }
                 $creatorProfilePicture  =  url('/profile-pictures/'.$feed->user->user_meta->profile_picture);   
-                $firstName = implode(' ', $feed->user->name);
+
+                $firstName = explode(' ', $feed->user->name);
+                
                 $result[$sr] = [
                     'feedId'            => $feed->id,
                     'description'       => $feed->description,
