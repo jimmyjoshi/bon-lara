@@ -748,6 +748,8 @@ class EloquentGroupRepository extends DbRepository
     {
     	if($userInfo->id && $groupId)
     	{
+    		$groupMemberModel = new GroupMember;
+
     		$model = $this->model->find($groupId);
 
     		if($model->is_private == 0)
@@ -774,9 +776,10 @@ class EloquentGroupRepository extends DbRepository
 	    			$updateInfo  =[
 	    				'status' => 0
 	    			];
-	    			$this->groupMember->where(['is_leader' => 0])->whereIn('user_id', $gropuMemberIds)->update($updateInfo);
 
-	    			if( strpos($userIds, ',') !== false )
+	    			$groupMemberModel->whereIn('user_id', $gropuMemberIds)->update(['status' => 0]);
+	    			
+	    			if(strpos($userIds, ',') !== false )
 					 {
 					 	$userIds = explode(',', $userIds);
 					 }
@@ -804,18 +807,6 @@ class EloquentGroupRepository extends DbRepository
 
 	    				return $this->groupMember->insert($groupMemberInfo);
 	    			}
-	    			else
-	    			{
-	    				$groupMemberInfo = [
-	    					'group_id' 	=> $groupId,
-	    					'user_id' 	=> $userIds,
-	    					'is_leader'	=> 0,
-	    					'status'	=> 1
-	    				];
-	    				
-	    				return $this->groupMember->create($groupMemberInfo);
-	    			}
-
 	    		}
 			}
     	}
