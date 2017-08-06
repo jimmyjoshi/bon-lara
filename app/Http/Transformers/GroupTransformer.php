@@ -189,7 +189,6 @@ class GroupTransformer extends Transformer
                 {
                     foreach($group->get_group_leader_feeds()->get() as $groupLeaderFeed)
                     {
-                        
                         $creatorProfilePicture  =  url('/profile-pictures/'.$groupLeaderFeed->user->user_meta->profile_picture);
                         $feedAttachment = '';
 
@@ -246,6 +245,9 @@ class GroupTransformer extends Transformer
                     {
                         if($groupMember->user_meta)
                         {
+                            $memberStatusObject = $grpMember->select('status')->where(['user_id' => $groupMember->id, 'status' => 1])->first();
+                            $grpmemberStatus    =  isset($memberStatusObject) ? $memberStatusObject->status : 0;
+
                             $profilePicture = url('/profile-pictures/'.$groupMember->user_meta->profile_picture);
                             $leader         = 0;
 
@@ -271,7 +273,7 @@ class GroupTransformer extends Transformer
                                 'campusId'          => $groupMember->user_meta->campus->id,
                                 'campusName'        => $groupMember->user_meta->campus->name,
                                 'isLeader'          => $leader,
-                                'memberStatus'      => $groupMember->status,
+                                'memberStatus'      => $grpmemberStatus,
                                 'profile_picture'   => $profilePicture
                             ];
 
@@ -325,6 +327,7 @@ class GroupTransformer extends Transformer
         $result                 = [];
         $groupImage             =  url('/groups/'.$group->image);
         $creatorProfilePicture  =  url('/profile-pictures/'.$group->user->user_meta->profile_picture);   
+        $grpMember              = new GroupMember;
 
         $result = [
             'groupId'           => (int) $group->id,
@@ -414,6 +417,9 @@ class GroupTransformer extends Transformer
                     $leader         = 0;
                     $member         = 1;
 
+                    $memberStatusObject = $grpMember->select('status')->where(['user_id' => $groupMember->id, 'status' => 1])->first();
+                    $memberStatus       =  isset($memberStatusObject) ? $memberStatusObject->status : 0;
+
                     if(in_array($groupMember->id, $groupLeaders))
                     {
                         $leader = 1;
@@ -432,7 +438,7 @@ class GroupTransformer extends Transformer
                         'campusName'        => $groupMember->user_meta->campus->name,
                         'isLeader'          => $leader,
                         'isMember'          => $member,
-                        'memberStatus'      => $groupMember->status,
+                        'memberStatus'      => $memberStatus,
                         'profile_picture'   => $profilePicture
                     ];
                 }
