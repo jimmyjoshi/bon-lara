@@ -751,6 +751,12 @@ class EloquentGroupRepository extends DbRepository
     	if($userInfo->id && $groupId)
     	{
     		$model = $this->model->find($groupId);
+
+    		if($model->is_private == 0)
+    		{
+    			return true;
+    		}
+    		
     		$flag  = false;
 
     		if($model && $model->getLeaders())
