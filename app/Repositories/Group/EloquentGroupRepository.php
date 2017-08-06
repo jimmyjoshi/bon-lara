@@ -769,9 +769,14 @@ class EloquentGroupRepository extends DbRepository
 
 	    		if($flag)
 	    		{
-	    			$this->groupMember->where(['is_leader' => 0])->delete();
+	    			$groupMemberInfo 	= [];
+	    			$gropuMemberIds 	= $model->get_only_group_members()->pluck('id')->toArray();
+	    			$updateInfo  =[
+	    				'status' => 0
+	    			];
+	    			$this->groupMember->where(['is_leader' => 0])->whereIn('user_id', $gropuMemberIds)->update($updateInfo);
 
-	    			 if( strpos($userIds, ',') !== false )
+	    			if( strpos($userIds, ',') !== false )
 					 {
 					 	$userIds = explode(',', $userIds);
 					 }
@@ -780,6 +785,12 @@ class EloquentGroupRepository extends DbRepository
 	    			{
 	    				foreach($userIds as $userId)
 	    				{
+	    					if($userId && in_array($userId, $gropuMemberIds))
+	    					{
+	    						$this->groupMember->where('user_id', $userId)->update(['status' => 1]);
+	    						continue;
+	    					}
+
 	    					if($userId)
 	    					{
 	    						$groupMemberInfo[] = [
