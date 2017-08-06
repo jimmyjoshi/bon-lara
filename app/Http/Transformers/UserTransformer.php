@@ -4,6 +4,7 @@ namespace App\Http\Transformers;
 
 use App\Http\Transformers;
 use Html;
+use App\Models\Group\GroupMember;
 
 class UserTransformer extends Transformer 
 {
@@ -102,7 +103,8 @@ class UserTransformer extends Transformer
             return false;
         }
         
-        $groupDetails = [];
+        $groupDetails   = [];
+        $grpMember      = new GroupMember;
         $profilePicture = url('/profile-pictures/'.$user->user_meta->profile_picture);
 
         if($user->user_groups)
@@ -174,6 +176,11 @@ class UserTransformer extends Transformer
                 {
                     foreach($group->group_members as $groupMember) 
                     {
+
+                        $memberStatusObject = $grpMember->select('status')->where(['user_id' => $groupMember->id, 'status' => 1])->first();
+                        $memberStatus   =  isset($memberStatusObject) ? $memberStatusObject->status : 0;
+
+
                         if($groupMember->user_meta)
                         {
                             $profilePicture = url('/profile-pictures/'.$groupMember->user_meta->profile_picture);
@@ -204,7 +211,7 @@ class UserTransformer extends Transformer
                                 'campusName'        => $groupMember->user_meta->campus->name,
                                 'isLeader'          => $leader,
                                 'isMember'          => $member,
-                                'memberStatus'      => $groupMember->status,
+                                'memberStatus'      => $memberStatus,
                                 'profile_picture'   => $profilePicture
                             ];
 
