@@ -404,7 +404,7 @@ class EloquentFeedsRepository extends DbRepository
     		return $this->model->with(['campus', 'channel', 'group', 'user', 'feed_interests'])->where([
     			'channel_id' 		=> $channelId,
     			'is_campus_feed' 	=> 0
-    			])->orderBy('id', 'desc')->get();
+    			])->get();
     	}
 
     	return false;
