@@ -191,6 +191,12 @@ class FeedsTransformer extends Transformer
         return $result;
     }
 
+    /**
+     * Home Feed TransformCollection
+     * 
+     * @param collection $feeds
+     * @return array
+     */
     public function homeFeedTransformCollection($feeds = null)
     {
         $result = [];
@@ -214,6 +220,7 @@ class FeedsTransformer extends Transformer
                     $feedAttachment = url('/feeds/'.$feed->user_id.'/'.$feed->attachment);
                 }
                 $creatorProfilePicture  =  url('/profile-pictures/'.$feed->user->user_meta->profile_picture);   
+                $firstName = implode(' ', $feed->user->name);
                 $result[$sr] = [
                     'feedId'            => $feed->id,
                     'description'       => $feed->description,
@@ -222,7 +229,7 @@ class FeedsTransformer extends Transformer
                     'createdDateTime'   => date('m-d-Y', strtotime($feed->created_at)),
                     'feedCreator'       => [
                         'userId'            => (int) $feed->user->id,
-                        'name'              => $feed->user->name,
+                        'name'              => $firstName[0],
                         'email'             => $feed->user->email,
                         'campusId'          => $feed->user->user_meta->campus->id,
                         'campusName'        => $feed->user->user_meta->campus->name,
