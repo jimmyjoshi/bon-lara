@@ -179,8 +179,7 @@ class UserTransformer extends Transformer
 
                         $memberStatusObject = $grpMember->select('status')->where(['user_id' => $groupMember->id, 'status' => 1])->first();
                         $memberStatus   =  isset($memberStatusObject) ? $memberStatusObject->status : 0;
-
-
+                        
                         if($groupMember->user_meta)
                         {
                             $profilePicture = url('/profile-pictures/'.$groupMember->user_meta->profile_picture);
