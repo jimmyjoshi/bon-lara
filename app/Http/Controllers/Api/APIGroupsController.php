@@ -397,5 +397,34 @@ class APIGroupsController extends BaseApiController
 
         return $this->setStatusCode(404)->failureResponse($error, 'Something went wrong !');   
     }
+
+    /**
+     * Allow Member Permissions
+     * 
+     * @param Request $request
+     * @return json
+     */
+    public function allowMemberPermissions(Request $request)
+    {
+        if($request->get('user_id') && $request->get('group_id'))
+        {
+            $userInfo   = $this->getAuthenticatedUser();
+            $status = $this->repository->allowMemberPermissions($userInfo, $request->get('group_id'), $request->get('user_id'));
+            
+            if($status)
+            {
+                $group      = $this->repository->getById($request->get('group_id'));                  
+                $response   = $this->groupTransformer->getSingleGroup($group, $userInfo);
+
+                return $this->successResponse($response, 'Group is Created Successfully');
+            }
+        }
+
+        $error = [
+            'reason' => "Unable to Allow Group Permissions"
+        ];
+
+        return $this->setStatusCode(404)->failureResponse($error, 'Something went wrong !'); 
+    }
 }
 

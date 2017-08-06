@@ -34,4 +34,6 @@ class GroupMember extends BaseModel
      *
      */
     protected $guarded = ["id"];
+
+    public $timestamps = true;
 }
