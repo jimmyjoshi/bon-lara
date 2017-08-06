@@ -737,4 +737,74 @@ class EloquentGroupRepository extends DbRepository
             }
         });
     }
+
+    /**
+     * Allow Member Permissions
+     * 
+     * @param object $userInfo
+     * @param int $groupId
+     * @param mixed $userIds
+     * @return bool
+     */
+    public function allowMemberPermissions($userInfo, $groupId = null, $userIds)
+    {
+    	if($userInfo->id && $groupId)
+    	{
+    		$model = $this->model->find($groupId);
+    		$flag  = false;
+
+    		if($model && $model->getLeaders())
+			{
+				foreach($model->getLeaders() as $leaders)
+				{
+					if($leaders->id == $userInfo->id)
+					{
+						$flag = true;
+					}
+				}
+
+	    		if($flag)
+	    		{
+	    			$this->groupMember->where(['is_leader' => 0])->delete();
+
+	    			 if( strpos($userIds, ',') !== false )
+					 {
+					 	$userIds = explode(',', $userIds);
+					 }
+
+	    			if(is_array($userIds))
+	    			{
+	    				foreach($userIds as $userId)
+	    				{
+	    					if($userId)
+	    					{
+	    						$groupMemberInfo[] = [
+		    						'group_id' 	=> $groupId,
+		    						'user_id' 	=> $userId,
+		    						'is_leader'	=> 0,
+		    						'status'	=> 1
+		    					];
+	    					}
+	    				}
+
+	    				return $this->groupMember->insert($groupMemberInfo);
+	    			}
+	    			else
+	    			{
+	    				$groupMemberInfo = [
+	    					'group_id' 	=> $groupId,
+	    					'user_id' 	=> $userIds,
+	    					'is_leader'	=> 0,
+	    					'status'	=> 1
+	    				];
+	    				
+	    				return $this->groupMember->create($groupMemberInfo);
+	    			}
+
+	    		}
+			}
+    	}
+
+    	return false;
+    }
 }
