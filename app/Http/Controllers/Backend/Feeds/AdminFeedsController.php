@@ -103,6 +103,8 @@ class AdminFeedsController extends Controller
             $input = array_merge($input, ['is_attachment' => 1, 'attachment' => $attachment]);
         }
 
+        $input = array_merge($input, ['is_campus_feed' => 1]);
+        
         $this->repository->createCampusFeeds($input);
 
         return redirect()->route($this->repository->setAdmin(true)->getActionRoute('listRoute'))->withFlashSuccess($this->createSuccessMessage);
