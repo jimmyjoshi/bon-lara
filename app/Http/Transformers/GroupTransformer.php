@@ -271,7 +271,7 @@ class GroupTransformer extends Transformer
                                 'campusId'          => $groupMember->user_meta->campus->id,
                                 'campusName'        => $groupMember->user_meta->campus->name,
                                 'isLeader'          => $leader,
-                                'memberStatus'      => $memberStatusObject->status,
+                                'memberStatus'      => isset($memberStatusObject->status) ? $memberStatusObject->status : 0 ,
                                 'profile_picture'   => $profilePicture
                             ];
 
