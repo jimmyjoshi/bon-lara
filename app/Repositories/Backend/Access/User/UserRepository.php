@@ -470,6 +470,21 @@ class UserRepository extends BaseRepository
         {
             $userInterest = new UserInterest;
 
+            if(strpos($interestId, ',') !== false )
+            {
+                $interestId = explode(',', $interestId);
+
+                foreach($interestId as $intId)                
+                {
+                    $interestData[] = [
+                        'user_id'       => $userId,
+                        'interest_id'   => $intId
+                    ];                    
+
+                    return $userInterest->insert($interestData);                    
+                }
+            }
+
             $interestData = [
                 'user_id'       => $userId,
                 'interest_id'   => $interestId
