@@ -163,11 +163,16 @@ class Access
     {
         if($groupId && $userId)
         {
-            $groupMember = GroupMember::where(['group_id' => $groupId, 'user_id' => $userId])->pluck('status')->first();
+            $groupMember = GroupMember::where(['group_id' => $groupId, 'user_id' => $userId])->first();
 
             if($groupMember)
             {
-                return $groupMember;
+                if($groupMember->is_leader == 1)
+                {
+                    return 1;
+                }
+
+                return $groupMember->status;
             }
         }
 
