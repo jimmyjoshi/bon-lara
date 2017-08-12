@@ -248,12 +248,12 @@ class FeedsTransformer extends Transformer
                                 ]
                         ],
                         'groupDetails' => [
-                            'groupId'           => 0,
-                            'groupName'         => '',
-                            'groupDescription'  => '',
-                            'groupImage'        => $groupImage,
-                            'isPrivate'         => '',
-                            'isDiscovery'       => '',
+                            'groupId'           => isset($feed->group->id) ? (int) $feed->group->id : 0,
+                            'groupName'         => isset($feed->group->id)  ? $feed->group->name : '',
+                            'groupDescription'  => isset($feed->group->id) ? $feed->group->description : '',
+                            'groupImage'        => isset($feed->group->id)  ? $groupImage : '',
+                            'isPrivate'         => isset($feed->group->id)  ? $feed->group->is_private : '',
+                            'isDiscovery'       => isset($feed->group->id)  ? $feed->group->group_type : ''
                         ]
                 ];
 

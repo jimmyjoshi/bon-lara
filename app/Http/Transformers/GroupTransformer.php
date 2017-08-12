@@ -264,14 +264,22 @@ class GroupTransformer extends Transformer
                                 }
                             }
 
+                            $mStatus = GroupMember::where(['group_id' => $group->id, 'user_id' => $groupMember->id])->first();
+                            $showMemberStatus = $mStatus->status;
+
+                            if(isset($mStatus->is_leader) && $mStatus->is_leader == 1)
+                            {
+                                $showMemberStatus = 1;                                
+                            }
+
                             $result[$sr]['group_members'][] =   [
                                 'userId'            => (int) $groupMember->id,
                                 'name'              => $groupMember->name,
                                 'email'             => $groupMember->email,
                                 'campusId'          => $groupMember->user_meta->campus->id,
                                 'campusName'        => $groupMember->user_meta->campus->name,
-                                'isLeader'          => $leader,
-                                'memberStatus'      => access()->getMemberStatus($group->id, $groupMember->id),
+                                'isLeader'          => $mStatus->is_leader,
+                                'memberStatus'      => $showMemberStatus,
                                 'profile_picture'   => $profilePicture
                             ];
 
@@ -428,15 +436,24 @@ class GroupTransformer extends Transformer
                         $member = 0;
                     }
 
+                    $mStatus = GroupMember::where(['group_id' => $group->id, 'user_id' => $groupMember->id])->first();
+                    $showMemberStatus = $mStatus->status;
+                    
+                    if(isset($mStatus->is_leader) && $mStatus->is_leader == 1)
+                    {
+                        $showMemberStatus = 1;                                
+                    }
+
+
                     $result['group_members'][$sr] =   [
                         'userId'            => (int) $groupMember->id,
                         'name'              => $groupMember->name,
                         'email'             => $groupMember->email,
                         'campusId'          => $groupMember->user_meta->campus->id,
                         'campusName'        => $groupMember->user_meta->campus->name,
-                        'isLeader'          => $leader,
+                        'isLeader'          => $mStatus->is_leader,
                         'isMember'          => $member,
-                        'memberStatus'      => access()->getMemberStatus($group->id, $groupMember->id),
+                        'memberStatus'      => $showMemberStatus,
                         'profile_picture'   => $profilePicture
                     ];
                 }
