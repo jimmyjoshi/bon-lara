@@ -291,6 +291,26 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
     }
 
     /**
+     * Get All Events UserGroup
+     * 
+     * @param object $user
+     * @return mixed
+     */
+    public function getAllEventsUserGroup($user = null)
+    {
+    	if($user)
+    	{
+    		$groupIds = $user->user_groups->pluck('id')->toArray();
+    		
+    		return $this->model->with('event_members')->whereIn('id', $groupIds)
+    			->orderBy('id', 'desc')
+    			->get();
+    	}
+
+    	return [];
+    }
+
+    /**
      * Get Table Fields
      * 
      * @return array

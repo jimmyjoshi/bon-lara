@@ -44,10 +44,16 @@ class APIEventsController extends BaseApiController
      */
     public function index(Request $request) 
     {
-        $userInfo   = $this->getAuthenticatedUser();
-        $campusId   = $userInfo->user_meta->campus_id;
-        $events     = $this->repository->getAllEventsByCampusId($campusId);
-        
+        $userInfo           = $this->getAuthenticatedUser();
+        $campusId           = $userInfo->user_meta->campus_id;
+        $events             = $this->repository->getAllEventsByCampusId($campusId);
+        $userGroupEvents    = $this->repository->getAllEventsUserGroup($userInfo);
+       
+        if($userGroupEvents && count($userGroupEvents))
+        {
+            $events = array_merge($events, $userGroupEvents);
+        }
+
         if($events && count($events))
         {
             $response = $this->eventTransformer->getAllEvents($events, $userInfo);
