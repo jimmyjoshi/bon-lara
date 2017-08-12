@@ -1,6 +1,5 @@
 # Laravel 5 Rewrites
 
-
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews
@@ -47,11 +46,9 @@
 # http://enable-cors.org/
 # http://www.w3.org/TR/cors/
 
- <IfModule mod_headers.c>
-#	 Header set Access-Control-Allow-Origin "*"
-#	Access-Control-Allow-Methods: GET, POST, PUT, DELETE
-#	Access-Control-Allow-Headers: Authorization
- </IfModule>
+# <IfModule mod_headers.c>
+#     Header set Access-Control-Allow-Origin "*"
+# </IfModule>
 
 # ----------------------------------------------------------------------
 # | Cross-origin images                                                |
@@ -66,7 +63,7 @@
     <IfModule mod_headers.c>
         <FilesMatch "\.(bmp|cur|gif|ico|jpe?g|png|svgz?|webp)$">
             SetEnvIf Origin ":" IS_CORS
-            Header set Access-Control-Allow-Origin "*" # env=IS_CORS
+            Header set Access-Control-Allow-Origin "*" env=IS_CORS
         </FilesMatch>
     </IfModule>
 </IfModule>
@@ -97,10 +94,9 @@
 # http://www.w3.org/TR/resource-timing/
 # http://www.stevesouders.com/blog/2014/08/21/resource-timing-practical-tips/
 
- <IfModule mod_headers.c>
-     Header set Timing-Allow-Origin: "*"
-
- </IfModule>
+# <IfModule mod_headers.c>
+#     Header set Timing-Allow-Origin: "*"
+# </IfModule>
 
 
 # ######################################################################

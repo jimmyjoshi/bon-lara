@@ -165,7 +165,7 @@ class GroupTransformer extends Transformer
                     'isDiscovery'       => $group->group_type,
                     'isMember'          => 0,
                     'isLeader'          => $isLeader,
-                    'memberStatus'      => $memberStatus,
+                    'memberStatus'      => access()->getMemberStatus($group->id, access()->user()->id),
                     'interests'         => [],
                     'groupLeaderFeeds'  => [],
                     'groupCampus'       => [
@@ -271,7 +271,7 @@ class GroupTransformer extends Transformer
                                 'campusId'          => $groupMember->user_meta->campus->id,
                                 'campusName'        => $groupMember->user_meta->campus->name,
                                 'isLeader'          => $leader,
-                                'memberStatus'      => isset($memberStatusObject->status) ? $memberStatusObject->status : 0 ,
+                                'memberStatus'      => access()->getMemberStatus($group->id, $groupMember->id),
                                 'profile_picture'   => $profilePicture
                             ];
 
@@ -436,7 +436,7 @@ class GroupTransformer extends Transformer
                         'campusName'        => $groupMember->user_meta->campus->name,
                         'isLeader'          => $leader,
                         'isMember'          => $member,
-                        'memberStatus'      => $memberStatus,
+                        'memberStatus'      => access()->getMemberStatus($group->id, $groupMember->id),
                         'profile_picture'   => $profilePicture
                     ];
                 }
