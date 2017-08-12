@@ -2,6 +2,7 @@
 
 namespace App\Services\Access;
 
+use App\Models\Group\GroupMember;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 /**
@@ -149,5 +150,27 @@ class Access
     public function hasPermissions($permissions, $needsAll = false)
     {
         return $this->allowMultiple($permissions, $needsAll);
+    }
+
+    /**
+     * Get Member Status
+     * 
+     * @param int $userId
+     * @param int $groupId
+     * @return bool
+     */
+    public function getMemberStatus($userId, $groupId)
+    {
+        if($groupId && $userId)
+        {
+            $groupMember = GroupMember::where(['group_id' => $groupId, 'user_id' => $userId])->pluck('status')->first();
+
+            if($groupMember)
+            {
+                return $groupMember;
+            }
+        }
+
+        return 0;
     }
 }
