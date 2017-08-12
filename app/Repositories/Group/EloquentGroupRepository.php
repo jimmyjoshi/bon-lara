@@ -233,6 +233,8 @@ class EloquentGroupRepository extends DbRepository
 
 		if(count($groupInterest))
 		{
+			GroupInterest::where(['group_id' => $model->id])->delete();
+			
 			return GroupInterest::insert($groupInterest);
 		}
 
