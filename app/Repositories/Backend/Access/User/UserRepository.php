@@ -481,6 +481,7 @@ class UserRepository extends BaseRepository
                         'interest_id'   => $intId
                     ];                    
 
+                    $userInterest->where(['user_id' => $userId])->delete();                    
                     return $userInterest->insert($interestData);                    
                 }
             }
@@ -490,6 +491,7 @@ class UserRepository extends BaseRepository
                 'interest_id'   => $interestId
             ];
 
+            $userInterest->where(['user_id' => $userId])->delete();
             return $userInterest->create($interestData);
         }
 
