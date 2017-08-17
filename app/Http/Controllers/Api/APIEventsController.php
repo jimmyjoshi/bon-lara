@@ -48,10 +48,11 @@ class APIEventsController extends BaseApiController
         $campusId           = $userInfo->user_meta->campus_id;
         $events             = $this->repository->getAllEventsByCampusId($campusId);
         $userGroupEvents    = $this->repository->getAllEventsUserGroup($userInfo);
-       
+
+
         if($userGroupEvents && count($userGroupEvents))
         {
-            $events = array_merge($events, $userGroupEvents);
+            $events = $events->merge($userGroupEvents);
         }
 
         if($events && count($events))

@@ -107,6 +107,7 @@ class UserTransformer extends Transformer
         $grpMember      = new GroupMember;
         $profilePicture = url('/profile-pictures/'.$user->user_meta->profile_picture);
 
+
         if($user->user_groups)
         {
             $result = [];
@@ -124,6 +125,19 @@ class UserTransformer extends Transformer
                 $isLeader       = ($group->user->id == $loginUserId) ? 1 : 0;
                 $isMember       = 0;
 
+                $grpLeader          = 0;
+                $grpMemberValue     = 0;
+                $grpMemberStatus    = 0;
+
+                $memberStatusObject = $grpMember->where(['user_id' => $user->id])->first();
+
+                if($memberStatusObject)
+                {
+                    $grpLeader          = $memberStatusObject->is_leader;
+                    $grpMemberValue     = 1;
+                    $grpMemberStatus    = $memberStatusObject->status;
+                }
+
                 $result[$sr] = [
                     'groupId'           => (int) $group->id,
                     'groupName'         => $group->name,
@@ -131,8 +145,9 @@ class UserTransformer extends Transformer
                     'groupImage'        => $groupImage,
                     'isPrivate'         => $group->is_private,
                     'isDiscovery'       => $group->group_type,
-                    'isMember'          => 0,
-                    'isLeader'          => $isLeader,
+                    'isMember'          => $grpMemberValue,
+                    'isLeader'          => $grpLeader,
+                    'memberStatus'      => $grpMemberStatus,
                     'interests'         => [],
                     'groupCampus'       => [
                         'campusId'      => (int) $group->campus->id,
@@ -176,41 +191,34 @@ class UserTransformer extends Transformer
                 {
                     foreach($group->group_members as $groupMember) 
                     {
-
-                        $memberStatusObject = $grpMember->select('status')->where(['user_id' => $groupMember->id, 'status' => 1])->first();
-                        $memberStatus   =  isset($memberStatusObject) ? $memberStatusObject->status : 0;
-                        
                         if($groupMember->user_meta)
                         {
+                            $grpLeader          = 0;
+                            $grpMemberValue     = 0;
+                            $grpMemberStatus    = 0;
+
+                            $memberStatusObject = $grpMember->where(['user_id' => $groupMember->id])->first();
+
+                            if($memberStatusObject)
+                            {
+                                $grpLeader          = $memberStatusObject->is_leader;
+                                $grpMemberValue     = 1;
+                                $grpMemberStatus    = $memberStatusObject->status;
+                            }
+
+                            $memberStatus   =  isset($memberStatusObject) ? $memberStatusObject->status : 0;
+
                             $profilePicture = url('/profile-pictures/'.$groupMember->user_meta->profile_picture);
-                            $leader         = 0;
-                            $member         = 1;
-
-                            if(in_array($groupMember->id, $groupLeaders))
-                            {
-                                $leader = 1;
-                                $member = 0;
-                            }
-
-                            if($loginUserId == $groupMember->id)
-                            {
-                                $isMember = 1;
-
-                                if($isLeader == 0 )
-                                {
-                                    $isLeader = $leader;
-                                }
-                            }
-
+                            
                             $result[$sr]['group_members'][] =   [
                                 'userId'            => (int) $groupMember->id,
                                 'name'              => $groupMember->name,
                                 'email'             => $groupMember->email,
                                 'campusId'          => $groupMember->user_meta->campus->id,
                                 'campusName'        => $groupMember->user_meta->campus->name,
-                                'isLeader'          => $leader,
-                                'isMember'          => $member,
-                                'memberStatus'      => $memberStatus,
+                                'isLeader'          => $grpLeader,
+                                'isMember'          => $grpMemberValue,
+                                'memberStatus'      => $grpMemberStatus,
                                 'profile_picture'   => $profilePicture
                             ];
 
@@ -218,8 +226,8 @@ class UserTransformer extends Transformer
                     }
                 }
 
-                $result[$sr]['isMember'] = $isMember;
-                $result[$sr]['isLeader'] = $isLeader;
+                /*$result[$sr]['isMember'] = $isMember;
+                $result[$sr]['isLeader'] = $isLeader;*/
                     
                 $sr++;
             }
