@@ -134,7 +134,8 @@ class FeedsTransformer extends Transformer
                     'attachmentName'    => isset($feed->attachment) ? $feed->attachment : '',
                     'createdAt'         => date('m-d-Y H:i:s', strtotime($feed->created_at)),
                     'createdDateTime'   => date('m-d-Y', strtotime($feed->created_at)),
-                    'createdMonthDate'   => date('M d', strtotime($feed->created_at)),
+                    'createdMonthDate'  => date('M d', strtotime($feed->created_at)),
+                    'is_reported'       => $feed->is_reported,
                     'feedCreator'       => [
                         'userId'            => (int) $feed->user->id,
                         'name'              => $feed->user->name,

@@ -84,4 +84,5 @@ Route::group(['namespace' => 'Api', 'middleware' => 'jwt.customauth'], function 
     Route::post('get-all-channel-feeds/', 'APIFeedsController@getChannelFeeds')->name('feeds.get-channel-feeds');
     Route::post('create-new-feed/', 'APIFeedsController@create')->name('feeds.create-new-feed');
     Route::post('delete-feed/', 'APIFeedsController@destroy')->name('feeds.delete-feed');
+    Route::post('feeds/report', 'APIFeedsController@reportFeed')->name('feeds.report-feed');
 });

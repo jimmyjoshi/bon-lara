@@ -1,6 +1,7 @@
 <?php namespace App\Repositories\Feeds;
 
 use App\Models\Feeds\Feeds;
+use App\Models\Feeds\FeedReport;
 use App\Models\Access\User\UserToken;
 use App\Models\Feeds\FeedInterests;
 use App\Repositories\DbRepository;
@@ -422,6 +423,36 @@ class EloquentFeedsRepository extends DbRepository
     	if($user && $feedId)
     	{
     		return $this->model->where(['id' => $feedId, 'user_id' => $user->id])->delete();
+    	}
+
+    	return false;
+    }
+
+    /**
+     * FeedReport
+     * 
+     * @param object $user
+     * @param int $feedId
+     * @return bool
+     */
+    public function feedReport($user = null, $feedId = null)
+    {
+    	if($user && $feedId)
+    	{
+    		$feed = $this->model->find($feedId);
+
+    		if($feed && $feed->campus_id == $user->user_meta->campus_id)
+    		{
+    			FeedReport::create([
+    				'user_id' 	=> $user->id,
+    				'feed_id'	=> $feedId
+    			]);
+
+    			$feedCount = $feed->is_reported + 1;
+
+    			$feed->is_reported = $feedCount;
+    			return $feed->save();
+    		}
     	}
 
     	return false;

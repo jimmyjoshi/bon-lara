@@ -188,4 +188,34 @@ class APIFeedsController extends BaseApiController
 
         return $this->setStatusCode(400)->failureResponse($error, 'Unable to Delete Feed!');        
     }
+
+    /**
+     * Report Feed
+     * 
+     * @param Request $request
+     * @return json
+     */
+    public function reportFeed(Request $request)
+    {
+        if($request->get('feed_id'))
+        {
+            $userInfo = $this->getAuthenticatedUser();
+            $status   = $this->repository->feedReport($userInfo, $request->get('feed_id'));
+
+            if($status)
+            {
+                 $responseData = [
+                    'success' => 'Feed Reported Successfully !'
+                ];
+
+                return $this->successResponse($responseData, 'Feed Reported Successfully !');
+            }
+        }
+
+        $error = [
+            'reason' => 'Unable to Report Feed!'
+        ];
+
+        return $this->setStatusCode(400)->failureResponse($error, 'Unable to Report Feed!'); 
+    }
 }
