@@ -44,6 +44,12 @@ Route::group(['namespace' => 'Api', 'middleware' => 'jwt.customauth'], function 
 
 
     Route::get('user-profile/{id}', 'APIUserController@profile')->name('api-user.profile');
+    
+    Route::post('users/report-user', 'APIUserController@reportUser')->name('api-user.report-user');
+
+    Route::get('privacy-policy', 'APIUserController@privacyPolicy')->name('api-user.privacy-policy');
+    Route::get('terms-conditions', 'APIUserController@termsConditions')->name('api-user.terms-conditions');
+
     Route::post('set-user-token/', 'APIUserController@setToken')->name('api-user.set-token');
     Route::post('user-profile/update-profile', 'APIUserController@updateProfile')->name('api-user.update-profile');
     Route::get('campus-users/', 'APIUserController@getAllCampusUsers')->name('api-user.get-all-users');

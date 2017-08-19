@@ -4,6 +4,7 @@ namespace App\Repositories\Backend\Access\User;
 
 use App\Models\Access\User\User;
 use App\Models\Access\User\UserMeta;
+use App\Models\Access\User\UserReport;
 use App\Models\Access\User\UserToken;
 use App\Models\Access\User\UserInterest;
 use App\Models\Interest\Interest;
@@ -647,6 +648,26 @@ class UserRepository extends BaseRepository
             ];
 
             return $userToken->create($tokenInfo);
+        }
+
+        return false;
+    }
+
+    /**
+     * Report User
+     * 
+     * @param object $user
+     * @param int $reportUserId
+     * @return bool
+     */
+    public function reportUser($user = null, $reportUserId = null)
+    {
+        if($user && $reportUserId)
+        {
+            return UserReport::create([
+                'user_id'           => $user->id,
+                'report_user_id'    => $reportUserId
+            ]);
         }
 
         return false;

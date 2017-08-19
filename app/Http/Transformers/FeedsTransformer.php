@@ -3,6 +3,7 @@
 namespace App\Http\Transformers;
 
 use App\Http\Transformers;
+use App\Models\Feeds\FeedReport;
 
 class FeedsTransformer extends Transformer 
 {
@@ -91,12 +92,23 @@ class FeedsTransformer extends Transformer
         return $response;
     }
 
-    public function feedTransformCollection($feeds = null)
+    public function feedTransformCollection($user = null, $feeds = null)
     {
         $result = [];
 
         if($feeds)
         {
+            if($user)
+            {
+                $userId = $user->id;
+            }
+            else
+            {
+                $userId = access()->user()->id;
+            }
+            
+            $reportedFeeds = FeedReport::where(['user_id' => $userId])->pluck('feed_id')->toArray();
+
             $sr = 0;
             foreach($feeds as $feed)
             {
@@ -136,6 +148,7 @@ class FeedsTransformer extends Transformer
                     'createdDateTime'   => date('m-d-Y', strtotime($feed->created_at)),
                     'createdMonthDate'  => date('M d', strtotime($feed->created_at)),
                     'is_reported'       => $feed->is_reported,
+                    'reportedByMe'      => in_array($feed->id, $reportedFeeds) ? 1 : 0,
                     'feedCreator'       => [
                         'userId'            => (int) $feed->user->id,
                         'name'              => $feed->user->name,

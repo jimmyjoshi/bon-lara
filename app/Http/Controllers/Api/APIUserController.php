@@ -315,4 +315,66 @@ class APIUserController extends BaseApiController
         ];
         return $this->setStatusCode(400)->failureResponse($error, 'No User Found !'); 
     }
+
+    /**
+     * Report User
+     * 
+     * @param Request $request 
+     * @return json
+     */
+    public function reportUser(Request $request)
+    {
+        $user = $this->getAuthenticatedUser();
+
+        if($user && $request->get('report_user_id') && $user->id != $request->get('report_user_id'))
+        {
+            $status = $this->repository->reportUser($user, $request->get('report_user_id'));
+
+            if($status)
+            {
+                $responseData = [
+                    'success' => 'User Reported Successfully ! We will take action in 48 - 96 hours !'
+                ];
+
+                return $this->successResponse($responseData, 'User Reported Successfully !');
+            }
+        }
+
+        $error = [
+            'reason' => 'Unable to find User!'
+        ];
+        return $this->setStatusCode(400)->failureResponse($error, 'No User Found !');        
+    }
+
+    /**
+     * Privacy Policy
+     * 
+     * @param Request $request
+     * @return json
+     */
+    public function privacyPolicy(Request $request)
+    {
+        $responseData = [
+            'message' => 'Lorem Impus Lomre Impsum Loerm Lorem Impus Lomre Impsum Loerm Lorem Impus Lomre Impsum Loerm Lorem Impus Lomre Impsum Loerm ',
+            'success' => 'Privacy Policy'
+        ];
+
+        return $this->successResponse($responseData, 'Privacy Policy');
+    }
+
+    /**
+     * Privacy Policy
+     * 
+     * @param Request $request
+     * @return json
+     */
+    public function termsConditions(Request $request)
+    {
+        $responseData = [
+            'message' => 'Lorem Impus Lomre Impsum Loerm Lorem Impus Lomre Impsum Loerm Lorem Impus Lomre Impsum Loerm Lorem Impus Lomre Impsum Loerm ',
+            'success' => 'Terms & Conditions'
+        ];
+
+        return $this->successResponse($responseData, 'Terms & Conditions');
+    }
 }
