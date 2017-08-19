@@ -355,6 +355,7 @@ class APIUserController extends BaseApiController
     public function privacyPolicy(Request $request)
     {
         $responseData = [
+            'link'      => 'https://bonfireapp.xyz/',
             'message' => 'Lorem Impus Lomre Impsum Loerm Lorem Impus Lomre Impsum Loerm Lorem Impus Lomre Impsum Loerm Lorem Impus Lomre Impsum Loerm ',
             'success' => 'Privacy Policy'
         ];
@@ -371,6 +372,7 @@ class APIUserController extends BaseApiController
     public function termsConditions(Request $request)
     {
         $responseData = [
+            'link'      => 'https://bonfireapp.xyz/',
             'message' => 'Lorem Impus Lomre Impsum Loerm Lorem Impus Lomre Impsum Loerm Lorem Impus Lomre Impsum Loerm Lorem Impus Lomre Impsum Loerm ',
             'success' => 'Terms & Conditions'
         ];
