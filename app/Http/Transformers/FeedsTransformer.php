@@ -106,12 +106,17 @@ class FeedsTransformer extends Transformer
             {
                 $userId = access()->user()->id;
             }
-            
+
             $reportedFeeds = FeedReport::where(['user_id' => $userId])->pluck('feed_id')->toArray();
 
             $sr = 0;
             foreach($feeds as $feed)
             {
+                if(in_array($feed->id, $reportedFeeds) || $feed->is_reported > 5)
+                {
+                    continue;
+                }
+
                 if( !$feed->group)
                     continue;
                 
