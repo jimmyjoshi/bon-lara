@@ -328,7 +328,7 @@ class APIUserController extends BaseApiController
 
         if($user && $request->get('report_user_id') && $user->id != $request->get('report_user_id'))
         {
-            $status = $this->repository->reportUser($user, $request->get('report_user_id'));
+            $status = $this->repository->reportUser($user, $request->get('report_user_id'), $request->get('description'));
 
             if($status)
             {

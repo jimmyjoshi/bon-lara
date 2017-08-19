@@ -23,6 +23,7 @@ class FeedReport extends BaseModel
     protected $fillable = [
         'user_id',
         'feed_id',
+        'description'
     ];
 
     /**

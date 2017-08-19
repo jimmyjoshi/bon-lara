@@ -25,7 +25,8 @@ class UserReport extends BaseModel
      */
     protected $fillable = [
         'user_id',
-        'report_user_id'
+        'report_user_id',
+        'description'
     ];
 
     /**

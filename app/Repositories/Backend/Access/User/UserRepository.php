@@ -660,13 +660,14 @@ class UserRepository extends BaseRepository
      * @param int $reportUserId
      * @return bool
      */
-    public function reportUser($user = null, $reportUserId = null)
+    public function reportUser($user = null, $reportUserId = null, $notes = 'Report User')
     {
         if($user && $reportUserId)
         {
             return UserReport::create([
                 'user_id'           => $user->id,
-                'report_user_id'    => $reportUserId
+                'report_user_id'    => $reportUserId,
+                'description'       => $notes
             ]);
         }
 

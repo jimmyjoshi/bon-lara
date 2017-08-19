@@ -200,7 +200,7 @@ class APIFeedsController extends BaseApiController
         if($request->get('feed_id'))
         {
             $userInfo = $this->getAuthenticatedUser();
-            $status   = $this->repository->feedReport($userInfo, $request->get('feed_id'));
+            $status   = $this->repository->feedReport($userInfo, $request->get('feed_id'), $request->get('description'));
 
             if($status)
             {

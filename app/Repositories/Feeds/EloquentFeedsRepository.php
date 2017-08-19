@@ -435,7 +435,7 @@ class EloquentFeedsRepository extends DbRepository
      * @param int $feedId
      * @return bool
      */
-    public function feedReport($user = null, $feedId = null)
+    public function feedReport($user = null, $feedId = null, $notes = 'Feed Report')
     {
     	if($user && $feedId)
     	{
@@ -444,8 +444,9 @@ class EloquentFeedsRepository extends DbRepository
     		if($feed && $feed->campus_id == $user->user_meta->campus_id)
     		{
     			FeedReport::create([
-    				'user_id' 	=> $user->id,
-    				'feed_id'	=> $feedId
+    				'user_id' 		=> $user->id,
+    				'feed_id'		=> $feedId,
+    				'description' 	=> $notes
     			]);
 
     			$feedCount = $feed->is_reported + 1;
