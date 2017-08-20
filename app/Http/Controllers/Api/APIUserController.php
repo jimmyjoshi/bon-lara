@@ -372,7 +372,7 @@ class APIUserController extends BaseApiController
     public function termsConditions(Request $request)
     {
         $responseData = [
-            'link'      => 'https://bonfireapp.squarespace.com/privacy-policy',
+            'link'      => 'https://bonfireapp.squarespace.com/terms',
             'message' => 'Lorem Impus Lomre Impsum Loerm Lorem Impus Lomre Impsum Loerm Lorem Impus Lomre Impsum Loerm Lorem Impus Lomre Impsum Loerm ',
             'success' => 'Terms & Conditions'
         ];
