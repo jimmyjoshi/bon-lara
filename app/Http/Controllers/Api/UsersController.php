@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Access\User\UserReport;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests;
 use Illuminate\Http\Request;
@@ -57,6 +58,13 @@ class UsersController extends Controller
         $user = Auth::user()->toArray();
 
         $userData = array_merge($user, ['token' => $token]);
+
+        $isBlocked = UserReport::where('report_user_id', $user['id'])->first();
+
+        if($isBlocked)
+        {
+            return response()->json(['error' => 'User is Blocked'], 500);
+        }
 
         $responseData = $this->userTransformer->transform((object)$userData);
 
