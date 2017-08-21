@@ -76,7 +76,7 @@ class APIFeedsController extends BaseApiController
 
         if($allFeeds && count($allFeeds))
         {
-            $responseData = $this->apiTransformer->homeFeedTransformCollection($allFeeds);
+            $responseData = $this->apiTransformer->homeFeedTransformCollection($userInfo, $allFeeds);
             
             return $this->successResponse($responseData);
         }

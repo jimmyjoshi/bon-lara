@@ -216,16 +216,32 @@ class FeedsTransformer extends Transformer
      * @param collection $feeds
      * @return array
      */
-    public function homeFeedTransformCollection($feeds = null)
+    public function homeFeedTransformCollection($user = null, $feeds = null)
     {
         $result = [];
 
         if($feeds)
         {
+            if($user)
+            {
+                $userId = $user->id;
+            }
+            else
+            {
+                $userId = access()->user()->id;
+            }
+
+            $reportedFeeds = FeedReport::where(['user_id' => $userId])->pluck('feed_id')->toArray();
+
             $sr = 0;
             foreach($feeds as $feed)
             {
                 if(! isset($feed->user->user_meta))
+                {
+                    continue;
+                }
+
+                if(in_array($feed->id, $reportedFeeds) || $feed->is_reported > 5)
                 {
                     continue;
                 }
