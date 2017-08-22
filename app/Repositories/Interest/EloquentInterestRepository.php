@@ -198,7 +198,7 @@ class EloquentInterestRepository extends DbRepository
      */
     public function getAll($orderBy = 'id', $sort = 'asc')
     {
-        return $this->model->all();
+        return $this->model->where('status', 1)->get();
     }
 
 	/**
