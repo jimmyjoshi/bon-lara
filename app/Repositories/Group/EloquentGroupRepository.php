@@ -578,7 +578,7 @@ class EloquentGroupRepository extends DbRepository
 			{
 				$responseGroup 	= [];
 				
-				$groups = $this->model->with(['campus', 'user', 'group_members'])->get();
+				$groups = $this->model->with(['campus', 'user', 'group_members'])->where('campus_id', $user->user_meta->campus_id)->get();
 
 				foreach($groups as $group)
 				{	
