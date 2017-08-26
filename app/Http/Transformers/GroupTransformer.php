@@ -347,7 +347,7 @@ class GroupTransformer extends Transformer
                 if(! isset($group->user->user_meta))
                     continue;
                 
-                if($sr >5 )
+                if($sr > 4 )
                     break;
 
                 $random = rand(111, 999);
