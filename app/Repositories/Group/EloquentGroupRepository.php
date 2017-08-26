@@ -556,7 +556,7 @@ class EloquentGroupRepository extends DbRepository
 	{
 		if($campusId)
 		{
-			return $this->model->with(['campus', 'user', 'group_members'])->where(['campus_id' => $campusId])->get();
+			return $this->model->with(['campus', 'user', 'group_members'])->where(['campus_id' => $campusId])->orderBy('name')->get();
 		}
 
 		return false;
