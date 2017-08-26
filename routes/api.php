@@ -66,6 +66,8 @@ Route::group(['namespace' => 'Api', 'middleware' => 'jwt.customauth'], function 
     Route::post('user-interest/add-bulk-interest', 'APIUserController@addBulkInterest')->name('api-user.add-bulk-interest');
 
     Route::get('groups/', 'APIGroupsController@index')->name('groups.index');
+    Route::get('groups/random-groups', 'APIGroupsController@getRandomGroupsByCampusId')->name('groups.random-groups');
+    
     Route::get('get-for-you-groups/', 'APIGroupsController@getForYouGroups')->name('groups.get-for-you-groups');
     Route::post('groups/create', 'APIGroupsController@create')->name('groups.create');
     Route::post('groups/edit', 'APIGroupsController@edit')->name('groups.edit');

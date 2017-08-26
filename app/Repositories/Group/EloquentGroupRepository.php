@@ -815,4 +815,28 @@ class EloquentGroupRepository extends DbRepository
 
     	return false;
     }
+
+    public function getRandomGroupsByCampusId($campusId = null)
+    {
+    	if($campusId)
+    	{
+    		$allGroups = $this->model->with(['campus', 'user', 'group_members'])->where(['campus_id' => $campusId])->get()->toArray();
+
+			$fiveGroups = array_rand($allGroups, 5);
+
+			$return = []; 
+
+			foreach($allGroups as $group)
+			{
+				if(in_array($group['id'], $fiveGroups))
+				{
+					$return[] = $group;
+				}
+			}
+
+    		return collect($return);
+    	}
+
+    	return false;
+    }
 }

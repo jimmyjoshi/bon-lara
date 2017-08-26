@@ -144,7 +144,208 @@ class GroupTransformer extends Transformer
             $sr = 0;
             foreach($groups as $group)        
             {
+
                 if(! isset($group->user->user_meta))
+                    continue;
+                
+                $groupImage             =  url('/groups/'.$group->image);
+                $creatorProfilePicture  =  url('/profile-pictures/'.$group->user->user_meta->profile_picture);   
+
+                $loginUserId    =  access()->user()->id;
+                $isLeader       =  0;
+                $isMember       =  0;
+                $memberStatusObject = $grpMember->select('status')->where(['user_id' => $loginUserId, 'status' => 1])->first();
+                $memberStatus   =  isset($memberStatusObject) ? $memberStatusObject->status : 0;
+
+                $result[$sr] = [
+                    'groupId'           => (int) $group->id,
+                    'groupName'         => $group->name,
+                    'groupDescription'  => $group->description,
+                    'groupImage'        => $groupImage,
+                    'isPrivate'         => $group->is_private,
+                    'isDiscovery'       => $group->group_type,
+                    'isMember'          => 0,
+                    'isLeader'          => $isLeader,
+                    'memberStatus'      => access()->getMemberStatus($group->id, access()->user()->id),
+                    'interests'         => [],
+                    'groupLeaderFeeds'  => [],
+                    'groupCampus'       => [
+                        'campusId'      => (int) $group->campus->id,
+                        'campusName'    => $group->campus->name,
+                        'campusCode'    => $group->campus->campus_code,
+                    ],
+                    'groupCreator'      => [
+                        'userId'            => (int) $group->user->id,
+                        'name'              => $group->user->name,
+                        'email'             => $group->user->email,
+                        'campusId'          => $group->user->user_meta->campus->id,
+                        'campusName'        => $group->user->user_meta->campus->name,
+                        'profile_picture'   => $creatorProfilePicture
+                    ],
+                    
+                ];
+
+
+                if($group->get_group_leader_feeds())
+                {
+                    foreach($group->get_group_leader_feeds()->get() as $groupLeaderFeed)
+                    {
+                        $creatorProfilePicture  =  url('/profile-pictures/'.$groupLeaderFeed->user->user_meta->profile_picture);
+                        $feedAttachment = '';
+
+                        if(isset($feed->is_attachment) && $groupLeaderFeed->is_attachment == 1 && file_exists(base_path() . '/public/feeds/'.$groupLeaderFeed->user_id.'/'.$groupLeaderFeed->attachment))
+                        {
+                            $feedAttachment = url('/feeds/'.$feed->user_id.'/'.$feed->attachment);
+                        }
+                        
+                        $result[$sr]['groupLeaderFeeds'][] = [
+                            'feedId'            => $groupLeaderFeed->id,
+                            'description'       => $groupLeaderFeed->description,
+                            'is_attachment'     => $groupLeaderFeed->is_attachment,
+                            'attachment_link'   => $feedAttachment,
+                            'createdAt'         => date('m-d-Y H:i:s', strtotime($groupLeaderFeed->created_at)),
+                            'createdDateTime'   => date('m-d-Y', strtotime($groupLeaderFeed->created_at)),
+                            'feedCreator'       => [
+                                'userId'            => (int) $groupLeaderFeed->user->id,
+                                'name'              => $groupLeaderFeed->user->name,
+                                'email'             => $groupLeaderFeed->user->email,
+                                'campusId'          => $groupLeaderFeed->user->user_meta->campus->id,
+                                'campusName'        => $groupLeaderFeed->user->user_meta->campus->name,
+                                'profile_picture'   => $creatorProfilePicture
+                            ]
+                        ];   
+                    }
+                }
+
+                if($group->group_interests && count($group->group_interests))
+                {
+                    foreach($group->group_interests as $interest)   
+                    {
+                        if(isset($interest) && $interest->image && file_exists(base_path() . '/public/interests/'.$interest->image))
+                        {
+                            $image = url('/interests/'.$interest->image);
+                        }
+                        else
+                        {
+                            $image = url('/interests/default.png');    
+                        }
+
+                        $result[$sr]['interests'][] = [
+                            'interestId'        => (int) $interest->id,
+                            'name'              => $interest->name,
+                            'image'             => $image
+                        ];
+                    }
+                }
+
+                $groupLeaders = $group->getLeaders()->pluck('id')->toArray();
+
+                if($group->group_members)
+                {
+                    foreach($group->group_members as $groupMember) 
+                    {
+                        if($groupMember->user_meta)
+                        {
+                            $memberStatusObject = $grpMember->select('status')->where(['user_id' => $groupMember->id, 'status' => 1])->first();
+                            $profilePicture = url('/profile-pictures/'.$groupMember->user_meta->profile_picture);
+                            $leader         = 0;
+
+                            if(in_array($groupMember->id, $groupLeaders))
+                            {
+                                $leader = 1;
+                            }
+
+                            if($loginUserId == $groupMember->id)
+                            {
+                                $isMember = 1;
+
+                                if($isLeader == 0 )
+                                {
+                                    $isLeader = $leader;
+                                }
+                            }
+
+                            $mStatus = GroupMember::where(['group_id' => $group->id, 'user_id' => $groupMember->id])->first();
+                            $showMemberStatus = $mStatus->status;
+
+                            if(isset($mStatus->is_leader) && $mStatus->is_leader == 1)
+                            {
+                                $showMemberStatus = 1;                                
+                            }
+
+                            $result[$sr]['group_members'][] =   [
+                                'userId'            => (int) $groupMember->id,
+                                'name'              => $groupMember->name,
+                                'email'             => $groupMember->email,
+                                'campusId'          => $groupMember->user_meta->campus->id,
+                                'campusName'        => $groupMember->user_meta->campus->name,
+                                'isLeader'          => $mStatus->is_leader,
+                                'memberStatus'      => $showMemberStatus,
+                                'profile_picture'   => $profilePicture
+                            ];
+
+                        }
+                    }
+                }
+
+                // Group Events
+                if($group->group_events)
+                {
+                    foreach($group->group_events as $event)   
+                    {
+                        $result[$sr]['group_events'][] = [
+                            'eventId'           => (int) $event->id,
+                            'eventName'         => $event->name,
+                            'eventTitle'        => $event->title,
+                            'eventStartDate'    => date('m-d-Y H:i:s', strtotime($event->start_date)),
+                            'eventEndDate'      => date('m-d-Y H:i:s', strtotime($event->end_date)),
+                            'eventCreator'      => [
+                                'userId'            => $event->user->id,
+                                'name'              => $event->user->name,
+                                'email'             => $event->user->email,
+                                'campusId'          => $event->user->user_meta->campus->id,
+                                'campusName'        => $event->user->user_meta->campus->name,
+                                'profile_picture'   => url('/profile-pictures/'.$event->user->user_meta->profile_picture)
+                            ],
+                        ];
+                    }
+                }
+
+
+                $result[$sr]['isMember'] = $isMember;
+                $result[$sr]['isLeader'] = $isLeader;
+                    
+                $sr++;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get All GroupsWithMembers
+     * 
+     * @param object $groups
+     * @param object $userInfo
+     * @return array
+     */
+    public function getAllGroupsWithMembersRandomFive($groups = null, $userInfo = null)
+    {
+        $result = [];
+    
+        if($groups)        
+        {
+            $groupArr   = $groups->toArray();
+            $fiveGroups = array_rand($groupArr, 5);
+
+            $grpMember = new GroupMember;
+            $sr = 0;
+            foreach($groups as $group)        
+            {
+                if(! isset($group->user->user_meta))
+                    continue;
+                
+                if(! in_array($group->id, $fiveGroups))
                     continue;
                 
                 $groupImage             =  url('/groups/'.$group->image);

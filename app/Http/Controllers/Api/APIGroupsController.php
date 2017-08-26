@@ -52,7 +52,7 @@ class APIGroupsController extends BaseApiController
         if($groups && count($groups))
         {
             $response = $this->groupTransformer->getAllGroupsWithMembers($groups, $userInfo);
-            
+
             return $this->successResponse($response);
         }
 
@@ -61,6 +61,26 @@ class APIGroupsController extends BaseApiController
         ];
 
         return $this->setStatusCode(400)->failureResponse($error, 'No Groups Found !');
+    }
+
+    public function getRandomGroupsByCampusId(Request $request)
+    {
+        $userInfo   = $this->getAuthenticatedUser();
+        $campusId   = $userInfo->user_meta->campus_id;
+        $groups     = $this->repository->getAllGroupsByCampusId($campusId);
+        
+        if($groups && count($groups))
+        {
+            $response = $this->groupTransformer->getAllGroupsWithMembersRandomFive($groups, $userInfo);
+            
+            return $this->successResponse($response);
+        }
+
+        $error = [
+            'reason' => 'Unable to find Random Groups!'
+        ];
+
+        return $this->setStatusCode(400)->failureResponse($error, 'No Random Groups Found !');   
     }
 
     /**
