@@ -431,5 +431,34 @@ class APIGroupsController extends BaseApiController
 
         return $this->setStatusCode(404)->failureResponse($error, 'Something went wrong !'); 
     }
+
+    /**
+     * Change MemberStatus
+     * 
+     * @param  Request $request [description]
+     * @return json
+     */
+    public function changeMemberStatus(Request $request)
+    {
+        if($request->get('user_id') && $request->get('group_id'))
+        {
+            $userInfo   = $this->getAuthenticatedUser();
+            $status = $this->repository->changeMemberStatus($userInfo, $request->get('group_id'), $request->get('user_id'), $request->get('member_status'));
+            
+            if($status)
+            {
+                $group      = $this->repository->getById($request->get('group_id'));                  
+                $response   = $this->groupTransformer->getSingleGroup($group, $userInfo);
+
+                return $this->successResponse($response, 'Member Status Updated Successfully !');
+            }
+        }
+
+        $error = [
+            'reason' => "Unable to Allow Member Permissions"
+        ];
+
+        return $this->setStatusCode(404)->failureResponse($error, 'Something went wrong !');    
+    }
 }
 

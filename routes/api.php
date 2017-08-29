@@ -80,6 +80,9 @@ Route::group(['namespace' => 'Api', 'middleware' => 'jwt.customauth'], function 
 
     Route::post('groups/get-member-suggestions', 'APIGroupsController@getMemberSuggestions')->name('groups.get-member-suggestions');
 
+    Route::post('groups/change-member-status', 'APIGroupsController@changeMemberStatus')->name('groups.change-member-status');
+
+
     Route::post('groups/remove-member', 'APIGroupsController@removeMember')->name('groups.remove-member');
     Route::post('groups/get-group-members', 'APIGroupsController@getAllGroupMembers')->name('groups.get-group-members');
 

@@ -839,4 +839,43 @@ class EloquentGroupRepository extends DbRepository
 
     	return false;
     }
+
+    /**
+     * Change Member Status
+     * 
+     * @param object $user
+     * @param int $userId
+     * @param int $groupId 
+     * @return bool
+     */
+    public function changeMemberStatus($user = null, $groupId = null, $userId = null, $memberStatus = 0)
+    {
+    	if($user && $userId && $groupId)
+    	{
+    		$model = $this->model->find($groupId);
+    		
+    		$groupLeaderIds = $model->get_group_leaders()->pluck('users.id')->toArray();
+
+    		if(in_array($user->id, $groupLeaderIds))
+    		{
+ 				$groupMember = GroupMember::where(['group_id' => $groupId, 'user_id' => $userId])->first();
+
+ 				if($groupMember)
+ 				{
+ 					$groupMember->status = $memberStatus;
+ 					return $groupMember->save();
+ 				}
+ 				else
+ 				{
+ 					 return GroupMember::create([
+ 					 		'group_id' 	=> $groupId,
+ 					 		'user_id'	=> $userId,
+ 					 		'status'	=> $memberStatus
+ 					 	]);
+ 				}
+ 			}
+    	}
+
+    	return false;
+    }
 }
