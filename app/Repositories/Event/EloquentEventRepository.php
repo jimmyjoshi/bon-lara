@@ -5,6 +5,7 @@ use App\Models\Event\EventMember;
 use App\Models\Access\User\User;
 use App\Repositories\DbRepository;
 use App\Exceptions\GeneralException;
+use App\Models\Group\GroupMember;
 
 class EloquentEventRepository extends DbRepository implements EventRepositoryContract
 {
@@ -299,9 +300,10 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
     public function getAllEventsUserGroup($user = null)
     {
     	$user = $this->userModel->find($user->id);
+
     	if($user)
     	{
-    		$groupIds = $user->user_groups->pluck('id')->toArray();
+    		$groupIds = GroupMember::where(['user_id' => $user->id, 'status' => 1])->pluck('group_id')->toArray();
     		
     		return $this->model->with('event_members')->whereIn('group_id', $groupIds)
     			->orderBy('id', 'desc')
