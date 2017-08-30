@@ -584,7 +584,7 @@ class EloquentGroupRepository extends DbRepository
 				{	
 					foreach($group->get_group_interests as $interest)
 					{
-						if(in_array($interest->id, $userInterest))
+						if(in_array($interest->interest_id, $userInterest))
 						{
 							$responseGroup[] = $group;
 						}
