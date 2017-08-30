@@ -298,7 +298,7 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
      */
     public function getAllEventsUserGroup($user = null)
     {
-    	$user = $this->userModel->find(65);
+    	$user = $this->userModel->find($user->id);
     	if($user)
     	{
     		$groupIds = $user->user_groups->pluck('id')->toArray();
