@@ -303,7 +303,23 @@ class EloquentEventRepository extends DbRepository implements EventRepositoryCon
 
     	if($user)
     	{
-    		$groupIds = GroupMember::where(['user_id' => $user->id, 'status' => 1])->pluck('group_id')->toArray();
+    		$groupMembers 	= GroupMember::where(['user_id' => $user->id])->get();
+    		$groupIds 		= [];
+
+    		foreach($groupMembers as $groupMember)
+    		{
+    			if($groupMember->is_leader == 1)
+    			{
+    				$groupIds[] = $groupMember->group_id;
+
+    				continue;
+    			}
+
+    			if($groupMember->status == 1)
+    			{
+    				$groupIds[] = $groupMember->group_id;
+    			}
+    		}
     		
     		return $this->model->with('event_members')->whereIn('group_id', $groupIds)
     			->orderBy('id', 'desc')
