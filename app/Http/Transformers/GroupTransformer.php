@@ -282,6 +282,7 @@ class GroupTransformer extends Transformer
                                 'campusId'          => $groupMember->user_meta->campus->id,
                                 'campusName'        => $groupMember->user_meta->campus->name,
                                 'isLeader'          => $mStatus->is_leader,
+                                'isMember'          => 1,
                                 'memberStatus'      => $showMemberStatus,
                                 'profile_picture'   => $profilePicture
                             ];
