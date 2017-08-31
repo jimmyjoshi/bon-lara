@@ -30,6 +30,7 @@ class Feeds extends BaseModel
         'group_id',
         'description',
         'attachment',
+        'is_announcement',
         'is_attachment',
         'is_campus_feed'
     ];
