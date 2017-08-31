@@ -402,7 +402,7 @@ class EloquentFeedsRepository extends DbRepository
 	    	}
     		$response = [];
 
-    		$feeds =  $this->model->with(['campus', 'user', 'feed_interests'])->where([
+    		return  $this->model->with(['campus', 'user', 'feed_interests'])->where([
     			'campus_id' 		=> $campusId,
     			'is_campus_feed' 	=> 1
     			])->orderBy('id', 'desc')->get();

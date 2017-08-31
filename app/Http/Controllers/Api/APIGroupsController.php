@@ -67,7 +67,7 @@ class APIGroupsController extends BaseApiController
     {
         $userInfo   = $this->getAuthenticatedUser();
         $campusId   = $userInfo->user_meta->campus_id;
-        $groups     = $this->repository->getAllGroupsByCampusId($campusId);
+        $groups     = $this->repository->getAllFeatureGroupsByCampusId($campusId);
         
         if($groups && count($groups))
         {

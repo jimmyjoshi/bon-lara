@@ -563,6 +563,22 @@ class EloquentGroupRepository extends DbRepository
 	}
 
 	/**
+	 * Get All Groups By CampusId
+	 * 
+	 * @param int $campusId
+	 * @return object
+	 */
+	public function getAllFeatureGroupsByCampusId($campusId = null)
+	{
+		if($campusId)
+		{
+			return $this->model->with(['campus', 'user', 'group_members'])->where(['campus_id' => $campusId, 'group_type' => 1])->orderBy('name')->get();
+		}
+
+		return false;
+	}
+
+	/**
 	 * Get All Groups For You
 	 * 
 	 * @param object $user
