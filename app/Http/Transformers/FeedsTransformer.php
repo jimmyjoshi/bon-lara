@@ -233,6 +233,7 @@ class FeedsTransformer extends Transformer
 
             $reportedFeeds = FeedReport::where(['user_id' => $userId])->pluck('feed_id')->toArray();
 
+
             $sr = 0;
             foreach($feeds as $feed)
             {
@@ -240,7 +241,6 @@ class FeedsTransformer extends Transformer
                 {
                     continue;
                 }
-
                 if(in_array($feed->id, $reportedFeeds) || $feed->is_reported > 5)
                 {
                     continue;

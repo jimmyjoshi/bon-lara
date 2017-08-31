@@ -103,7 +103,7 @@ class AdminFeedsController extends Controller
             $input = array_merge($input, ['is_attachment' => 1, 'attachment' => $attachment]);
         }
 
-        $input = array_merge($input, ['is_campus_feed' => 1]);
+        $input = array_merge($input, ['is_campus_feed' => 1, 'is_announcement' => 1]);
         
         $this->repository->createCampusFeeds($input);
 

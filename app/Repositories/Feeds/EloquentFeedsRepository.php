@@ -375,63 +375,68 @@ class EloquentFeedsRepository extends DbRepository
 
     /**
      * Get Feeds By CampusId
-     *
-     * @param object $user
+     * 
      * @param int $campusId
      * @return object
      */
     public function getAllHomeFeeds($user = null, $campusId = null)
     {
-    	$userInterest 	= $user->user_interests()->pluck('interest_id')->toArray();
-    	$gropuMembers 	= GroupMember::where('user_id', $user->id)->get();
-    	$groupIds		= [];
-
-    	foreach($gropuMembers as $member)
-    	{
-    		if($member->is_leader == 1)
-    		{
-    			$groupIds[] = $member->group_id;
-    			continue;
-    		}
-
-			if($member->status == 1)
-    		{
-    			$groupIds[] = $member->group_id;
-    		}
-    	}
-
     	if($campusId && $user)
     	{
-    		$feeds = $this->model->with(['campus', 'user', 'feed_interests'])->where([
+    		$userInterest 	= $user->user_interests()->pluck('interest_id')->toArray();
+	    	$gropuMembers 	= GroupMember::where('user_id', $user->id)->get();
+	    	$groupIds		= [];
+
+	    	foreach($gropuMembers as $member)
+	    	{
+	    		if($member->is_leader == 1)
+	    		{
+	    			$groupIds[] = $member->group_id;
+	    			continue;
+	    		}
+
+				if($member->status == 1)
+	    		{
+	    			$groupIds[] = $member->group_id;
+	    		}
+	    	}
+    		$response = [];
+
+    		$feeds =  $this->model->with(['campus', 'user', 'feed_interests'])->where([
     			'campus_id' 		=> $campusId,
     			'is_campus_feed' 	=> 1
     			])->orderBy('id', 'desc')->get();
 
-    		$response = [];
+    		$feedIds = [];
 
     		foreach($feeds as $feed)
     		{
+                if($feed->is_announcement == 1)
+                {
+                	$feedIds[] = $feed->id;
+                    continue;
+                }
+
     			$feedIntersts = $feed->feed_interests()->get()->toArray();
+
     			foreach($feedIntersts as $finterest)
     			{
-
     				if(in_array($finterest['id'], $userInterest))
     				{
-    					$response[] = $feed;
-    					continue;		
+    					$feedIds[] = $feed->id;
+    					break;		
     				}
     			}
 
     			if(in_array($feed->group_id, $groupIds))	
     			{
-    				$response[] = $feed;
+    				$feedIds[] = $feed->id;
     				continue;
     			}
 
     		}
-    			
-    		return collect([$response]);
-    		
+
+    		return  $this->model->with(['campus', 'user', 'feed_interests'])->whereIn('id', $feedIds)->orderBy('id', 'desc')->get();
     	}
 
     	return false;
