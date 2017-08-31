@@ -7,6 +7,7 @@ use App\Models\Feeds\FeedInterests;
 use App\Repositories\DbRepository;
 use App\Exceptions\GeneralException;
 use App\Library\Push\PushNotification;
+use App\Models\Group\GroupMember;
 
 class EloquentFeedsRepository extends DbRepository
 {
@@ -374,18 +375,63 @@ class EloquentFeedsRepository extends DbRepository
 
     /**
      * Get Feeds By CampusId
-     * 
+     *
+     * @param object $user
      * @param int $campusId
      * @return object
      */
-    public function getAllHomeFeeds($campusId = null)
+    public function getAllHomeFeeds($user = null, $campusId = null)
     {
-    	if($campusId)
+    	$userInterest 	= $user->user_interests()->pluck('interest_id')->toArray();
+    	$gropuMembers 	= GroupMember::where('user_id', $user->id)->get();
+    	$groupIds		= [];
+
+    	foreach($gropuMembers as $member)
     	{
-    		return $this->model->with(['campus', 'user', 'feed_interests'])->where([
+    		if($member->is_leader == 1)
+    		{
+    			$groupIds[] = $member->group_id;
+    			continue;
+    		}
+
+			if($member->status == 1)
+    		{
+    			$groupIds[] = $member->group_id;
+    		}
+    	}
+
+    	if($campusId && $user)
+    	{
+    		$feeds = $this->model->with(['campus', 'user', 'feed_interests'])->where([
     			'campus_id' 		=> $campusId,
     			'is_campus_feed' 	=> 1
     			])->orderBy('id', 'desc')->get();
+
+    		$response = [];
+
+    		foreach($feeds as $feed)
+    		{
+    			$feedIntersts = $feed->feed_interests()->get()->toArray();
+    			foreach($feedIntersts as $finterest)
+    			{
+
+    				if(in_array($finterest['id'], $userInterest))
+    				{
+    					$response[] = $feed;
+    					continue;		
+    				}
+    			}
+
+    			if(in_array($feed->group_id, $groupIds))	
+    			{
+    				$response[] = $feed;
+    				continue;
+    			}
+
+    		}
+    			
+    		return collect([$response]);
+    		
     	}
 
     	return false;

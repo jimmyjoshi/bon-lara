@@ -105,9 +105,11 @@ class PushNotification
 		stream_context_set_option($ctx, 'ssl', 'local_cert', public_path().DIRECTORY_SEPARATOR.'pushcert.pem');
 		stream_context_set_option($ctx, 'ssl', 'passphrase', self::$passphrase);
 
+		//LIVE URL - gateway.push.apple.com
+		//Sandbox - gateway.sandbox.push.apple.com
 		// Open a connection to the APNS server
 		$fp = stream_socket_client(
-			'ssl://gateway.sandbox.push.apple.com:2195', $err,
+			'ssl://gateway.push.apple.com:2195', $err,
 			$errstr, 60, STREAM_CLIENT_CONNECT|STREAM_CLIENT_PERSISTENT, $ctx);
 
 		if (!$fp)

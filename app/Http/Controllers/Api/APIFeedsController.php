@@ -72,7 +72,7 @@ class APIFeedsController extends BaseApiController
     {
         $userInfo   = $this->getAuthenticatedUser();
         $campusId   = $userInfo->user_meta->campus_id;
-        $allFeeds   = $this->repository->getAllHomeFeeds($campusId);
+        $allFeeds   = $this->repository->getAllHomeFeeds($userInfo, $campusId);
 
         if($allFeeds && count($allFeeds))
         {
