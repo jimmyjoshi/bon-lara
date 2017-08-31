@@ -129,7 +129,7 @@ class UserTransformer extends Transformer
                 $grpMemberValue     = 0;
                 $grpMemberStatus    = 0;
 
-                $memberStatusObject = $grpMember->where(['user_id' => $user->id])->first();
+                $memberStatusObject = GroupMember::where(['user_id' => $user->id, 'group_id' => $group->id])->first();
 
                 if($memberStatusObject)
                 {
@@ -197,7 +197,7 @@ class UserTransformer extends Transformer
                             $grpMemberValue     = 0;
                             $grpMemberStatus    = 0;
 
-                            $memberStatusObject = $grpMember->where(['user_id' => $groupMember->id])->first();
+                            $memberStatusObject = GroupMember::where(['user_id' => $groupMember->id, 'group_id' => $group->id])->first();
 
                             if($memberStatusObject)
                             {
