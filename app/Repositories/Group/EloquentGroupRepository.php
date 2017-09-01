@@ -939,7 +939,7 @@ class EloquentGroupRepository extends DbRepository
 			}
     	}
 
-    	return false;
+    	return true;
     }
 
     public function getRandomGroupsByCampusId($campusId = null)
