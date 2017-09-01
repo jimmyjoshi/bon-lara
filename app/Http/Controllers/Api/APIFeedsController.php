@@ -142,7 +142,7 @@ class APIFeedsController extends BaseApiController
         {
             $userInfo   = $this->getAuthenticatedUser();
             $allFeeds   = $this->repository->getFeedsByChannelId($request->get('channel_id'));
-
+            
             if($allFeeds && count($allFeeds))
             {
                 $responseData = $this->apiTransformer->feedTransformCollection($userInfo, $allFeeds);

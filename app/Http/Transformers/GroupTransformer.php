@@ -168,7 +168,7 @@ class GroupTransformer extends Transformer
                     'isDiscovery'       => $group->group_type,
                     'isMember'          => 0,
                     'isLeader'          => $isLeader,
-                    'memberStatus'      => access()->getMemberStatus($group->id, access()->user()->id),
+                    'memberStatus'      => $memberStatus,
                     'interests'         => [],
                     'groupLeaderFeeds'  => [],
                     'groupCampus'       => [
@@ -381,7 +381,7 @@ class GroupTransformer extends Transformer
                     'isDiscovery'       => $group->group_type,
                     'isMember'          => 0,
                     'isLeader'          => $isLeader,
-                    'memberStatus'      => access()->getMemberStatus($group->id, access()->user()->id),
+                    'memberStatus'      => $memberStatus,
                     'interests'         => [],
                     'groupLeaderFeeds'  => [],
                     'groupCampus'       => [

@@ -40,5 +40,14 @@ class Group extends BaseModel
      */
     protected $guarded = ["id"];
 
-   
+
+    /**
+     * Default Channel
+     * 
+     * @return object
+     */
+    public function defaultChannel()
+    {
+        return $this->group_channels()->first();
+    }
 }

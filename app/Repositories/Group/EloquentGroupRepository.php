@@ -7,6 +7,8 @@ use App\Models\Group\GroupInterest;
 use App\Models\Access\User\User;
 use App\Repositories\DbRepository;
 use App\Exceptions\GeneralException;
+use App\Models\Feeds\Feeds;
+use App\Models\Channel\Channel;
 
 class EloquentGroupRepository extends DbRepository
 {
@@ -179,9 +181,11 @@ class EloquentGroupRepository extends DbRepository
 	 * @return mixed
 	 */
 	public function create($input)
-	{
-		$input = $this->prepareInputData($input, true);
-		$model = $this->model->create($input);
+	{	
+		$input 	= $this->prepareInputData($input, true);
+		$model 	= $this->model->create($input);
+		$userId = access()->user()->id;
+		$user 	= $this->userModel->find($userId);
 
 		if($model)
 		{
@@ -197,7 +201,14 @@ class EloquentGroupRepository extends DbRepository
 		    	];
 
 		   	$this->groupMember->create($groupMemberData);
-			
+		   	
+		   	Channel::create([
+		   		'group_id'	=> $model->id,
+		   		'campus_id' => $user->user_meta->campus_id,
+		   		'user_id'	=> $user->id,
+		   		'name'		=> 'General'
+		   	]);
+
 			return $model;
 		}
 
@@ -481,12 +492,30 @@ class EloquentGroupRepository extends DbRepository
 
     	if($groupId && count($userIds))
     	{
+    		$groupInfo = $this->model->find($groupId);
+    		
+    		if(isset($groupInfo->is_private) && $groupInfo->is_private == 1)
+    		{
+    			if(is_array($userIds))
+    			{
+    				foreach($userIds as $userId)	
+	    			{
+	    				$this->createPrivateGroupRequestFeed($groupInfo, $userId);
+	    			}
+    			}
+    			else
+    			{
+    				$this->createPrivateGroupRequestFeed($groupInfo, $userIds);
+    			}
+
+    			return true;
+    		}
+
     		if($sync && $sync == 1)
 	    	{
 	    		$this->groupMember->where(['group_id' => $groupId, 'is_leader' => $isLeader])->delete();
 	    	}
 
-    		$groupInfo = $this->model->find($groupId);
 
     		foreach($userIds as $userId)	
     		{
@@ -521,6 +550,30 @@ class EloquentGroupRepository extends DbRepository
     	}
 
     	return false;
+    }
+
+    /**
+     * Create Private Group RequestFeed
+     * 
+     * @param object $group
+     * @param int $userId
+     * @return bool
+     */
+    public function createPrivateGroupRequestFeed($group = null, $userId = null)
+    {
+    	$feed 			= new Feeds;
+    	$user 			= $this->userModel->find($userId);
+    	$defaultChannel = $group->defaultChannel();
+
+    	$feedData = [
+    		'user_id' 		=> $user->id,
+    		'campus_id'		=> $user->user_meta->campus_id,
+    		'channel_id' 	=> $defaultChannel->id,
+    		'group_id'		=> $group->id,
+    		'description' 	=> ';;request '. $user->id .' '. $user->name  . ' has requested to Join your Group.'
+    	];
+
+    	return $feed->create($feedData);
     }
 
     /**
@@ -917,6 +970,43 @@ class EloquentGroupRepository extends DbRepository
  			}
     	}
 
+    	return false;
+    }
+
+    /**
+     * Allow Private Group Access
+     * 
+     * @param object $user
+     * @param int $groupId
+     * @param int $userId
+     * @return bool
+     */
+    public function allowPrivateGroupAccess($user = null, $groupId = null, $userId = null)
+    {
+    	if($user && $groupId && $userId)
+    	{
+    		$group = $this->model->find($groupId);
+
+    		if($group)
+    		{
+    			$groupLeaders = $group->get_group_leaders()->pluck('user_id')->toArray();
+    			if(in_array($user->id, $groupLeaders))
+    			{
+    				$groupMember = GroupMember::where(['user_id' => $userId, 'group_id' => $groupId])->first();
+    				
+    				if(isset($groupMember))
+    				{
+    					return false;
+    				}
+
+ 					return GroupMember::create([
+ 						'group_id' 	=> $groupId,
+ 						'user_id'	=> $userId,
+ 						'status'	=> 1
+ 					]);   				
+    			}
+    		}
+    	}
     	return false;
     }
 }

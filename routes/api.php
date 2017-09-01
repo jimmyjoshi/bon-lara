@@ -77,6 +77,7 @@ Route::group(['namespace' => 'Api', 'middleware' => 'jwt.customauth'], function 
     
 
     Route::post('groups/add-member', 'APIGroupsController@joinMember')->name('groups.join-member');
+    Route::post('groups/allow-access', 'APIGroupsController@allowPrivateGroupAccess')->name('groups.allow-private-group-access');
 
     Route::post('groups/get-member-suggestions', 'APIGroupsController@getMemberSuggestions')->name('groups.get-member-suggestions');
 

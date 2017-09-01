@@ -144,9 +144,26 @@ class FeedsTransformer extends Transformer
                     $feedAttachment = url('/feeds/'.$feed->user_id.'/'.$feed->attachment);
                 }
                 $creatorProfilePicture  =  url('/profile-pictures/'.$feed->user->user_meta->profile_picture);   
+
+                $checkRequestFeed   = ';;request ';
+                $feedDescription    = $feed->description;
+                $requestUserId      = 0;
+
+                if(substr($feed->description, 0, 10) == $checkRequestFeed)
+                {
+                    $split = explode(" ", $feed->description);
+                    $requestUserId = $split[1];
+                    unset($split[0]);
+                    unset($split[1]);
+                    $feedDescription = implode(" ", $split);
+                }
+
+
+                if($feed->description)
                 $result[$sr] = [
                     'feedId'            => $feed->id,
-                    'description'       => $feed->description,
+                    'description'       => $feedDescription,
+                    'requestedUserId'   => $requestUserId,
                     'is_attachment'     => $feed->is_attachment,
                     'attachmentName'    => isset($feed->attachment) ? $feed->attachment : '',
                     'createdAt'         => date('m-d-Y H:i:s', strtotime($feed->created_at)),
