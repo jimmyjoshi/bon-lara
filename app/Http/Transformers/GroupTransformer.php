@@ -144,8 +144,8 @@ class GroupTransformer extends Transformer
             $sr = 0;
             foreach($groups as $group)        
             {
-                if($group->group_type != 1)
-                    continue;
+                /*if($group->group_type != 1)
+                    continue;*/
 
                 if(! isset($group->user->user_meta))
                     continue;
