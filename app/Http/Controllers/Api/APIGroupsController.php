@@ -466,15 +466,16 @@ class APIGroupsController extends BaseApiController
         if($request->get('user_id') && $request->get('group_id'))
         {
             $userInfo   = $this->getAuthenticatedUser();
-            $access     = $request->get('access') ? $request->get('access') : 1;
+            $feedId     = $request->get('feed_id') ? $request->get('feed_id') : 0;
 
-            $status = $this->repository->allowPrivateGroupAccess($userInfo, $request->get('group_id'), $request->get('user_id'));
+            $status = $this->repository->allowPrivateGroupAccess($userInfo, $request->get('group_id'), $request->get('user_id'), $feedId);
+
             if($status)
             {
                 $group      = $this->repository->getById($request->get('group_id'));                  
                 $response   = $this->groupTransformer->getSingleGroup($group, $userInfo);
 
-                return $this->successResponse($response, 'Member Status Updated Successfully !');
+                return $this->successResponse($response, 'Member Permission Updated Successfully !');
             }
         }
 
@@ -483,6 +484,31 @@ class APIGroupsController extends BaseApiController
         ];
 
         return $this->setStatusCode(404)->failureResponse($error, 'Something went wrong !');  
+    }
+
+    public function removePrivateGroupAccess(Request $request)
+    {
+        if($request->get('user_id') && $request->get('group_id'))
+        {
+            $userInfo   = $this->getAuthenticatedUser();
+            $feedId     = $request->get('feed_id') ? $request->get('feed_id') : 0;
+
+            $status = $this->repository->removePrivateGroupAccess($userInfo, $request->get('group_id'), $request->get('user_id'), $feedId);
+
+            if($status)
+            {
+                $group      = $this->repository->getById($request->get('group_id'));                  
+                $response   = $this->groupTransformer->getSingleGroup($group, $userInfo);
+
+                return $this->successResponse($response, 'Member Permission Updated Successfully !');
+            }
+        }
+
+        $error = [
+            'reason' => "Unable to Allow Member Permissions"
+        ];
+
+        return $this->setStatusCode(404)->failureResponse($error, 'Something went wrong !');
     }
 }
 

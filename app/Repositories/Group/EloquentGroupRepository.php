@@ -1016,7 +1016,7 @@ class EloquentGroupRepository extends DbRepository
     			$groupLeaders = $group->get_group_leaders()->pluck('user_id')->toArray();
     			if(in_array($user->id, $groupLeaders))
     			{
-    				$groupMember = GroupMember::where(['user_id' => $userId, 'group_id' => $groupId])->first();
+    				GroupMember::where(['user_id' => $userId, 'group_id' => $groupId])->delete();
 
     				if(isset($groupMember))
     				{
@@ -1051,12 +1051,7 @@ class EloquentGroupRepository extends DbRepository
     			$groupLeaders = $group->get_group_leaders()->pluck('user_id')->toArray();
     			if(in_array($user->id, $groupLeaders))
     			{
-    				$groupMember = GroupMember::where(['user_id' => $userId, 'group_id' => $groupId])->first();
-
-    				if(isset($groupMember))
-    				{
-    					return false;
-    				}
+    				GroupMember::where(['user_id' => $userId, 'group_id' => $groupId])->delete();
 
     				return Feeds::where('id', $feedId)->delete();
     			}
