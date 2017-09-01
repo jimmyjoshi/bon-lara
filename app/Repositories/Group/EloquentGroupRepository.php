@@ -507,14 +507,14 @@ class EloquentGroupRepository extends DbRepository
 
 	    				$this->createPrivateGroupRequestFeed($groupInfo, $userId);
 	    				
-	    				GroupMember::create([
+	    				/*GroupMember::create([
 	    					'group_id'	=> $groupId,
 	    					'user_id'	=> $userId,
 	    					'is_leader'	=> $isLeader,
 	    					'status' 	=> $groupInfo->is_private ? 0 : 1
-	    				]);
+	    				]);*/
 	    			}
-    			}
+	    		}
     			else
     			{
     				$isGrpMember = GroupMember::where(['group_id' => $groupId, 'user_id' => $userId])->first();
@@ -522,12 +522,12 @@ class EloquentGroupRepository extends DbRepository
     				{
     					$this->createPrivateGroupRequestFeed($groupInfo, $userIds);
 
-    					GroupMember::create([
+    					/*GroupMember::create([
 	    					'group_id'	=> $groupId,
 	    					'user_id'	=> $userId,
 	    					'is_leader'	=> $isLeader,
 	    					'status' 	=> $groupInfo->is_private ? 0 : 1
-	    				]);
+	    				]);*/
     				}
 
     			}
