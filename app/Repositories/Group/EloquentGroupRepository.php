@@ -416,7 +416,7 @@ class EloquentGroupRepository extends DbRepository
     	return json_encode($this->setTableStructure($clientHeaders));
     }
 
-	/**
+   /**
      * Get Table Columns
      *
      * @return string
@@ -500,12 +500,10 @@ class EloquentGroupRepository extends DbRepository
     			{
     				foreach($userIds as $userId)	
 	    			{
-
 	    				$isGrpMember = GroupMember::where(['group_id' => $groupId, 'user_id' => $userId])->first();
 
 	    				if(isset($isGrpMember))
 	    					continue;
-
 
 	    				$this->createPrivateGroupRequestFeed($groupInfo, $userId);
 	    				
@@ -514,7 +512,7 @@ class EloquentGroupRepository extends DbRepository
 	    					'user_id'	=> $userId,
 	    					'is_leader'	=> $isLeader,
 	    					'status' 	=> $groupInfo->is_private ? 0 : 1
-	    				];
+	    				]);
 	    			}
     			}
     			else
@@ -529,7 +527,7 @@ class EloquentGroupRepository extends DbRepository
 	    					'user_id'	=> $userId,
 	    					'is_leader'	=> $isLeader,
 	    					'status' 	=> $groupInfo->is_private ? 0 : 1
-	    				];
+	    				]);
     				}
 
     			}
