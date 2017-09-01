@@ -1007,7 +1007,7 @@ class EloquentGroupRepository extends DbRepository
      * @param int $userId
      * @return bool
      */
-    public function allowPrivateGroupAccess($user = null, $groupId = null, $userId = null)
+    public function allowPrivateGroupAccess($user = null, $groupId = null, $userId = null, $feedId = 0)
     {
     	if($user && $groupId && $userId)
     	{
@@ -1023,6 +1023,11 @@ class EloquentGroupRepository extends DbRepository
     				if(isset($groupMember))
     				{
     					return false;
+    				}
+
+    				if(isset($feedId) && $feedId != 0)
+    				{
+    					Feeds::where('id', $feedId)->delete();
     				}
 
  					return GroupMember::create([
