@@ -585,16 +585,24 @@ class EloquentGroupRepository extends DbRepository
      */
     public function createPrivateGroupRequestFeed($group = null, $userId = null)
     {
-    	$feed 			= new Feeds;
-    	$user 			= $this->userModel->find($userId);
-    	$defaultChannel = $group->defaultChannel();
+    	$feed 				= new Feeds;
+    	$user 				= $this->userModel->find($userId);
+    	$defaultChannel 	= $group->defaultChannel();
+    	$feedDescription 	= ';;request '. $user->id .' '. $user->name  . ' has requested to join your group.';
+
+    	$foundFeed = $feed->where(['user_id' => $user->id, 'description' => $feedDescription, 'channel_id' => $defaultChannel->id, 'campus_id' => $user->user_meta->campus_id, 'group_id' => $group->id])->first();
+
+    	if(isset($foundFeed) && isset($foundFeed->id))
+    	{
+    		return true;
+    	}
 
     	$feedData = [
     		'user_id' 		=> $user->id,
     		'campus_id'		=> $user->user_meta->campus_id,
     		'channel_id' 	=> $defaultChannel->id,
     		'group_id'		=> $group->id,
-    		'description' 	=> ';;request '. $user->id .' '. $user->name  . ' has requested to Join your Group.'
+    		'description' 	=> $feedDescription
     	];
 
     	return $feed->create($feedData);
