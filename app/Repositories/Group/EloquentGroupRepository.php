@@ -789,23 +789,43 @@ class EloquentGroupRepository extends DbRepository
 
 	    		if($flag)
 	    		{
-	    			$groupMemberInfo 	= [];
-	    			$gropuMemberIds 	= $model->get_only_group_members()->pluck('id')->toArray();
+	    			$groupMemberInfo 		= [];
+	    			$gropuMemberIds 		= $model->get_only_group_members()->pluck('id')->toArray();
+	    			$groupLeaders 			= $model->get_group_leaders()->pluck('user_id')->toArray();
+	    			$resetGroupMemberIds 	= [];
+	    			$processIds 			= [];
+	    			
+	    			foreach($gropuMemberIds as $grpMemberId)
+	    			{
+	    				if(!in_array($grpMemberId, $groupLeaders))
+	    				{
+	    					$resetGroupMemberIds[] = $grpMemberId;
+	    				}
+	    				
+	    			}
+
 	    			$updateInfo  =[
 	    				'status' => 0
 	    			];
 
-	    			$groupMemberModel->whereIn('user_id', $gropuMemberIds)->update(['status' => 0]);
+	    			$groupMemberModel->whereIn('user_id', $resetGroupMemberIds)->update(['status' => 0]);
 	    			
 	    			if(strpos($userIds, ',') !== false )
 					 {
 					 	$userIds = explode(',', $userIds);
 					 }
 
-	    			if(is_array($userIds))
+					if(is_array($userIds))
 	    			{
 	    				foreach($userIds as $userId)
 	    				{
+	    					if(in_array($userId, $processIds))
+	    					{
+	    						continue;
+	    					}
+
+	    					$processIds[] = $userId;
+
 	    					if($userId && in_array($userId, $gropuMemberIds))
 	    					{
 	    						$this->groupMember->where('user_id', $userId)->update(['status' => 1]);
@@ -814,6 +834,11 @@ class EloquentGroupRepository extends DbRepository
 
 	    					if($userId)
 	    					{
+	    						if(in_array($userId, $groupLeaders))
+	    						{
+	    							continue;
+	    						}
+
 	    						$groupMemberInfo[] = [
 		    						'group_id' 	=> $groupId,
 		    						'user_id' 	=> $userId,
