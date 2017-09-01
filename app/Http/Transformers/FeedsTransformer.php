@@ -163,7 +163,7 @@ class FeedsTransformer extends Transformer
                 $result[$sr] = [
                     'feedId'            => $feed->id,
                     'description'       => $feedDescription,
-                    'requestedUserId'   => $requestUserId,
+                    'requestedUserId'   => (int) $requestUserId,
                     'is_attachment'     => $feed->is_attachment,
                     'attachmentName'    => isset($feed->attachment) ? $feed->attachment : '',
                     'createdAt'         => date('m-d-Y H:i:s', strtotime($feed->created_at)),

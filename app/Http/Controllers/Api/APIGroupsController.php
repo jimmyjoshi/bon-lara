@@ -466,7 +466,9 @@ class APIGroupsController extends BaseApiController
         if($request->get('user_id') && $request->get('group_id'))
         {
             $userInfo   = $this->getAuthenticatedUser();
-            $status = $this->repository->allowPrivateGroupAccess($userInfo, $request->get('group_id'), $request->get('user_id'));
+            $access     = $request->get('access') ? $request->get('access') : 1;
+            
+            $status = $this->repository->allowPrivateGroupAccess($userInfo, $request->get('group_id'), $request->get('user_id'), $access);
             if($status)
             {
                 $group      = $this->repository->getById($request->get('group_id'));                  

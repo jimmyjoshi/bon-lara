@@ -500,12 +500,38 @@ class EloquentGroupRepository extends DbRepository
     			{
     				foreach($userIds as $userId)	
 	    			{
+
+	    				$isGrpMember = GroupMember::where(['group_id' => $groupId, 'user_id' => $userId])->first();
+
+	    				if(isset($isGrpMember))
+	    					continue;
+
+
 	    				$this->createPrivateGroupRequestFeed($groupInfo, $userId);
+	    				
+	    				GroupMember::create([
+	    					'group_id'	=> $groupId,
+	    					'user_id'	=> $userId,
+	    					'is_leader'	=> $isLeader,
+	    					'status' 	=> $groupInfo->is_private ? 0 : 1
+	    				];
 	    			}
     			}
     			else
     			{
-    				$this->createPrivateGroupRequestFeed($groupInfo, $userIds);
+    				$isGrpMember = GroupMember::where(['group_id' => $groupId, 'user_id' => $userId])->first();
+    				if(! isset($isGrpMember))
+    				{
+    					$this->createPrivateGroupRequestFeed($groupInfo, $userIds);
+
+    					GroupMember::create([
+	    					'group_id'	=> $groupId,
+	    					'user_id'	=> $userId,
+	    					'is_leader'	=> $isLeader,
+	    					'status' 	=> $groupInfo->is_private ? 0 : 1
+	    				];
+    				}
+
     			}
 
     			return true;
@@ -993,7 +1019,7 @@ class EloquentGroupRepository extends DbRepository
     			if(in_array($user->id, $groupLeaders))
     			{
     				$groupMember = GroupMember::where(['user_id' => $userId, 'group_id' => $groupId])->first();
-    				
+
     				if(isset($groupMember))
     				{
     					return false;
@@ -1007,6 +1033,33 @@ class EloquentGroupRepository extends DbRepository
     			}
     		}
     	}
+
+    	return false;
+    }
+
+    public function removePrivateGroupAccess($user = null, $groupId = null, $userId = null, $feedId = null)
+    {
+    	if($user && $groupId && $userId && $feedId)
+    	{
+    		$group = $this->model->find($groupId);
+
+    		if($group)
+    		{
+    			$groupLeaders = $group->get_group_leaders()->pluck('user_id')->toArray();
+    			if(in_array($user->id, $groupLeaders))
+    			{
+    				$groupMember = GroupMember::where(['user_id' => $userId, 'group_id' => $groupId])->first();
+
+    				if(isset($groupMember))
+    				{
+    					return false;
+    				}
+
+    				return Feeds::where('id', $feedId)->delete();
+    			}
+    		}
+    	}
+    	
     	return false;
     }
 }
