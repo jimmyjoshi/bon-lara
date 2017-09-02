@@ -413,28 +413,46 @@ class EloquentFeedsRepository extends DbRepository
     	if($campusId && $user)
     	{
     		$userInterest 	= $user->user_interests()->pluck('interest_id')->toArray();
-	    	$gropuMembers 	= GroupMember::where('user_id', $user->id)->get();
-	    	$groupIds		= [];
+	    	$userGroups 	= GroupMember::where(['user_id' => $user->id, 'status' => 1])->pluck('group_id')->toArray();
+	    	$homeFeedIds 	= [];
 
-	    	foreach($gropuMembers as $member)
-	    	{
-	    		if($member->is_leader == 1)
-	    		{
-	    			$groupIds[] = $member->group_id;
-	    			continue;
-	    		}
-
-				if($member->status == 1)
-	    		{
-	    			$groupIds[] = $member->group_id;
-	    		}
-	    	}
-    		$response = [];
-
-    		return  $this->model->with(['campus', 'user', 'feed_interests'])->where([
+			$allFeeds = $this->model->where([
     			'campus_id' 		=> $campusId,
     			'is_campus_feed' 	=> 1
-    			])->orderBy('id', 'desc')->get();
+    			])
+			->orderBy('id', 'desc')->get();
+
+
+			foreach($allFeeds as $campusFeed)
+			{
+				if($campusFeed->is_announcement == 1)
+				{
+					$homeFeedIds[] = $campusFeed->id;
+					continue;
+				}
+
+				if(in_array($campusFeed->group_id, $userGroups))
+				{
+					$homeFeedIds[] = $campusFeed->id;
+				}
+
+				$feedIntersts = $campusFeed->feed_interests()->get()->toArray();
+
+				if($feedIntersts && count($feedIntersts))
+				{
+	    			foreach($feedIntersts as $finterest)
+	    			{
+	    				if(in_array($finterest['id'], $userInterest))
+	    				{
+	    					$homeFeedIds[] = $campusFeed->id;
+	    					break;		
+	    				}
+	    			}		
+					continue;
+				}
+			}
+			
+			return  $this->model->with(['campus', 'user', 'feed_interests'])->whereIn('id', $homeFeedIds)->orderBy('id', 'desc')->get();
 
     		$feedIds = [];
 
