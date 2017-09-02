@@ -144,6 +144,8 @@ class EloquentFeedsRepository extends DbRepository
 				$this->addFeedInterests($model, $input);
 			}
 			
+			$this->sendGroupFeedPushNotification($model);
+
 			return $model->with(['campus', 'channel', 'group', 'user', 'feed_interests'])->where(['id' => $model->id])->first();
 		}
 
@@ -195,6 +197,33 @@ class EloquentFeedsRepository extends DbRepository
 
 	        PushNotification::iOS($payload, $user->token);
 	    }
+
+	    return true;
+	}
+
+	/**
+	 * Send Group Feed Push Notification
+	 * 
+	 * @param object $model
+	 * @return bool
+	 */
+	public function sendGroupFeedPushNotification($model = null)
+	{
+		if($model)
+		{
+			$groupMemberIds = GroupMember::where(['group_id' => $model->group->id, 'status' => 1])->pluck('user_id');
+			$users 			= UserToken::whereIn('user_id', $groupMemberIds)->get();
+			
+			foreach($users as $user)
+			{
+				$payload = [
+					'mtitle' 	=> 'BonFire',
+		            'mdesc' 	=> $model->description . ' Posted By '.$model->user->name
+				];
+
+				PushNotification::iOS($payload, $user->token);
+		    }
+		}
 
 	    return true;
 	}

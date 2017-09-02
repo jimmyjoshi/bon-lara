@@ -9,6 +9,8 @@ use App\Repositories\DbRepository;
 use App\Exceptions\GeneralException;
 use App\Models\Feeds\Feeds;
 use App\Models\Channel\Channel;
+use App\Models\Access\User\UserToken;
+use App\Library\Push\PushNotification;
 
 class EloquentGroupRepository extends DbRepository
 {
@@ -589,6 +591,7 @@ class EloquentGroupRepository extends DbRepository
     	$user 				= $this->userModel->find($userId);
     	$defaultChannel 	= $group->defaultChannel();
     	$feedDescription 	= ';;request '. $user->id .' '. $user->name  . ' has requested to join your group.';
+    	$feedNotification 	= $user->name  . ' has requested to join your group.';
 
     	$foundFeed = $feed->where(['user_id' => $user->id, 'description' => $feedDescription, 'channel_id' => $defaultChannel->id, 'campus_id' => $user->user_meta->campus_id, 'group_id' => $group->id])->first();
 
@@ -596,6 +599,19 @@ class EloquentGroupRepository extends DbRepository
     	{
     		return true;
     	}
+
+    	$groupMemberIds = $group->get_group_leaders()->pluck('user_id')->toArray();
+    	$users 			= UserToken::whereIn('user_id', $groupMemberIds)->get();
+
+		foreach($users as $tokenuser)
+		{
+			$payload = [
+				'mtitle' 	=> 'BonFire',
+	            'mdesc' 	=> $feedNotification
+			];
+
+			PushNotification::iOS($payload, $tokenuser->token);
+	    }
 
     	$feedData = [
     		'user_id' 		=> $user->id,
