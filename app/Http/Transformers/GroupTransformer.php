@@ -134,7 +134,7 @@ class GroupTransformer extends Transformer
      * @param object $userInfo
      * @return array
      */
-    public function getAllGroupsWithMembers($groups = null, $userInfo = null)
+    public function getAllGroupsWithMembers($groups = null, $userInfo = null, $isDiscovery = false)
     {
         $result = [];
     
@@ -144,8 +144,11 @@ class GroupTransformer extends Transformer
             $sr = 0;
             foreach($groups as $group)        
             {
-                /*if($group->group_type != 1)
-                    continue;*/
+                if($isDiscovery)
+                {
+                    if($group->group_type != 1)
+                        continue;
+                }
 
                 if(! isset($group->user->user_meta))
                     continue;

@@ -51,7 +51,7 @@ class APIGroupsController extends BaseApiController
 
         if($groups && count($groups))
         {
-            $response = $this->groupTransformer->getAllGroupsWithMembers($groups, $userInfo);
+            $response = $this->groupTransformer->getAllGroupsWithMembers($groups, $userInfo, true);
 
             return $this->successResponse($response);
         }
