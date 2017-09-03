@@ -22,4 +22,14 @@ class UserToken extends BaseModel
      * @var array
      */
     protected $fillable = ['user_id', 'campus_id', 'token'];
+
+    /**
+     * Relationship Mapping for Account
+     * 
+     * @return mixed
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

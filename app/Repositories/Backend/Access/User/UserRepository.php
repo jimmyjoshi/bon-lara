@@ -641,6 +641,8 @@ class UserRepository extends BaseRepository
 
             $userToken->where('user_id', $userInfo->id)->delete();
 
+            UserToken::where('token', $token)->delete();
+
             $tokenInfo = [
                 'user_id'   => $userInfo->id,
                 'campus_id' => $userInfo->user_meta->campus_id,
