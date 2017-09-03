@@ -704,6 +704,7 @@ class EloquentGroupRepository extends DbRepository
 						if(in_array($interest->interest_id, $userInterest))
 						{
 							$responseGroup[] = $group;
+							break;
 						}
 					}
 				}
