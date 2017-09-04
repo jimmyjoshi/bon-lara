@@ -3,6 +3,7 @@
 use App\Models\Feeds\Feeds;
 use App\Models\Feeds\FeedReport;
 use App\Models\Access\User\UserToken;
+use  App\Models\Access\User\UserInterest;
 use App\Models\Feeds\FeedInterests;
 use App\Repositories\DbRepository;
 use App\Exceptions\GeneralException;
@@ -144,13 +145,72 @@ class EloquentFeedsRepository extends DbRepository
 				$this->addFeedInterests($model, $input);
 			}
 			
-			$this->sendGroupFeedPushNotification($model);
+			// Send Gropu Feed Push Notification	
+			//$this->sendGroupFeedPushNotification($model);
+			
+			if(isset($input['is_campus_feed']) && $input['is_campus_feed'] == 1)
+			{
+				$this->sendHomeFeedPushNotification($model);
+			}
 
 			return $model->with(['campus', 'channel', 'group', 'user', 'feed_interests'])->where(['id' => $model->id])->first();
 		}
 
 		return false;
 	}	
+
+	public function sendHomeFeedPushNotification($model = null)
+	{
+		if($model)
+		{
+			if(isset($model->group_id))
+			{
+				$groupMemberIds = GroupMember::where(['group_id' => $model->group->id, 'status' => 1])->pluck('user_id');
+				$users 			= UserToken::whereIn('user_id', $groupMemberIds)->get();
+				
+				foreach($users as $user)
+				{
+					$payload = [
+						'mtitle' 	=> 'BonFire',
+			            'mdesc' 	=> $model->description . ' Posted By '.$model->user->name
+					];
+					PushNotification::iOS($payload, $user->token);
+			    }
+
+			    return true;
+			}
+			else
+			{
+				$campusId 		= $model->campus_id;
+				$tokenUserIds 	= [];
+				$feedInterests 	= $model->feed_interests()->pluck('interest_id')->toArray();
+
+				if(isset($feedInterests) && count($feedInterests))
+				{
+					$users = UserInterest::whereIn('interest_id', $feedInterests)->get()->filter(function($item) use($campusId)
+						{
+							if(isset($item->user->user_meta) && $campusId == $item->user->user_meta->campus_id)
+							{
+								return $item;
+							}
+						});
+
+					foreach($users as $user)
+					{
+						if(isset($user->user->user_token))
+						{
+							$payload = [
+								'mtitle' 	=> 'BonFire',
+					            'mdesc' 	=> $model->description . ' Posted By '.$model->user->name
+							];
+							PushNotification::iOS($payload, $user->user->user_token->token);
+						}
+					}
+				}
+
+			}
+		}
+	}
 
 	/**
 	 * Create Campus Feeds

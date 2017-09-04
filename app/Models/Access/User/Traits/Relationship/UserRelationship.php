@@ -8,6 +8,7 @@ use App\Models\Event\Event;
 use App\Models\System\Session;
 use App\Models\Access\User\SocialLogin;
 use App\Models\Access\User\UserMeta;
+use App\Models\Access\User\UserToken;
 use App\Models\Access\User\UserInterest;
 use App\Models\Access\User\User;
 use App\Models\Interest\Interest;
@@ -57,6 +58,14 @@ trait UserRelationship
     public function user_meta()
     {
         return $this->hasOne(UserMeta::class);
+    }   
+
+    /**
+     * @return mixed
+     */
+    public function user_token()
+    {
+        return $this->hasOne(UserToken::class);
     }    
 
     /**
