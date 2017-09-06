@@ -182,11 +182,20 @@ class AdminGroupController extends Controller
 
                 });
 
-                return implode(', ', $this->groupLeaders);
+                $result = implode(', ', $this->groupLeaders);
+                $this->groupLeaders = [];
+                return $result;
             })
              ->addColumn('members_count', function ($group)
             {
-                return '<span class="btn btn-primary group-members" data-group-id="'.$group->id.'" >' . count($group->group_members) . '</span>';
+                if($group->is_private == 1)
+                {
+                    return '<span class="btn btn-primary group-members" data-group-id="'.$group->id.'" >' . count($group->get_only_group_members()) . '</span>';
+                }
+                else
+                {
+                    return '<span class="btn btn-primary group-members" data-group-id="'.$group->id.'" >' . count($group->group_members()) . '</span>';   
+                }
             })
 		    ->escapeColumns(['start_date', 'sort'])
 		    ->escapeColumns(['end_date', 'sort'])
