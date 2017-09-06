@@ -495,7 +495,7 @@ class EloquentGroupRepository extends DbRepository
     	if($groupId && count($userIds))
     	{
     		$groupInfo = $this->model->find($groupId);
-    		
+
     		if(isset($groupInfo->is_private) && $groupInfo->is_private == 1)
     		{
     			if(is_array($userIds))
@@ -545,6 +545,11 @@ class EloquentGroupRepository extends DbRepository
 
     		foreach($userIds as $userId)	
     		{
+    			$isGrpMember = GroupMember::where(['group_id' => $groupId, 'user_id' => $userId])->first();
+
+    			if(isset($isGrpMember))
+	    			continue;
+
     			if(! $userId)
     			{
     				continue;
