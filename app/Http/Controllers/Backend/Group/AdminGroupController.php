@@ -194,7 +194,7 @@ class AdminGroupController extends Controller
                 }
                 else
                 {
-                    return '<span class="btn btn-primary group-members" data-group-id="'.$group->id.'" >' . count($group->group_members()) . '</span>';   
+                    return '<span class="btn btn-primary group-members" data-group-id="'.$group->id.'" >' . $group->group_members()->count() . '</span>';   
                 }
             })
 		    ->escapeColumns(['start_date', 'sort'])
