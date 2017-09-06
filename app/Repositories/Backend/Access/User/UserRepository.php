@@ -23,7 +23,8 @@ use App\Repositories\Backend\Access\Role\RoleRepository;
 use App\Events\Backend\Access\User\UserPermanentlyDeleted;
 use App\Notifications\Frontend\Auth\UserNeedsConfirmation;
 use App\Notifications\Frontend\Auth\UserForgotPassword;
-    
+use App\Models\Campus\Campus;    
+
 /**
  * Class UserRepository.
  */
@@ -381,6 +382,13 @@ class UserRepository extends BaseRepository
             return false;
         }
 
+        $validateDomain = $this->validateUserDomain($input);
+        
+        if($validateDomain == false)
+        {
+            return false;
+        }
+
         $user = new User;
         
         $userData = array(
@@ -409,6 +417,30 @@ class UserRepository extends BaseRepository
         }
 
         return false;
+    }
+
+
+    /**
+     * Validate User Domain
+     * 
+     * @param array $input
+     * @return bool
+     */
+    public function validateUserDomain($input = array())
+    {
+        if(isset($input['campus_id']))
+        {
+            $campus         = Campus::find($input['campus_id']);
+            $userEmail      = explode("@", $input['email']);
+            $emailDomain    = array_pop($userEmail);
+
+
+            if($campus->valid_domain != $emailDomain)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     public function validateApiUser($input)
